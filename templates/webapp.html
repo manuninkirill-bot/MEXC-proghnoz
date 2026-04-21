@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>goldantelopeethx500 — MEXC Trading Dashboard</title>
+    
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-dark border-primary">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h2 class="text-primary mb-0">
+                                    <i class="fas fa-chart-line"></i> goldantelopeethx500
+                                </h2>
+                                <p class="text-muted mb-0">MEXC ETH/USDT x500</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="bot-status">
+                                    <span id="bot-status" class="badge bg-danger">STOPPED</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button id="start-bot" class="btn btn-success btn-sm me-2">
+                                        <i class="fas fa-play"></i> Start Bot
+                                    </button>
+                                    <button id="stop-bot" class="btn btn-danger btn-sm me-2">
+                                        <i class="fas fa-stop"></i> Stop Bot
+                                    </button>
+                                    <button id="close-position" class="btn btn-warning btn-sm me-2">
+                                        <i class="fas fa-times"></i> Close Position
+                                    </button>
+                                    <button id="delete-trade" class="btn btn-secondary btn-sm me-2">
+                                        <i class="fas fa-trash"></i> Delete Last Trade
+                                    </button>
+                                    <button id="reset-balance" class="btn btn-info btn-sm">
+                                        <i class="fas fa-redo"></i> Reset Balance
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-xl-12">
+                <!-- Balance and Position Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-dark border-success">
+                            <div class="card-body text-center">
+                                <h5 class="text-success">Balance</h5>
+                                <h3 id="balance" class="text-light">$0.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-dark border-info">
+                            <div class="card-body text-center">
+                                <h5 class="text-info">Available</h5>
+                                <h3 id="available" class="text-light">$0.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-dark border-warning">
+                            <div class="card-body text-center">
+                                <h5 class="text-warning">ETH Price</h5>
+                                <h3 id="current-price" class="text-light">$0.00</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-dark border-primary">
+                            <div class="card-body text-center">
+                                <h5 class="text-primary">Status</h5>
+                                <h3 id="position-status" class="text-light">No Position</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two columns: Left - Position, Right - Signals + History -->
+                <div class="row mb-4">
+                    <div class="col-xl-8">
+                        <div class="card bg-dark border-primary">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-crosshairs"></i> Current Position</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="no-position" class="text-center text-muted py-4">
+                                    <i class="fas fa-circle-notch fa-3x mb-3"></i>
+                                    <p>No open position</p>
+                                </div>
+                                <div id="current-position" class="d-none">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <strong>Side:</strong>
+                                            <span id="pos-side" class="badge"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <strong>Entry:</strong>
+                                            <span id="pos-entry" class="text-light"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <strong>Size:</strong>
+                                            <span id="pos-size" class="text-light"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <strong>Notional:</strong>
+                                            <span id="pos-notional" class="text-light"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <strong>Time:</strong>
+                                            <span id="pos-time" class="text-light"></span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <strong>P&L:</strong>
+                                            <span id="pos-pnl" class="text-light"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Signals + History -->
+                    <div class="col-xl-4">
+                <!-- SAR Directions / Trade Entry Signal -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card bg-dark border-primary">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-signal"></i> Trade Entry Signal</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="sar-indicator mb-3" id="sar-1m-container">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold"><i class="fas fa-layer-group me-2"></i>Level 1:</span>
+                                        <span id="sar-1m" class="badge sar-badge">N/A</span>
+                                    </div>
+                                </div>
+                                <div class="sar-indicator mb-3" id="sar-5m-container">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold"><i class="fas fa-layer-group me-2"></i>Level 2:</span>
+                                        <span id="sar-5m" class="badge sar-badge">N/A</span>
+                                    </div>
+                                </div>
+                                <div class="sar-indicator" id="sar-15m-container">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold"><i class="fas fa-layer-group me-2"></i>Level 3:</span>
+                                        <span id="sar-15m" class="badge sar-badge">N/A</span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <div id="signal-status" class="badge bg-secondary signal-badge">NO SIGNAL</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trade History -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card bg-dark border-primary">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-history"></i> Trade History</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="trades-container" style="max-height: 400px; overflow-y: auto;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-clock fa-2x mb-3"></i>
+                                        <p>No completed trades</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- WebApp Custom JS -->
+    <script>
+        // Initialize Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        
+        // WebApp-specific dashboard without password protection
+        class TradingDashboard {
+            constructor() {
+                this.lastUpdateTime = null;
+                this.isUpdating = false;
+                
+                this.bindEvents();
+                this.startDataUpdates();
+                
+                // Initial load
+                this.updateDashboard();
+            }
+
+            bindEvents() {
+                // Bot control buttons WITH password protection
+                document.getElementById('start-bot').addEventListener('click', () => {
+                    this.withPasswordCheck(() => this.startBot());
+                });
+
+                document.getElementById('stop-bot').addEventListener('click', () => {
+                    this.withPasswordCheck(() => this.stopBot());
+                });
+
+                document.getElementById('close-position').addEventListener('click', () => {
+                    this.withPasswordCheck(() => this.closePosition());
+                });
+
+                document.getElementById('delete-trade').addEventListener('click', () => {
+                    this.withPasswordCheck(() => this.deleteLastTrade());
+                });
+
+                document.getElementById('reset-balance').addEventListener('click', () => {
+                    this.withPasswordCheck(() => this.resetBalance());
+                });
+            }
+
+            withPasswordCheck(callback) {
+                tg.showPopup({
+                    title: 'Password Required',
+                    message: 'Enter dashboard password:',
+                    buttons: [
+                        {id: 'cancel', type: 'cancel'},
+                        {id: 'ok', type: 'default', text: 'OK'}
+                    ]
+                }, (buttonId) => {
+                    if (buttonId === 'ok') {
+                        // Use Telegram's input field
+                        const password = prompt('Enter dashboard password:');
+                        if (password === null) {
+                            return; // User cancelled
+                        }
+                        
+                        // Verify password with server
+                        fetch('/api/verify_password', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ password: password })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                callback();
+                            } else {
+                                tg.showAlert('Incorrect password');
+                            }
+                        })
+                        .catch(error => {
+                            tg.showAlert('Error verifying password');
+                            console.error('Password verification error:', error);
+                        });
+                    }
+                });
+            }
+
+            async startBot() {
+                try {
+                    const response = await fetch('/api/start_bot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        tg.showAlert(data.message || 'Bot started successfully');
+                    } else {
+                        tg.showAlert(data.error || 'Failed to start bot');
+                    }
+                } catch (error) {
+                    tg.showAlert('Server connection error');
+                    console.error('Start bot error:', error);
+                }
+            }
+
+            async stopBot() {
+                try {
+                    const response = await fetch('/api/stop_bot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        tg.showAlert(data.message || 'Bot stopped successfully');
+                    } else {
+                        tg.showAlert(data.error || 'Failed to stop bot');
+                    }
+                } catch (error) {
+                    tg.showAlert('Server connection error');
+                    console.error('Stop bot error:', error);
+                }
+            }
+
+            async closePosition() {
+                try {
+                    const response = await fetch('/api/close_position', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        tg.showAlert(data.message || 'Position closed successfully');
+                    } else {
+                        tg.showAlert(data.error || 'Failed to close position');
+                    }
+                } catch (error) {
+                    tg.showAlert('Server connection error');
+                    console.error('Close position error:', error);
+                }
+            }
+
+            async deleteLastTrade() {
+                try {
+                    const response = await fetch('/api/delete_last_trade', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        tg.showAlert(data.message || 'Last trade deleted successfully');
+                        this.updateDashboard();
+                    } else {
+                        tg.showAlert(data.error || 'Failed to delete last trade');
+                    }
+                } catch (error) {
+                    tg.showAlert('Server connection error');
+                    console.error('Delete trade error:', error);
+                }
+            }
+
+            async resetBalance() {
+                try {
+                    const response = await fetch('/api/reset_balance', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        tg.showAlert(data.message || 'Balance reset successfully');
+                        this.updateDashboard();
+                    } else {
+                        tg.showAlert(data.error || 'Failed to reset balance');
+                    }
+                } catch (error) {
+                    tg.showAlert('Server connection error');
+                    console.error('Reset balance error:', error);
+                }
+            }
+
+            async updateDashboard() {
+                if (this.isUpdating) {
+                    return;
+                }
+
+                this.isUpdating = true;
+
+                try {
+                    const response = await fetch('/api/status');
+                    if (!response.ok) {
+                        console.error('Status fetch failed');
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    // Update bot status
+                    const statusBadge = document.getElementById('bot-status');
+                    if (data.bot_running) {
+                        statusBadge.textContent = 'RUNNING';
+                        statusBadge.className = 'badge bg-success';
+                    } else {
+                        statusBadge.textContent = 'STOPPED';
+                        statusBadge.className = 'badge bg-danger';
+                    }
+
+                    // Update balance
+                    document.getElementById('balance').textContent = `$${parseFloat(data.balance).toFixed(2)}`;
+                    document.getElementById('available').textContent = `$${parseFloat(data.available).toFixed(2)}`;
+
+                    // Update current price
+                    if (data.current_price) {
+                        document.getElementById('current-price').textContent = `$${parseFloat(data.current_price).toFixed(2)}`;
+                    }
+
+                    // Update SAR directions
+                    if (data.sar_directions) {
+                        this.updateSARDirections(data.sar_directions);
+                    }
+
+                    // Update position status
+                    if (data.in_position && data.position) {
+                        document.getElementById('position-status').textContent = data.position.side.toUpperCase();
+                        this.updatePosition(data.position, data.current_price);
+                    } else {
+                        document.getElementById('position-status').textContent = 'No Position';
+                        this.clearPosition();
+                    }
+
+                    // Update trades
+                    if (data.trades) {
+                        this.updateTrades(data.trades);
+                    }
+
+                    this.lastUpdateTime = new Date();
+                } catch (error) {
+                    console.error('Dashboard update error:', error);
+                } finally {
+                    this.isUpdating = false;
+                }
+            }
+
+            updateSARDirections(directions) {
+                console.log('updateSARDirections called with:', directions);
+                
+                const timeframes = ['1m', '5m', '15m'];
+                let allMatch = true;
+                let matchDirection = null;
+                
+                timeframes.forEach(tf => {
+                    const element = document.getElementById(`sar-${tf}`);
+                    const container = document.getElementById(`sar-${tf}-container`);
+                    const direction = directions[tf];
+                    
+                    console.log(`Processing ${tf}: element=${element}, container=${container}, direction=${direction}`);
+                    
+                    if (element && container) {
+                        element.className = 'badge sar-badge';
+                        
+                        if (direction === 'long') {
+                            element.textContent = 'LONG';
+                            element.classList.add('bg-success');
+                            container.classList.remove('text-danger');
+                            container.classList.add('text-success');
+                            if (matchDirection === null) {
+                                matchDirection = 'long';
+                            } else if (matchDirection !== 'long') {
+                                allMatch = false;
+                            }
+                        } else if (direction === 'short') {
+                            element.textContent = 'SHORT';
+                            element.classList.add('bg-danger');
+                            container.classList.remove('text-success');
+                            container.classList.add('text-danger');
+                            if (matchDirection === null) {
+                                matchDirection = 'short';
+                            } else if (matchDirection !== 'short') {
+                                allMatch = false;
+                            }
+                        } else {
+                            element.textContent = 'N/A';
+                            element.classList.add('bg-secondary');
+                            container.classList.remove('text-success', 'text-danger');
+                            allMatch = false;
+                        }
+                    }
+                });
+                
+                // Update signal status
+                const signalElement = document.getElementById('signal-status');
+                if (signalElement) {
+                    if (allMatch && matchDirection) {
+                        if (matchDirection === 'long') {
+                            signalElement.textContent = 'LONG SIGNAL';
+                            signalElement.className = 'badge bg-success signal-badge';
+                        } else {
+                            signalElement.textContent = 'SHORT SIGNAL';
+                            signalElement.className = 'badge bg-danger signal-badge';
+                        }
+                    } else {
+                        signalElement.textContent = 'NO SIGNAL';
+                        signalElement.className = 'badge bg-secondary signal-badge';
+                    }
+                }
+            }
+
+            updatePosition(position, currentPrice) {
+                const noPosition = document.getElementById('no-position');
+                const currentPosition = document.getElementById('current-position');
+                
+                if (noPosition) noPosition.classList.add('d-none');
+                if (currentPosition) currentPosition.classList.remove('d-none');
+                
+                // Side
+                const sideBadge = document.getElementById('pos-side');
+                if (sideBadge) {
+                    sideBadge.textContent = position.side.toUpperCase();
+                    sideBadge.className = position.side === 'long' ? 'badge bg-success' : 'badge bg-danger';
+                }
+                
+                // Color class for all position elements
+                const colorClass = position.side === 'long' ? 'text-success' : 'text-danger';
+                
+                // Entry price
+                const entryElement = document.getElementById('pos-entry');
+                if (entryElement) {
+                    entryElement.textContent = `$${parseFloat(position.entry_price).toFixed(2)}`;
+                    entryElement.className = colorClass;
+                }
+                
+                // Size
+                const sizeElement = document.getElementById('pos-size');
+                if (sizeElement) {
+                    sizeElement.textContent = `${parseFloat(position.size_base).toFixed(6)} ETH`;
+                    sizeElement.className = colorClass;
+                }
+                
+                // Notional value
+                const notionalElement = document.getElementById('pos-notional');
+                if (notionalElement) {
+                    notionalElement.textContent = `$${parseFloat(position.notional).toFixed(2)}`;
+                    notionalElement.className = colorClass;
+                }
+                
+                // Entry time
+                const timeElement = document.getElementById('pos-time');
+                if (timeElement && position.entry_time) {
+                    const entryTime = new Date(position.entry_time);
+                    timeElement.textContent = entryTime.toLocaleTimeString();
+                    timeElement.className = colorClass;
+                }
+                
+                // P&L
+                const pnlElement = document.getElementById('pos-pnl');
+                if (pnlElement && currentPrice) {
+                    const entryPrice = parseFloat(position.entry_price);
+                    const size = parseFloat(position.size_base);
+                    let pnl;
+                    
+                    if (position.side === 'long') {
+                        pnl = (currentPrice - entryPrice) * size;
+                    } else {
+                        pnl = (entryPrice - currentPrice) * size;
+                    }
+                    
+                    pnlElement.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} USDT`;
+                    pnlElement.className = colorClass;
+                }
+            }
+
+            clearPosition() {
+                const noPosition = document.getElementById('no-position');
+                const currentPosition = document.getElementById('current-position');
+                
+                if (noPosition) noPosition.classList.remove('d-none');
+                if (currentPosition) currentPosition.classList.add('d-none');
+            }
+
+            updateTrades(trades) {
+                const container = document.getElementById('trades-container');
+                if (!container) return;
+                
+                if (!trades || trades.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-clock fa-2x mb-3"></i>
+                            <p>No completed trades</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Show last 50 trades
+                const recentTrades = trades.slice(-50).reverse();
+                
+                const tradesHtml = recentTrades.map(trade => {
+                    const pnl = parseFloat(trade.pnl);
+                    const pnlClass = pnl >= 0 ? 'text-success' : 'text-danger';
+                    const sideClass = trade.side === 'long' ? 'bg-success' : 'bg-danger';
+                    
+                    const exitTime = trade.exit_time || trade.time;
+                    const exitDate = exitTime ? new Date(exitTime).toLocaleString() : 'N/A';
+                    
+                    return `
+                        <div class="list-group-item bg-dark border-secondary mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge ${sideClass}">${trade.side.toUpperCase()}</span>
+                                    <span class="${pnlClass} fw-bold ms-2">${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}</span>
+                                </div>
+                                <small class="text-muted">
+                                    ${exitDate}
+                                </small>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    Entry: $${trade.entry_price.toFixed(2)} → Exit: $${trade.exit_price.toFixed(2)}
+                                </small>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                container.innerHTML = tradesHtml;
+            }
+
+            startDataUpdates() {
+                // Update dashboard every 3 seconds
+                setInterval(() => {
+                    this.updateDashboard();
+                }, 3000);
+            }
+        }
+
+        // Initialize dashboard when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new TradingDashboard();
+        });
+    </script>
+</body>
+</html>

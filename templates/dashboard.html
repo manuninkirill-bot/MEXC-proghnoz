@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>goldantelopeethx500 — MEXC Trading Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=5">
+</head>
+<body>
+<div class="container-fluid px-4 py-3">
+
+    <!-- ═══ TOP BAR ═══ -->
+    <div class="top-bar mb-4">
+        <!-- Logo -->
+        <div class="top-bar__logo">
+            <i class="fas fa-chart-line text-primary me-2"></i>
+            <span class="top-bar__title">goldantelopeethx500</span>
+            <span class="top-bar__sub">MEXC ETH/USDT</span>
+        </div>
+
+        <!-- Bot controls -->
+        <div class="top-bar__controls">
+            <span id="bot-status" class="status-pill status-pill--stopped">● STOPPED</span>
+            <button id="start-bot" class="ctrl-btn ctrl-btn--green">
+                <i class="fas fa-play"></i> Start
+            </button>
+            <button id="stop-bot" class="ctrl-btn ctrl-btn--red">
+                <i class="fas fa-stop"></i> Stop
+            </button>
+            <div class="ctrl-divider"></div>
+            <button id="reset-balance" class="ctrl-btn ctrl-btn--ghost" title="Reset Balance">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+            <button id="delete-trade" class="ctrl-btn ctrl-btn--ghost" title="Delete Last Trade">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══ STATS + SETTINGS ROW ═══ -->
+    <div class="row g-3 mb-4">
+
+        <!-- Balance -->
+        <div class="col-md-3 col-6">
+            <div class="stat-card stat-card--green">
+                <div class="stat-card__label"><i class="fas fa-wallet me-1"></i> Balance</div>
+                <div class="stat-card__value" id="balance">$0.00</div>
+            </div>
+        </div>
+
+        <!-- Available -->
+        <div class="col-md-3 col-6">
+            <div class="stat-card stat-card--blue">
+                <div class="stat-card__label"><i class="fas fa-coins me-1"></i> Available</div>
+                <div class="stat-card__value" id="available">$0.00</div>
+            </div>
+        </div>
+
+        <!-- ETH Price -->
+        <div class="col-md-3 col-6">
+            <div class="stat-card stat-card--yellow">
+                <div class="stat-card__label"><i class="fab fa-ethereum me-1"></i> ETH Price</div>
+                <div class="stat-card__value" id="current-price">$0.00</div>
+            </div>
+        </div>
+
+        <!-- Trade Settings -->
+        <div class="col-md-3 col-6">
+            <div class="stat-card stat-card--dark settings-card">
+                <div class="settings-row">
+                    <span class="settings-label">Bet</span>
+                    <div class="seg-ctrl">
+                        <button class="seg-btn seg-btn--blue bet-btn active-setting" data-bet="5"  onclick="window.dashboard.setBet(5)">$5</button>
+                        <button class="seg-btn seg-btn--blue bet-btn"                data-bet="10" onclick="window.dashboard.setBet(10)">$10</button>
+                        <button class="seg-btn seg-btn--blue bet-btn"                data-bet="20" onclick="window.dashboard.setBet(20)">$20</button>
+                    </div>
+                </div>
+                <div class="settings-divider"></div>
+                <div class="settings-row">
+                    <span class="settings-label">Time</span>
+                    <div class="seg-ctrl">
+                        <button class="seg-btn seg-btn--amber dur-btn active-setting" data-dur="600"  onclick="window.dashboard.setDuration(600)">10m</button>
+                        <button class="seg-btn seg-btn--amber dur-btn"                data-dur="1800" onclick="window.dashboard.setDuration(1800)">30m</button>
+                        <button class="seg-btn seg-btn--amber dur-btn"                data-dur="3600" onclick="window.dashboard.setDuration(3600)">60m</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ MAIN GRID ═══ -->
+    <div class="row g-3">
+
+        <!-- Active Positions -->
+        <div class="col-xl-8">
+            <div class="panel">
+                <div class="panel__header">
+                    <i class="fas fa-crosshairs"></i> Active Positions
+                </div>
+                <div class="panel__body p-0">
+                    <div id="no-positions" class="empty-state">
+                        <i class="fas fa-circle-notch fa-2x mb-2 opacity-50"></i>
+                        <p class="mb-0 opacity-50">No open positions</p>
+                    </div>
+                    <div id="positions-list" class="list-group list-group-flush"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="col-xl-4 d-flex flex-column gap-3">
+
+            <!-- Trade Entry Signal -->
+            <div class="panel">
+                <div class="panel__header">
+                    <i class="fas fa-satellite-dish"></i> Trade Entry Signal
+                </div>
+                <div class="panel__body">
+                    <div class="sar-row mb-2" id="sar-1m-container">
+                        <span class="sar-level">Level 1</span>
+                        <span id="sar-1m" class="badge sar-badge">N/A</span>
+                    </div>
+                    <div class="sar-row mb-2" id="sar-5m-container">
+                        <span class="sar-level">Level 2</span>
+                        <span id="sar-5m" class="badge sar-badge">N/A</span>
+                    </div>
+                    <div class="sar-row" id="sar-15m-container">
+                        <span class="sar-level">Level 3</span>
+                        <span id="sar-15m" class="badge sar-badge">N/A</span>
+                    </div>
+                    <div class="signal-bar mt-3">
+                        <div id="signal-status" class="signal-badge">NO SIGNAL</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trade History -->
+            <div class="panel flex-grow-1">
+                <div class="panel__header">
+                    <span><i class="fas fa-history"></i> Trade History</span>
+                    <button id="clear-history" class="ctrl-btn ctrl-btn--ghost ctrl-btn--sm">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+                <div class="panel__body p-0">
+                    <div id="trades-container" style="max-height:380px;overflow-y:auto;">
+                        <div class="empty-state">
+                            <i class="fas fa-clock fa-2x mb-2 opacity-50"></i>
+                            <p class="mb-0 opacity-50">No completed trades</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content result-modal">
+            <div class="modal-body text-center py-5">
+                <h1 id="result-title" class="text-success mb-3">WIN!</h1>
+                <p id="result-message" class="text-muted mb-3">Congratulations!</p>
+                <h3 id="result-pnl" class="text-success mb-4">+$4.00</h3>
+                <button type="button" class="ctrl-btn ctrl-btn--blue px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=9"></script>
+</body>
+</html>
