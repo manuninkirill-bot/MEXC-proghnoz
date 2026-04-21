@@ -63,6 +63,38 @@ def bot_main_loop():
         logging.error(f"Bot error: {e}")
         bot_running = False
 
+# ── Фоновый апдейтер SAR — работает всегда, независимо от состояния бота ──
+_sar_worker = None
+
+def _sar_updater_loop():
+    """Тихий фоновый поток: обновляет SAR-направления каждые 5 сек с реального MEXC"""
+    import time
+    try:
+        helper = TradingBot(telegram_notifier=None)
+        logging.info("SAR background helper initialized (MEXC real data)")
+    except Exception as e:
+        logging.error(f"SAR updater init error: {e}")
+        return
+    while True:
+        try:
+            dirs = helper.get_current_directions()
+            if dirs and any(v is not None for v in dirs.values()):
+                state['sar_directions'] = dirs
+                logging.debug(f"SAR updated: {dirs}")
+            price = helper.get_current_price()
+            if price and price > 0:
+                state['last_known_price'] = price
+        except Exception as e:
+            logging.warning(f"SAR updater fetch error: {e}")
+        time.sleep(5)
+
+def start_sar_updater():
+    global _sar_worker
+    if _sar_worker is None or not _sar_worker.is_alive():
+        _sar_worker = threading.Thread(target=_sar_updater_loop, daemon=True)
+        _sar_worker.start()
+        logging.info("SAR background updater started")
+
 @app.route('/')
 def index():
     """Главная страница - дашборд"""
@@ -84,10 +116,14 @@ def api_status():
         
         # Если bot_instance еще не вернул данные, пробуем взять из state
         if not directions or all(v is None for v in directions.values()):
-            directions = state.get('sar_directions', {tf: None for tf in ['1m', '5m', '15m']})
+            directions = state.get('sar_directions', {tf: None for tf in ['1m', '3m', '5m', '15m', '30m']})
         
-        # Получаем текущую цену
-        current_price = bot_instance.get_current_price() if bot_instance else 3000.0
+        # Получаем текущую цену (из апдейтера или бота)
+        current_price = (
+            bot_instance.get_current_price()
+            if bot_instance
+            else state.get('last_known_price', 0.0)
+        )
         
         return jsonify({
             'bot_running': bot_running,
@@ -100,7 +136,15 @@ def api_status():
             'sar_directions': directions,
             'trades': state.get('trades', []),
             'bet': state.get('bet', 5.0),
-            'trade_duration': state.get('trade_duration', 600)
+            'trade_duration': state.get('trade_duration', 600),
+            'strategy_level': state.get('strategy_level', 3),
+            'strategy_tfs': state.get('strategy_tfs', ['1m', '3m', '5m']),
+            'payouts': state.get('payouts', {
+                '600':  {'up': None, 'down': None},
+                '1800': {'up': None, 'down': None},
+                '3600': {'up': None, 'down': None},
+            }),
+            'payout_updated_at': state.get('payout_updated_at'),
         })
     except Exception as e:
         logging.error(f"Status error: {e}")
@@ -163,6 +207,74 @@ def api_close_position():
     except Exception as e:
         logging.error(f"Close position error: {e}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/set_payout', methods=['POST'])
+def api_set_payout():
+    """Установить процент выплаты для указанного времени и направления"""
+    data = request.get_json() or {}
+    duration = str(data.get('duration', '600'))
+    direction = data.get('direction', 'up')   # 'up' или 'down'
+    value = data.get('value')                 # число или None
+
+    if duration not in ('600', '1800', '3600'):
+        return jsonify({'error': 'Некорректная длительность'}), 400
+    if direction not in ('up', 'down'):
+        return jsonify({'error': 'Некорректное направление'}), 400
+
+    if 'payouts' not in state:
+        state['payouts'] = {'600': {'up': None, 'down': None},
+                            '1800': {'up': None, 'down': None},
+                            '3600': {'up': None, 'down': None}}
+
+    state['payouts'][duration][direction] = float(value) if value is not None else None
+    state['payout_updated_at'] = datetime.utcnow().isoformat()
+
+    # Сохраняем в файл немедленно
+    if bot_instance:
+        bot_instance.save_state_to_file()
+    else:
+        try:
+            import json
+            with open("goldantilopaeth500_state.json", "w") as f:
+                json.dump(state, f, default=str, indent=2)
+        except Exception as e:
+            logging.error(f"Payout save error: {e}")
+
+    logging.info(f"Payout {direction} for {duration}s set to {value}%")
+    return jsonify({'payouts': state['payouts'], 'payout_updated_at': state.get('payout_updated_at')})
+
+@app.route('/api/set_strategy_level', methods=['POST'])
+def api_set_strategy_level():
+    """Установка уровня стратегии (1-5) — legacy"""
+    data = request.get_json() or {}
+    level = int(data.get('level', 3))
+    if level < 1 or level > 5:
+        return jsonify({'error': 'Уровень должен быть от 1 до 5'}), 400
+    from trading_bot import STRATEGY_TIMEFRAMES
+    state['strategy_level'] = level
+    state['strategy_tfs'] = list(STRATEGY_TIMEFRAMES.get(level, STRATEGY_TIMEFRAMES[3]))
+    logging.info(f"Strategy level set to {level} => tfs={state['strategy_tfs']}")
+    return jsonify({'strategy_level': level, 'strategy_tfs': state['strategy_tfs']})
+
+@app.route('/api/set_strategy_tfs', methods=['POST'])
+def api_set_strategy_tfs():
+    """Установка произвольного набора таймфреймов стратегии"""
+    VALID_TFS = ['1m', '3m', '5m', '15m', '30m']
+    data = request.get_json() or {}
+    tfs = data.get('tfs', [])
+    if not isinstance(tfs, list) or not tfs:
+        return jsonify({'error': 'tfs должен быть непустым массивом'}), 400
+    tfs = [t for t in tfs if t in VALID_TFS]
+    if not tfs:
+        return jsonify({'error': 'Нет допустимых таймфреймов'}), 400
+    # Сортируем по порядку
+    order = {tf: i for i, tf in enumerate(VALID_TFS)}
+    tfs = sorted(tfs, key=lambda t: order.get(t, 99))
+    state['strategy_tfs'] = tfs
+    # Обновляем legacy level для совместимости
+    state['strategy_level'] = 0
+    logging.info(f"Strategy TFs set to {tfs}")
+    return jsonify({'strategy_tfs': tfs})
 
 @app.route('/api/set_settings', methods=['POST'])
 def api_set_settings():
@@ -464,8 +576,9 @@ def telegram_webhook():
     
     return 'OK', 200
 
-# Инициализация Telegram при загрузке модуля
+# Инициализация при загрузке модуля
 init_telegram()
+start_sar_updater()
 
 # Настройка Telegram WebApp
 try:
