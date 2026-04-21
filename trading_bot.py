@@ -48,6 +48,7 @@ state = {
     "last_1m_dir": None,
     "one_min_flip_count": 0,
     "skip_next_signal": False,  # пропускать следующий сигнал входа
+    "counter_trade": False,     # инвертировать сигнал (контр трейд)
     "trades": [],  # список последних сделок
     "bet": FIXED_BET,           # текущая ставка ($5 по умолчанию)
     "trade_duration": FIXED_TRADE_SECONDS,  # текущая длительность (600 сек = 10 мин)
@@ -570,8 +571,12 @@ class TradingBot:
                 if all_align and not state["skip_next_signal"]:
                     logging.info(f"✅ Entry signal [{tfs_label}] SAR = {dir_1m.upper()}")
                     
-                    # вход в позицию
-                    side = "buy" if dir_1m == "long" else "sell"
+                    # вход в позицию (контр трейд инвертирует направление)
+                    effective_dir = dir_1m
+                    if state.get("counter_trade", False):
+                        effective_dir = "short" if dir_1m == "long" else "long"
+                        logging.info(f"🔄 Counter trade active: {dir_1m.upper()} → {effective_dir.upper()}")
+                    side = "buy" if effective_dir == "long" else "sell"
                     price = self.get_current_price()
                     size_base, notional = self.compute_order_size_usdt(state["balance"], price if price > 0 else 1.0)
                     logging.info(f"Signal to OPEN {side} — size_base={size_base:.6f} notional=${notional:.2f} price={price}")

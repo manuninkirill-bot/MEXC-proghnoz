@@ -143,6 +143,8 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
     border: 1px solid var(--border);
 }
 .ctrl-btn--ghost:hover { color: var(--text-primary); border-color: var(--border-act); }
+.ctrl-btn--amber { background: var(--amber, #f59e0b); color: #000; border: 1px solid var(--amber, #f59e0b); }
+.ctrl-btn--amber:hover { opacity: .85; }
 .ctrl-btn--sm { padding: 4px 10px; font-size: 12px; }
 .ctrl-divider { width: 1px; height: 28px; background: var(--border); margin: 0 4px; }
 

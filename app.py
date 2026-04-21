@@ -145,6 +145,7 @@ def api_status():
                 '3600': {'up': None, 'down': None},
             }),
             'payout_updated_at': state.get('payout_updated_at'),
+            'counter_trade': state.get('counter_trade', False),
         })
     except Exception as e:
         logging.error(f"Status error: {e}")
@@ -287,6 +288,15 @@ def api_set_settings():
         state['trade_duration'] = int(data['trade_duration'])
         logging.info(f"Trade duration updated to {state['trade_duration']}s")
     return jsonify({'bet': state['bet'], 'trade_duration': state['trade_duration']})
+
+@app.route('/api/toggle_counter_trade', methods=['POST'])
+def api_toggle_counter_trade():
+    """Переключение режима контр трейда"""
+    current = state.get('counter_trade', False)
+    state['counter_trade'] = not current
+    status = 'включён' if state['counter_trade'] else 'выключен'
+    logging.info(f"Counter trade mode {status}")
+    return jsonify({'counter_trade': state['counter_trade']})
 
 @app.route('/api/clear_history', methods=['POST'])
 def api_clear_history():

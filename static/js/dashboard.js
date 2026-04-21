@@ -20,6 +20,7 @@ class TradingDashboard {
         document.getElementById('stop-bot').addEventListener('click', () => this.stopBot());
         document.getElementById('delete-trade').addEventListener('click', () => this.deleteLastTrade());
         document.getElementById('reset-balance').addEventListener('click', () => this.resetBalance());
+        document.getElementById('counter-trade').addEventListener('click', () => this.toggleCounterTrade());
         const clearHistoryBtn = document.getElementById('clear-history');
         if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', () => this.clearHistory());
     }
@@ -53,6 +54,30 @@ class TradingDashboard {
         await this._post('/api/clear_history');
         this.updateTrades([]);
         this.showNotification('success', 'История очищена');
+    }
+
+    async toggleCounterTrade() {
+        const r = await this._post('/api/toggle_counter_trade');
+        if (r.ok) {
+            const active = r.data.counter_trade;
+            this.syncCounterTradeButton(active);
+            this.showNotification(active ? 'warning' : 'success',
+                active ? 'Контр трейд включён' : 'Контр трейд выключен');
+        } else {
+            this.showNotification('error', 'Ошибка переключения контр трейда');
+        }
+    }
+
+    syncCounterTradeButton(active) {
+        const btn = document.getElementById('counter-trade');
+        if (!btn) return;
+        if (active) {
+            btn.classList.remove('ctrl-btn--ghost');
+            btn.classList.add('ctrl-btn--amber');
+        } else {
+            btn.classList.remove('ctrl-btn--amber');
+            btn.classList.add('ctrl-btn--ghost');
+        }
     }
 
     async closePosition(idx = 0) {
@@ -217,6 +242,7 @@ class TradingDashboard {
             }
             if (data.strategy_tfs) this.syncTfButtons(data.strategy_tfs);
             else if (data.strategy_level !== undefined) this.syncLevelButtons(data.strategy_level);
+            if (data.counter_trade !== undefined) this.syncCounterTradeButton(data.counter_trade);
 
             // SAR directions
             if (data.sar_directions) this.updateSARDirections(data.sar_directions);
