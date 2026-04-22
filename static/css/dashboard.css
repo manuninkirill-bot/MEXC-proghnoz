@@ -872,3 +872,40 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
     .hero-signal__icon { font-size: 24px; }
     .signal-hero__price { font-size: 22px; }
 }
+
+/* ═══════════════════════════════════════════
+   МОБИЛЬНАЯ STICKY-ШАПКА
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+    /* Убираем верхний отступ у контейнера — шапка займёт его сама */
+    .container-fluid.px-3.py-3 {
+        padding-top: 0 !important;
+    }
+
+    .top-bar {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        border-top: none;
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+        /* Поддержка safe area (iPhone с чёлкой) */
+        padding-top: max(10px, env(safe-area-inset-top));
+        margin-bottom: 12px;
+    }
+
+    /* Небольшая тень чтобы контент "уходил под шапку" красиво */
+    .top-bar::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0; right: 0;
+        height: 10px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.25), transparent);
+        pointer-events: none;
+    }
+}
