@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>goldantelopeethx500 — MEXC Trading Dashboard</title>
     
     <!-- Telegram WebApp SDK -->
@@ -211,6 +211,22 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+
+        // Закрепить приложение вверху экрана
+        if (typeof tg.requestFullscreen === 'function') {
+            tg.requestFullscreen();
+        }
+        // Отключить свайп вниз (чтобы не закрывалось случайно)
+        if (typeof tg.disableVerticalSwipes === 'function') {
+            tg.disableVerticalSwipes();
+        }
+        // Цвет шапки под тему
+        if (typeof tg.setHeaderColor === 'function') {
+            tg.setHeaderColor('#0f172a');
+        }
+        if (typeof tg.setBackgroundColor === 'function') {
+            tg.setBackgroundColor('#0f172a');
+        }
         
         // WebApp-specific dashboard without password protection
         class TradingDashboard {
