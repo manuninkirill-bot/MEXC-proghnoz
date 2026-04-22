@@ -15,7 +15,7 @@
     <div class="top-bar mb-3">
         <div class="top-bar__logo">
             <img src="{{ url_for('static', filename='img/mexc_logo.jpg') }}" alt="MEXC" class="top-bar__logo-img">
-            <span class="top-bar__sub">ETH/USDT Signal</span>
+            <span class="top-bar__sub">GoldantelopeMEXC</span>
         </div>
         <div class="top-bar__controls">
             <span id="bot-status" class="status-pill status-pill--stopped">● STOPPED</span>
@@ -116,7 +116,7 @@
             <!-- SAR Signal Panel -->
             <div class="panel">
                 <div class="panel__header">
-                    <span><i class="fas fa-satellite-dish"></i> SAR Сигнал</span>
+                    <span><i class="fas fa-satellite-dish"></i> Сигналы</span>
                     <span id="strategy-level-label" class="badge bg-primary" style="font-size:11px">L3 · 1m+3m+5m</span>
                 </div>
                 <div class="panel__body">
@@ -124,27 +124,27 @@
                     <!-- SAR Rows с мультивыбором таймфреймов -->
                     <div class="sar-row mb-2" id="sar-1m-container">
                         <button class="lvl-btn--inline" data-tf="1m" onclick="window.dashboard.toggleStrategyTf('1m')" title="Вкл/выкл 1m в стратегии">L1</button>
-                        <span class="sar-level">SAR <span class="text-muted" style="font-size:11px">1m</span></span>
+                        <span class="sar-level">1 m</span>
                         <span id="sar-1m" class="badge sar-badge">N/A</span>
                     </div>
                     <div class="sar-row mb-2" id="sar-3m-container">
                         <button class="lvl-btn--inline" data-tf="3m" onclick="window.dashboard.toggleStrategyTf('3m')" title="Вкл/выкл 3m в стратегии">L2</button>
-                        <span class="sar-level">SAR <span class="text-muted" style="font-size:11px">3m</span></span>
+                        <span class="sar-level">3 m</span>
                         <span id="sar-3m" class="badge sar-badge">N/A</span>
                     </div>
                     <div class="sar-row mb-2" id="sar-5m-container">
                         <button class="lvl-btn--inline" data-tf="5m" onclick="window.dashboard.toggleStrategyTf('5m')" title="Вкл/выкл 5m в стратегии">L3</button>
-                        <span class="sar-level">SAR <span class="text-muted" style="font-size:11px">5m</span></span>
+                        <span class="sar-level">5 m</span>
                         <span id="sar-5m" class="badge sar-badge">N/A</span>
                     </div>
                     <div class="sar-row mb-2" id="sar-15m-container">
                         <button class="lvl-btn--inline" data-tf="15m" onclick="window.dashboard.toggleStrategyTf('15m')" title="Вкл/выкл 15m в стратегии">L4</button>
-                        <span class="sar-level">SAR <span class="text-muted" style="font-size:11px">15m</span></span>
+                        <span class="sar-level">15 m</span>
                         <span id="sar-15m" class="badge sar-badge">N/A</span>
                     </div>
                     <div class="sar-row mb-2" id="sar-30m-container">
                         <button class="lvl-btn--inline" data-tf="30m" onclick="window.dashboard.toggleStrategyTf('30m')" title="Вкл/выкл 30m в стратегии">L5</button>
-                        <span class="sar-level">SAR <span class="text-muted" style="font-size:11px">30m</span></span>
+                        <span class="sar-level">30 m</span>
                         <span id="sar-30m" class="badge sar-badge">N/A</span>
                     </div>
                 </div>
