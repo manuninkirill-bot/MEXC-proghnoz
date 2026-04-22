@@ -9,6 +9,11 @@ class TradingDashboard {
         this._payouts = { '600': { up: null, down: null }, '1800': { up: null, down: null }, '3600': { up: null, down: null } };
         this._activeDuration = 600;
         this._payoutsLoaded = false;
+        this._priceHistory = [];
+        this._positionCharts = {};
+        this._chartZoomLevel = {};
+        this._chartWindow = {};    // minutes: 1/3/5/15, null = локальные тики
+        this._lastTFFetch  = {};   // timestamp последнего fetch для каждого idx
 
         this.bindEvents();
         this.startDataUpdates();
@@ -220,6 +225,7 @@ class TradingDashboard {
                 document.getElementById('current-price').textContent = `$${price}`;
                 const heroPriceEl = document.getElementById('hero-price');
                 if (heroPriceEl) heroPriceEl.textContent = `$${price}`;
+                this._recordPrice(parseFloat(data.current_price));
             }
 
             // Payouts — load once on first update, then only reflect server changes
@@ -486,6 +492,265 @@ class TradingDashboard {
         }
     }
 
+    /* ─── PRICE HISTORY ─── */
+    _recordPrice(price) {
+        const now = Date.now();
+        this._priceHistory.push({ time: now, price });
+        // Keep last 60 minutes (1200 points at 3s intervals)
+        const cutoff = now - 60 * 60 * 1000;
+        this._priceHistory = this._priceHistory.filter(p => p.time >= cutoff);
+    }
+
+    _getPriceHistorySince(isoTime) {
+        const entryMs = new Date(isoTime + (isoTime.endsWith('Z') ? '' : 'Z')).getTime();
+        return this._priceHistory.filter(p => p.time >= entryMs);
+    }
+
+    _getChartHistory(idx, entryIso) {
+        const all = this._getPriceHistorySince(entryIso);
+        const winMin = this._chartWindow[idx];
+        if (!winMin) return all;
+        const cutoff = Date.now() - winMin * 60 * 1000;
+        const entryMs = new Date(entryIso + (entryIso.endsWith('Z') ? '' : 'Z')).getTime();
+        const from = Math.max(cutoff, entryMs);
+        return this._priceHistory.filter(p => p.time >= from);
+    }
+
+    _highlightWinBtn(idx, activeMin) {
+        const wrap = document.querySelector(`.pos-chart-side[data-idx="${idx}"]`);
+        if (!wrap) return;
+        wrap.querySelectorAll('.pos-win-btn').forEach(b => {
+            b.classList.toggle('active', parseInt(b.dataset.min) === activeMin);
+        });
+    }
+
+    resetChartWindow(idx) {
+        this._chartWindow[idx] = null;
+        this._chartZoomLevel[idx] = 1;
+        this._highlightWinBtn(idx, 0);   // 0 = Line
+        // Вернуть локальные тики
+        const chart = this._positionCharts[idx];
+        if (!chart) return;
+        const entryIso  = chart._entryIso;
+        const entry     = chart._entryPrice;
+        if (!entry || !entryIso) return;
+        const history = this._getPriceHistorySince(entryIso);
+        const labels  = history.map(p => {
+            const d = new Date(p.time);
+            return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
+        });
+        const prices = history.length > 0 ? history.map(p => p.price) : [entry];
+        const { min: yMin, max: yMax } = this._tightYRange(prices, entry, 1);
+        chart.data.labels = labels.length > 0 ? labels : ['entry'];
+        chart.data.datasets[0].data = prices;
+        chart.data.datasets[1].data = new Array(chart.data.labels.length).fill(entry);
+        chart.options.scales.y.min = yMin;
+        chart.options.scales.y.max = yMax;
+        chart.update('none');
+    }
+
+    async setChartWindow(idx, minutes) {
+        this._chartWindow[idx] = minutes;
+        this._chartZoomLevel[idx] = 1;
+        this._lastTFFetch[idx]  = 0;
+        this._highlightWinBtn(idx, minutes);
+        await this._fetchAndUpdateTFChart(idx, minutes);
+    }
+
+    async _fetchAndUpdateTFChart(idx, minutes) {
+        const chart = this._positionCharts[idx];
+        if (!chart) return;
+        const entry = chart._entryPrice;
+        try {
+            const resp = await fetch(`/api/pos_chart_data?tf=${minutes}m&limit=80`);
+            if (!resp.ok) return;
+            const data = await resp.json();
+            const prices = data.prices || [];
+            const labels = data.labels || [];
+            if (prices.length === 0) return;
+            const zoom = this._chartZoomLevel[idx] || 1;
+            const { min: yMin, max: yMax } = this._tightYRange(prices, entry, zoom);
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = prices;
+            chart.data.datasets[1].data = new Array(labels.length).fill(entry);
+            chart.options.scales.y.min = yMin;
+            chart.options.scales.y.max = yMax;
+            chart.update('none');
+            this._lastTFFetch[idx] = Date.now();
+        } catch (e) {
+            console.error('TF chart fetch error:', e);
+        }
+    }
+
+    _destroyAllPositionCharts() {
+        Object.values(this._positionCharts).forEach(chart => {
+            try { chart.destroy(); } catch (e) {}
+        });
+        this._positionCharts = {};
+        this._chartZoomLevel = {};
+        this._chartWindow = {};
+    }
+
+    _tightYRange(prices, entryPrice, zoom = 1) {
+        const all = [...prices, entryPrice];
+        const lo = Math.min(...all);
+        const hi = Math.max(...all);
+        const spread = hi - lo;
+        const minSpread = entryPrice * 0.0003 * zoom;
+        const pad = Math.max(spread * 0.04 * zoom, minSpread);
+        return { min: lo - pad, max: hi + pad };
+    }
+
+    zoomChart(idx, direction) {
+        const step = 1.6;
+        const current = this._chartZoomLevel[idx] || 1;
+        this._chartZoomLevel[idx] = direction === 'in'
+            ? current / step
+            : current * step;
+        // Обновить масштаб немедленно
+        const chart = this._positionCharts[idx];
+        if (!chart) return;
+        // Получим данные из датасета
+        const prices = chart.data.datasets[0].data;
+        const entryPrice = chart.data.datasets[1].data[0];
+        const { min: yMin, max: yMax } = this._tightYRange(prices, entryPrice, this._chartZoomLevel[idx]);
+        chart.options.scales.y.min = yMin;
+        chart.options.scales.y.max = yMax;
+        chart.update('none');
+    }
+
+    _buildPositionChart(idx, entryPrice, entryIso, side) {
+        const canvas = document.getElementById(`pos-chart-${idx}`);
+        if (!canvas) return;
+
+        const isLong = side === 'long';
+        const lineColor = isLong ? '#10b981' : '#ef4444';
+        const fillColor = isLong ? 'rgba(16,185,129,0.10)' : 'rgba(239,68,68,0.10)';
+
+        const history = this._getChartHistory(idx, entryIso);
+        const labels = history.map(p => {
+            const d = new Date(p.time);
+            return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
+        });
+        const prices = history.map(p => p.price);
+
+        if (prices.length === 0) {
+            prices.push(entryPrice);
+            labels.push('entry');
+        }
+
+        const zoom = this._chartZoomLevel[idx] || 1;
+        const { min: yMin, max: yMax } = this._tightYRange(prices, entryPrice, zoom);
+
+        const chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Цена',
+                        data: prices,
+                        borderColor: lineColor,
+                        backgroundColor: fillColor,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 3,
+                        tension: 0.3,
+                        fill: true,
+                    },
+                    {
+                        label: 'Вход',
+                        data: new Array(Math.max(prices.length, 1)).fill(entryPrice),
+                        borderColor: 'rgba(255,255,255,0.35)',
+                        borderWidth: 1,
+                        borderDash: [4, 4],
+                        pointRadius: 0,
+                        fill: false,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: ctx => ctx.datasetIndex === 0 ? `$${ctx.parsed.y.toFixed(2)}` : null
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        ticks: {
+                            maxTicksLimit: 6,
+                            color: '#475569',
+                            font: { size: 9 },
+                            maxRotation: 0,
+                        },
+                        grid: { color: 'rgba(255,255,255,0.03)' }
+                    },
+                    y: {
+                        display: true,
+                        position: 'right',
+                        min: yMin,
+                        max: yMax,
+                        ticks: {
+                            maxTicksLimit: 6,
+                            color: '#94a3b8',
+                            font: { size: 9 },
+                            callback: v => `$${v.toFixed(2)}`
+                        },
+                        grid: { color: 'rgba(255,255,255,0.06)' }
+                    }
+                }
+            }
+        });
+
+        chart._entryPrice = entryPrice;
+        chart._entryIso   = entryIso;
+        this._positionCharts[idx] = chart;
+    }
+
+    _updatePositionChart(idx, entryPrice, entryIso, side) {
+        const chart = this._positionCharts[idx];
+        if (!chart) return;
+
+        const winMin = this._chartWindow[idx];
+        if (winMin) {
+            // Режим таймфрейма: перезагружаем свечи каждые 15 сек
+            const last = this._lastTFFetch[idx] || 0;
+            if (Date.now() - last >= 15000) {
+                this._fetchAndUpdateTFChart(idx, winMin);
+            }
+            return;
+        }
+
+        // Режим локальных тиков: данные с момента открытия позиции
+        const history = this._getChartHistory(idx, entryIso);
+        const labels = history.map(p => {
+            const d = new Date(p.time);
+            return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
+        });
+        const prices = history.length > 0 ? history.map(p => p.price) : [entryPrice];
+        const entryLine = new Array(prices.length).fill(entryPrice);
+
+        const zoom = this._chartZoomLevel[idx] || 1;
+        const { min: yMin, max: yMax } = this._tightYRange(prices, entryPrice, zoom);
+        chart.options.scales.y.min = yMin;
+        chart.options.scales.y.max = yMax;
+
+        chart.data.labels = labels.length > 0 ? labels : ['entry'];
+        chart.data.datasets[0].data = prices;
+        chart.data.datasets[1].data = entryLine;
+        chart.update('none');
+    }
+
     /* ─── POSITIONS ─── */
     updatePositionsList(positions, currentPrice) {
         const noPositions = document.getElementById('no-positions');
@@ -498,6 +763,7 @@ class TradingDashboard {
             clearInterval(this.timerInterval);
             this.timerInterval = null;
             this._positionsKey = null;
+            this._destroyAllPositionCharts();
             return;
         }
 
@@ -507,6 +773,8 @@ class TradingDashboard {
         const needsRebuild = positionsKey !== this._positionsKey;
 
         if (needsRebuild) {
+            this._destroyAllPositionCharts();
+
             const allHtml = positions.map((pos, idx) => {
                 const sideClass = pos.side === 'long' ? 'bg-success' : 'bg-danger';
                 const colorClass = pos.side === 'long' ? 'text-success' : 'text-danger';
@@ -521,44 +789,61 @@ class TradingDashboard {
 
                 return `
                 <div class="list-group-item bg-dark border-secondary p-3 mb-1">
-                    <div class="row align-items-center mb-2">
-                        <div class="col-md-2">
-                            <span class="badge ${sideClass} fs-6">${sideLabel}</span>
-                            <div><small class="text-muted">#${idx + 1}</small></div>
+                    <div class="d-flex align-items-start gap-3">
+
+                        <!-- Левая часть: инфо + зум + таймер -->
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="pos-info-row">
+                                <span class="badge ${sideClass} pos-side-badge">${sideLabel}</span>
+                                <span class="text-muted pos-num">#${idx + 1}</span>
+                                <span class="pos-field"><span class="pos-label">Вход</span><span class="${colorClass} fw-bold">$${entryPrice.toFixed(2)}</span></span>
+                                <span class="pos-field"><span class="pos-label">Цена</span><span class="pos-current-price fw-bold ${colorClass}" data-idx="${idx}">$${currentPriceNum.toFixed(2)}</span></span>
+                                <span class="pos-field"><span class="pos-label">Статус</span><span class="pos-pnl-status fw-bold ${pnlColorClass}" data-idx="${idx}">${pnlStatus}</span></span>
+                                <span class="pos-field"><span class="pos-label">Ставка</span><span class="text-light fw-bold">$${bet.toFixed(2)}</span></span>
+                            </div>
+                            <div class="pos-bottom-row">
+                                <div class="pos-timer-block">
+                                    <small class="text-muted">Осталось:</small>
+                                    <span class="pos-timer badge text-info"
+                                          data-entry="${entryIso}"
+                                          data-duration="${duration}">--:--</span>
+                                </div>
+                                <button class="btn btn-warning btn-sm pos-close-btn" onclick="window.dashboard.closePosition(${idx})">
+                                    <i class="fas fa-times"></i> Close
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <small class="text-muted d-block">Вход</small>
-                            <span class="${colorClass} fw-bold">$${entryPrice.toFixed(2)}</span>
+
+                        <!-- Правая часть: только график -->
+                        <div class="pos-chart-side" data-idx="${idx}">
+                            <div class="pos-win-btns">
+                                <button class="pos-win-btn pos-win-btn--line active" data-min="0" onclick="window.dashboard.resetChartWindow(${idx})">Line</button>
+                                <button class="pos-win-btn" data-min="1" onclick="window.dashboard.setChartWindow(${idx},1)">1m</button>
+                                <button class="pos-win-btn" data-min="3" onclick="window.dashboard.setChartWindow(${idx},3)">3m</button>
+                                <button class="pos-win-btn" data-min="5" onclick="window.dashboard.setChartWindow(${idx},5)">5m</button>
+                                <button class="pos-win-btn" data-min="15" onclick="window.dashboard.setChartWindow(${idx},15)">15m</button>
+                                <span class="pos-win-sep"></span>
+                                <button class="pos-zoom-btn" onclick="window.dashboard.zoomChart(${idx},'in')" title="Увеличить масштаб">+</button>
+                                <button class="pos-zoom-btn" onclick="window.dashboard.zoomChart(${idx},'out')" title="Уменьшить масштаб">−</button>
+                            </div>
+                            <div class="pos-chart-wrap">
+                                <canvas id="pos-chart-${idx}" class="pos-mini-chart"></canvas>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <small class="text-muted d-block">Цена</small>
-                            <span class="pos-current-price fw-bold ${colorClass}" data-idx="${idx}">$${currentPriceNum.toFixed(2)}</span>
-                        </div>
-                        <div class="col-md-2">
-                            <small class="text-muted d-block">Статус</small>
-                            <span class="pos-pnl-status fw-bold ${pnlColorClass}" data-idx="${idx}">${pnlStatus}</span>
-                        </div>
-                        <div class="col-md-2">
-                            <small class="text-muted d-block">Ставка</small>
-                            <span class="text-light fw-bold">$${bet.toFixed(2)}</span>
-                        </div>
-                        <div class="col-md-2 text-end">
-                            <button class="btn btn-warning btn-sm" onclick="window.dashboard.closePosition(${idx})">
-                                <i class="fas fa-times"></i> Close
-                            </button>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">Осталось:</small>
-                        <span class="pos-timer badge text-info fs-5"
-                              data-entry="${entryIso}"
-                              data-duration="${duration}">--:--</span>
+
                     </div>
                 </div>`;
             }).join('');
 
             positionsList.innerHTML = allHtml;
             this._positionsKey = positionsKey;
+
+            // Build charts after DOM is ready
+            requestAnimationFrame(() => {
+                positions.forEach((pos, idx) => {
+                    this._buildPositionChart(idx, parseFloat(pos.entry_price), pos.entry_time, pos.side);
+                });
+            });
 
             clearInterval(this.timerInterval);
             this.timerInterval = setInterval(() => this._tickTimer(), 1000);
@@ -575,6 +860,9 @@ class TradingDashboard {
                 if (priceEl) { priceEl.textContent = `$${currentPriceNum.toFixed(2)}`; priceEl.className = `pos-current-price fw-bold ${colorClass}`; }
                 const statusEl = positionsList.querySelector(`.pos-pnl-status[data-idx="${idx}"]`);
                 if (statusEl) { statusEl.textContent = pnlStatus; statusEl.className = `pos-pnl-status fw-bold ${pnlColorClass}`; }
+
+                // Update chart with latest price data
+                this._updatePositionChart(idx, entryPrice, pos.entry_time, pos.side);
             });
         }
     }
