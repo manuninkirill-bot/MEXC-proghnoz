@@ -487,6 +487,51 @@ def api_chart_data():
             'markers': []
         })
 
+@app.route('/api/pos_chart_data')
+def api_pos_chart_data():
+    """OHLCV closes for a given timeframe — used by position mini-charts"""
+    tf = request.args.get('tf', '1m')
+    limit = min(int(request.args.get('limit', 80)), 200)
+    allowed = {'1m', '3m', '5m', '15m'}
+    if tf not in allowed:
+        return jsonify({'error': 'invalid tf'}), 400
+    if not bot_instance:
+        return jsonify({'prices': [], 'labels': []})
+    try:
+        df = bot_instance.fetch_ohlcv_tf(tf, limit=limit)
+        if df is None or len(df) == 0:
+            return jsonify({'prices': [], 'labels': []})
+        prices = [round(float(x), 2) for x in df['close'].tolist()]
+        labels = []
+        for ts in df['timestamp']:
+            d = datetime.utcfromtimestamp(float(ts) / 1000)
+            labels.append(f"{d.hour:02d}:{d.minute:02d}")
+        return jsonify({'prices': prices, 'labels': labels})
+    except Exception as e:
+        logging.error(f"pos_chart_data error: {e}")
+        return jsonify({'prices': [], 'labels': []})
+
+
+@app.route('/api/open_test_position', methods=['POST'])
+def api_open_test_position():
+    """Открыть тестовую позицию для проверки интерфейса"""
+    data = request.get_json() or {}
+    side = data.get('side', 'long')
+    current_price = state.get('last_known_price', 2300.0)
+    pos = {
+        'side': side,
+        'entry_price': current_price,
+        'size_base': round(5.0 / max(current_price, 1), 8),
+        'notional': 5.0,
+        'entry_time': datetime.utcnow().isoformat(),
+        'close_time_seconds': state.get('trade_duration', 600),
+        'trade_number': len(state.get('trades', [])) + 1,
+        'bet': state.get('bet', 5.0),
+    }
+    state.setdefault('positions', []).append(pos)
+    state['available'] = state.get('available', 1000) - pos['bet']
+    return jsonify({'message': 'Тестовая позиция открыта', 'position': pos})
+
 @app.route('/api/delete_last_trade', methods=['POST'])
 def api_delete_last_trade():
     """Delete the last trade from history"""
