@@ -1,0 +1,11 @@
+flask==3.1.2
+gunicorn==25.0.3
+ccxt==4.5.8
+pandas==2.3.3
+numpy
+ta
+flask-sqlalchemy
+sqlalchemy
+python-dotenv
+requests
+werkzeug
