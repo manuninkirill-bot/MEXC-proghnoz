@@ -958,7 +958,7 @@ class TradingDashboard {
             badge.textContent = '⏳ Ожидание...';
         }
 
-        const nameMap = { ChatGPT: 'chatgpt', Gemini: 'gemini', Grok: 'grok', DeepSeek: 'deepseek' };
+        const nameMap = { ChatGPT: 'chatgpt', Gemini: 'gemini', Grok: 'grok', DeepSeek: 'deepseek', Groq: 'groq', OpenRouter: 'openrouter', Mistral: 'mistral' };
         Object.values(nameMap).forEach(id => {
             const el = document.getElementById(`ai-vote-${id}`);
             const card = document.getElementById(`ai-card-${id}`);

@@ -944,6 +944,22 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 .ai-badge--long    { color: var(--green);  border-color: rgba(16,185,129,0.5); background: rgba(16,185,129,0.12); }
 .ai-badge--short   { color: var(--red);    border-color: rgba(239,68,68,0.5);  background: rgba(239,68,68,0.12); }
 .ai-badge--unknown { color: var(--text-dim); }
+.ai-icon--groq       { background: linear-gradient(135deg, #f55036, #ff8a3d); color: #fff; }
+.ai-icon--openrouter { background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; }
+.ai-icon--mistral    { background: linear-gradient(135deg, #ff7000, #ffb347); color: #fff; }
+.ai-server-free {
+    display: inline-block;
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--green);
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.4);
+    padding: 1px 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
 .ai-badge--error   {
     color: var(--red);
     border-color: rgba(239,68,68,0.3);

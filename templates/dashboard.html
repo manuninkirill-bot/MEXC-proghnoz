@@ -6,7 +6,7 @@
     <title>goldantelopeethx500 — MEXC Signal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=23">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=24">
 </head>
 <body>
 <div class="container-fluid px-3 py-3">
@@ -143,6 +143,21 @@
                             <div class="ai-server-name">DeepSeek</div>
                             <div class="ai-server-badge" id="ai-vote-deepseek">—</div>
                         </div>
+                        <div class="ai-server-card" id="ai-card-groq">
+                            <div class="ai-server-icon ai-icon--groq"><i class="fas fa-rocket"></i></div>
+                            <div class="ai-server-name">Groq <span class="ai-server-free">FREE</span></div>
+                            <div class="ai-server-badge" id="ai-vote-groq">—</div>
+                        </div>
+                        <div class="ai-server-card" id="ai-card-openrouter">
+                            <div class="ai-server-icon ai-icon--openrouter"><i class="fas fa-route"></i></div>
+                            <div class="ai-server-name">OpenRouter <span class="ai-server-free">FREE</span></div>
+                            <div class="ai-server-badge" id="ai-vote-openrouter">—</div>
+                        </div>
+                        <div class="ai-server-card" id="ai-card-mistral">
+                            <div class="ai-server-icon ai-icon--mistral"><i class="fas fa-wind"></i></div>
+                            <div class="ai-server-name">Mistral <span class="ai-server-free">FREE</span></div>
+                            <div class="ai-server-badge" id="ai-vote-mistral">—</div>
+                        </div>
                     </div>
 
                     <!-- Vote tally -->
@@ -215,6 +230,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=23"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=24"></script>
 </body>
 </html>

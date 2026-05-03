@@ -79,6 +79,32 @@ def ask_chatgpt(prompt: str) -> dict:
         return {"name": "ChatGPT", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
+def ask_groq(prompt: str) -> dict:
+    api_key = os.getenv("GROQ_API_KEY", "")
+    if not api_key:
+        return {"name": "Groq", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
+    try:
+        resp = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={
+                "model": "llama-3.3-70b-versatile",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 10,
+                "temperature": 0.2,
+            },
+            timeout=20,
+        )
+        if resp.status_code == 200:
+            raw = resp.json()["choices"][0]["message"]["content"]
+            return {"name": "Groq", "direction": _parse_direction(raw), "raw": raw, "error": None}
+        err = f"HTTP {resp.status_code}: {resp.text[:300]}"
+        return {"name": "Groq", "direction": "unknown", "raw": "", "error": _friendly_error(err)}
+    except Exception as e:
+        logger.error(f"Groq error: {e}")
+        return {"name": "Groq", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
+
+
 def ask_gemini(prompt: str) -> dict:
     api_key = os.getenv("GEMINI_API_KEY", "")
     if not api_key:
@@ -162,16 +188,71 @@ def ask_deepseek(prompt: str) -> dict:
         return {"name": "DeepSeek", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
+def ask_openrouter(prompt: str) -> dict:
+    api_key = os.getenv("OPENROUTER_API_KEY", "")
+    if not api_key:
+        return {"name": "OpenRouter", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
+    try:
+        resp = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={
+                "model": "deepseek/deepseek-chat-v3.1:free",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 10,
+                "temperature": 0.2,
+            },
+            timeout=25,
+        )
+        if resp.status_code == 200:
+            raw = resp.json()["choices"][0]["message"]["content"]
+            return {"name": "OpenRouter", "direction": _parse_direction(raw), "raw": raw, "error": None}
+        err = f"HTTP {resp.status_code}: {resp.text[:300]}"
+        return {"name": "OpenRouter", "direction": "unknown", "raw": "", "error": _friendly_error(err)}
+    except Exception as e:
+        logger.error(f"OpenRouter error: {e}")
+        return {"name": "OpenRouter", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
+
+
+def ask_mistral(prompt: str) -> dict:
+    api_key = os.getenv("MISTRAL_API_KEY", "")
+    if not api_key:
+        return {"name": "Mistral", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
+    try:
+        resp = requests.post(
+            "https://api.mistral.ai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={
+                "model": "mistral-small-latest",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 10,
+                "temperature": 0.2,
+            },
+            timeout=20,
+        )
+        if resp.status_code == 200:
+            raw = resp.json()["choices"][0]["message"]["content"]
+            return {"name": "Mistral", "direction": _parse_direction(raw), "raw": raw, "error": None}
+        err = f"HTTP {resp.status_code}: {resp.text[:300]}"
+        return {"name": "Mistral", "direction": "unknown", "raw": "", "error": _friendly_error(err)}
+    except Exception as e:
+        logger.error(f"Mistral error: {e}")
+        return {"name": "Mistral", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
+
+
 def poll_all_ai(price: float, candles: list) -> dict:
     prompt = _build_prompt(price, candles)
     results = []
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as ex:
         futures = {
             ex.submit(ask_chatgpt, prompt): "ChatGPT",
             ex.submit(ask_gemini, prompt): "Gemini",
             ex.submit(ask_grok, prompt): "Grok",
             ex.submit(ask_deepseek, prompt): "DeepSeek",
+            ex.submit(ask_groq, prompt): "Groq",
+            ex.submit(ask_openrouter, prompt): "OpenRouter",
+            ex.submit(ask_mistral, prompt): "Mistral",
         }
         for future in concurrent.futures.as_completed(futures):
             try:
