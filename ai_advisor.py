@@ -8,21 +8,127 @@ import concurrent.futures
 logger = logging.getLogger(__name__)
 
 
-def _build_prompt(price: float, candles: list) -> str:
-    candle_text = ""
-    if candles:
-        rows = candles[-10:]
-        candle_text = "\n".join(
-            f"  {c['time']} O:{c['open']} H:{c['high']} L:{c['low']} C:{c['close']}"
-            for c in rows
+def _pct(a: float, b: float) -> float:
+    if not b:
+        return 0.0
+    return (a - b) / b * 100.0
+
+
+def _stats(candles_1m: list) -> dict:
+    """Compute basic technical statistics from 1m candles."""
+    if not candles_1m:
+        return {}
+    closes = [float(c["close"]) for c in candles_1m]
+    highs  = [float(c["high"])  for c in candles_1m]
+    lows   = [float(c["low"])   for c in candles_1m]
+    vols   = [float(c.get("volume", 0)) for c in candles_1m]
+    cur = closes[-1]
+
+    def back(n):
+        return closes[-n] if len(closes) >= n else closes[0]
+
+    sma5  = sum(closes[-5:])  / min(5, len(closes))
+    sma20 = sum(closes[-20:]) / min(20, len(closes))
+    hi30  = max(highs[-30:])
+    lo30  = min(lows[-30:])
+    rng   = hi30 - lo30
+    avg_vol = sum(vols[-30:]) / max(1, len(vols[-30:]))
+    cur_vol = vols[-1] if vols else 0
+    # Простой RSI-14
+    gains = [max(0, closes[i] - closes[i-1]) for i in range(1, len(closes))]
+    losses = [max(0, closes[i-1] - closes[i]) for i in range(1, len(closes))]
+    g = sum(gains[-14:]) / 14 if len(gains) >= 14 else (sum(gains)/max(1,len(gains)))
+    l = sum(losses[-14:]) / 14 if len(losses) >= 14 else (sum(losses)/max(1,len(losses)))
+    rsi = 100 - 100 / (1 + g/l) if l > 0 else 100.0
+    # Волатильность — стандартное отклонение последних 20 закрытий
+    last20 = closes[-20:]
+    mean20 = sum(last20) / len(last20)
+    variance = sum((x - mean20) ** 2 for x in last20) / len(last20)
+    vol_std = variance ** 0.5
+    if sma5 > sma20 * 1.0005:
+        trend = "BULLISH (SMA5>SMA20)"
+    elif sma5 < sma20 * 0.9995:
+        trend = "BEARISH (SMA5<SMA20)"
+    else:
+        trend = "SIDEWAYS (SMA5≈SMA20)"
+    return {
+        "current": cur,
+        "ago_1m":  back(2),
+        "ago_5m":  back(6),
+        "ago_15m": back(16),
+        "ago_30m": back(31) if len(closes) >= 31 else closes[0],
+        "high_30m": hi30,
+        "low_30m": lo30,
+        "range_30m": rng,
+        "rsi14": rsi,
+        "trend": trend,
+        "volatility_std": vol_std,
+        "avg_vol_30m": avg_vol,
+        "cur_vol": cur_vol,
+        "sma5": sma5,
+        "sma20": sma20,
+    }
+
+
+def _build_prompt(price: float, candles_1m: list, candles_5m: list | None = None) -> str:
+    candles_5m = candles_5m or []
+    s = _stats(candles_1m)
+
+    # Список свечей 1m (последние 30)
+    rows_1m = candles_1m[-30:] if candles_1m else []
+    text_1m = "\n".join(
+        f"  {c['time']} O:{c['open']:.2f} H:{c['high']:.2f} L:{c['low']:.2f} C:{c['close']:.2f} V:{float(c.get('volume',0)):.2f}"
+        for c in rows_1m
+    ) or "  (нет данных)"
+
+    rows_5m = candles_5m[-12:] if candles_5m else []
+    text_5m = "\n".join(
+        f"  {c['time']} O:{c['open']:.2f} H:{c['high']:.2f} L:{c['low']:.2f} C:{c['close']:.2f} V:{float(c.get('volume',0)):.2f}"
+        for c in rows_5m
+    ) or "  (нет данных)"
+
+    if s:
+        snap = (
+            f"Current price:  ${s['current']:.2f}\n"
+            f"1m  ago: ${s['ago_1m']:.2f}  ({_pct(s['current'], s['ago_1m']):+.3f}%)\n"
+            f"5m  ago: ${s['ago_5m']:.2f}  ({_pct(s['current'], s['ago_5m']):+.3f}%)\n"
+            f"15m ago: ${s['ago_15m']:.2f} ({_pct(s['current'], s['ago_15m']):+.3f}%)\n"
+            f"30m ago: ${s['ago_30m']:.2f} ({_pct(s['current'], s['ago_30m']):+.3f}%)\n"
         )
+        stats_block = (
+            f"High (30m): ${s['high_30m']:.2f}\n"
+            f"Low  (30m): ${s['low_30m']:.2f}\n"
+            f"Range (30m): ${s['range_30m']:.2f}  ({_pct(s['high_30m'], s['low_30m']):+.2f}%)\n"
+            f"RSI(14): {s['rsi14']:.1f}  (oversold<30, overbought>70)\n"
+            f"Trend:   {s['trend']}\n"
+            f"SMA5:    ${s['sma5']:.2f}\n"
+            f"SMA20:   ${s['sma20']:.2f}\n"
+            f"Volatility (σ20): ${s['volatility_std']:.3f}\n"
+            f"Avg volume (30m): {s['avg_vol_30m']:.2f} ETH\n"
+            f"Current candle volume: {s['cur_vol']:.2f} ETH\n"
+        )
+    else:
+        snap = f"Current price: ${price:.2f}\n"
+        stats_block = "(no statistics available)\n"
+
     return (
-        f"You are a professional crypto trader analyzing ETH/USDT.\n"
-        f"Current ETH price: ${price:.2f}\n"
-        f"Last 10 one-minute candles (time, open, high, low, close):\n{candle_text}\n\n"
-        f"Will the ETH price go UP or DOWN in the next 10 minutes?\n"
-        f"If you predict UP — reply LONG. If you predict DOWN — reply SHORT.\n"
-        f"Reply with ONLY one word: LONG or SHORT."
+        f"You are a professional crypto trader analyzing ETH/USDT perpetual futures on MEXC.\n"
+        f"Your task: predict the SHORT-TERM (next 10 minutes) price direction.\n\n"
+        f"=== MARKET SNAPSHOT ===\n{snap}\n"
+        f"=== TECHNICAL STATISTICS ===\n{stats_block}\n"
+        f"=== LAST 30 ONE-MINUTE CANDLES (oldest → newest) ===\n{text_1m}\n\n"
+        f"=== LAST 12 FIVE-MINUTE CANDLES (oldest → newest, 1h history) ===\n{text_5m}\n\n"
+        f"=== ANALYSIS GUIDE ===\n"
+        f"- Look for momentum: are recent closes rising or falling?\n"
+        f"- Watch volume: rising volume confirms a move; falling volume = weak move.\n"
+        f"- RSI extremes (>70 or <30) often precede reversals.\n"
+        f"- Trend direction (SMA5 vs SMA20) suggests dominant bias.\n"
+        f"- Price near 30m High = resistance; near 30m Low = support.\n\n"
+        f"=== DECISION ===\n"
+        f"Will ETH price go UP or DOWN over the NEXT 10 MINUTES?\n"
+        f"If UP   → reply LONG.\n"
+        f"If DOWN → reply SHORT.\n"
+        f"Reply with EXACTLY ONE WORD: LONG or SHORT. No explanation, no punctuation."
     )
 
 
@@ -241,8 +347,8 @@ def ask_mistral(prompt: str) -> dict:
         return {"name": "Mistral", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def poll_all_ai(price: float, candles: list) -> dict:
-    prompt = _build_prompt(price, candles)
+def poll_all_ai(price: float, candles_1m: list, candles_5m: list | None = None) -> dict:
+    prompt = _build_prompt(price, candles_1m, candles_5m)
     results = []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=7) as ex:

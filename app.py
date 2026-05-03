@@ -356,23 +356,36 @@ def api_ai_poll():
             except Exception:
                 pass
 
-        candles = []
+        candles_1m = []
+        candles_5m = []
         if bot_instance:
             try:
-                df = bot_instance.fetch_ohlcv_tf('1m', limit=15)
-                if df is not None and len(df) > 0:
-                    for _, row in df.iterrows():
-                        candles.append({
+                df1 = bot_instance.fetch_ohlcv_tf('1m', limit=35)
+                if df1 is not None and len(df1) > 0:
+                    for _, row in df1.iterrows():
+                        candles_1m.append({
                             'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
                             'open': round(float(row['open']), 2),
                             'high': round(float(row['high']), 2),
                             'low':  round(float(row['low']),  2),
                             'close': round(float(row['close']), 2),
+                            'volume': round(float(row.get('volume', 0)), 2),
+                        })
+                df5 = bot_instance.fetch_ohlcv_tf('5m', limit=15)
+                if df5 is not None and len(df5) > 0:
+                    for _, row in df5.iterrows():
+                        candles_5m.append({
+                            'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                            'open': round(float(row['open']), 2),
+                            'high': round(float(row['high']), 2),
+                            'low':  round(float(row['low']),  2),
+                            'close': round(float(row['close']), 2),
+                            'volume': round(float(row.get('volume', 0)), 2),
                         })
             except Exception as e:
                 logging.warning(f"Candle fetch for AI poll failed: {e}")
 
-        poll_result = poll_all_ai(price, candles)
+        poll_result = poll_all_ai(price, candles_1m, candles_5m)
         state['ai_poll'] = poll_result
         return jsonify(poll_result)
     except Exception as e:

@@ -509,8 +509,8 @@ class TradingBot:
             try:
                 now_ts = time.time()
 
-                # 1) Обновляем кэш цены из 1m свечей
-                df_1m = self.fetch_ohlcv_tf('1m', limit=15)
+                # 1) Обновляем кэш цены из 1m свечей (берём 35 для богатой статистики)
+                df_1m = self.fetch_ohlcv_tf('1m', limit=35)
                 if df_1m is not None and len(df_1m) > 0:
                     state["last_known_price"] = float(df_1m["close"].iloc[-1])
 
@@ -534,19 +534,32 @@ class TradingBot:
                         logging.info("⏸️ AI poll skipped: position already open")
                     else:
                         price = state.get("last_known_price") or self.get_current_price()
-                        candles = []
+                        candles_1m = []
                         if df_1m is not None:
                             for _, row in df_1m.iterrows():
-                                candles.append({
+                                candles_1m.append({
                                     'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
                                     'open': round(float(row['open']), 2),
                                     'high': round(float(row['high']), 2),
                                     'low':  round(float(row['low']),  2),
                                     'close': round(float(row['close']), 2),
+                                    'volume': round(float(row.get('volume', 0)), 2),
+                                })
+                        candles_5m = []
+                        df_5m = self.fetch_ohlcv_tf('5m', limit=15)
+                        if df_5m is not None:
+                            for _, row in df_5m.iterrows():
+                                candles_5m.append({
+                                    'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                                    'open': round(float(row['open']), 2),
+                                    'high': round(float(row['high']), 2),
+                                    'low':  round(float(row['low']),  2),
+                                    'close': round(float(row['close']), 2),
+                                    'volume': round(float(row.get('volume', 0)), 2),
                                 })
 
-                        logging.info(f"🤖 Polling AI servers @ ${price:.2f}")
-                        poll = poll_all_ai(price, candles)
+                        logging.info(f"🤖 Polling AI servers @ ${price:.2f} (waiting for ALL responses…)")
+                        poll = poll_all_ai(price, candles_1m, candles_5m)
                         state["ai_poll"] = poll
                         logging.info(f"🤖 AI vote: LONG={poll['long_votes']} SHORT={poll['short_votes']} → {poll['consensus'].upper()}")
 
