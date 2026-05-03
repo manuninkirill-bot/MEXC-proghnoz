@@ -1,254 +1,24 @@
 {
-  "balance": 34.0,
-  "available": 34.0,
-  "positions": [],
-  "last_trade_time": "2026-05-03T12:56:53.628915",
+  "balance": 100.0,
+  "available": 100.0,
+  "positions": [
+    {
+      "side": "long",
+      "entry_price": 2324.85,
+      "size_base": 0.002150676387723939,
+      "notional": 5.0,
+      "entry_time": "2026-05-03T13:31:28.547815",
+      "close_time_seconds": 600,
+      "trade_number": 52,
+      "bet": 5.0
+    }
+  ],
+  "last_trade_time": "2026-05-03T13:31:28.547815",
   "last_1m_dir": "short",
   "one_min_flip_count": 0,
   "skip_next_signal": true,
   "counter_trade": false,
-  "trades": [
-    {
-      "time": "2026-05-03T12:56:53.628897",
-      "side": "short",
-      "entry_price": 2323.09,
-      "exit_price": 2323.08,
-      "size_base": 0.0021523057651662222,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "6\u0441",
-      "close_reason": "manual",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T06:26:31.959609",
-      "side": "short",
-      "entry_price": 2087.5,
-      "exit_price": 2082.41,
-      "size_base": 0.002397713540367905,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 0\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T06:22:40.862403",
-      "side": "short",
-      "entry_price": 2088.73,
-      "exit_price": 2085.34,
-      "size_base": 0.0023937991028040962,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 5\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T05:53:36.139447",
-      "side": "short",
-      "entry_price": 2087.46,
-      "exit_price": 2088.78,
-      "size_base": 0.002394154432537516,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 3\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T05:40:07.356314",
-      "side": "short",
-      "entry_price": 2092.05,
-      "exit_price": 2087.97,
-      "size_base": 0.002390388725014462,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 4\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T05:27:29.863753",
-      "side": "short",
-      "entry_price": 2091.73,
-      "exit_price": 2092.9,
-      "size_base": 0.002392012591554282,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 0\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T05:16:32.916702",
-      "side": "short",
-      "entry_price": 2088.61,
-      "exit_price": 2091.58,
-      "size_base": 0.0023935584554845997,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 3\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T05:01:35.250271",
-      "side": "short",
-      "entry_price": 2099.41,
-      "exit_price": 2089.54,
-      "size_base": 0.002377815928513342,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 2\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T05:00:04.812216",
-      "side": "long",
-      "entry_price": 2103.54,
-      "exit_price": 2089.4,
-      "size_base": 0.002379830460877967,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 5\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T04:48:02.312562",
-      "side": "long",
-      "entry_price": 2103.65,
-      "exit_price": 2102.44,
-      "size_base": 0.002376821239274594,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 5\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T04:42:18.897994",
-      "side": "short",
-      "entry_price": 2100.44,
-      "exit_price": 2103.65,
-      "size_base": 0.002380057026166347,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 5\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T04:25:05.493076",
-      "side": "short",
-      "entry_price": 2100.4,
-      "exit_price": 2100.98,
-      "size_base": 0.002379830460877967,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "7\u043c 3\u0441",
-      "close_reason": "manual",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T04:14:58.453260",
-      "side": "long",
-      "entry_price": 2102.36,
-      "exit_price": 2102.78,
-      "size_base": 0.0023822569502346524,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 2\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T03:59:28.188900",
-      "side": "long",
-      "entry_price": 2099.89,
-      "exit_price": 2099.73,
-      "size_base": 0.002381587470944633,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 2\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T03:53:04.723485",
-      "side": "long",
-      "entry_price": 2101.1,
-      "exit_price": 2099.6,
-      "size_base": 0.0023797058683546713,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 5\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T03:35:30.472967",
-      "side": "long",
-      "entry_price": 2095.54,
-      "exit_price": 2100.32,
-      "size_base": 0.0023842562789389106,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 5\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T03:16:28.315462",
-      "side": "long",
-      "entry_price": 2093.82,
-      "exit_price": 2097.62,
-      "size_base": 0.002386156474596978,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 0\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T03:05:25.749164",
-      "side": "long",
-      "entry_price": 2091.26,
-      "exit_price": 2093.04,
-      "size_base": 0.002389440584170434,
-      "pnl": 4.0,
-      "notional": 5.0,
-      "duration": "10\u043c 0\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-03-14T02:27:24.765619",
-      "side": "long",
-      "entry_price": 2093.32,
-      "exit_price": 2088.81,
-      "size_base": 0.0023888127123057297,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 2\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T02:15:31.514230",
-      "side": "long",
-      "entry_price": 2092.44,
-      "exit_price": 2091.99,
-      "size_base": 0.0023895547781537345,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 6\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    }
-  ],
+  "trades": [],
   "bet": 5.0,
   "trade_duration": 600,
   "strategy_level": 3,
@@ -273,7 +43,7 @@
   },
   "in_position": false,
   "position": null,
-  "last_known_price": 2323.08,
+  "last_known_price": 2324.85,
   "sar_directions": {
     "1m": "short",
     "3m": "short",
@@ -284,10 +54,28 @@
   "ai_poll": {
     "results": [
       {
+        "name": "Groq",
+        "direction": "long",
+        "raw": "LONG",
+        "error": null
+      },
+      {
         "name": "Grok",
         "direction": "unknown",
         "raw": "",
         "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+      },
+      {
+        "name": "Mistral",
+        "direction": "long",
+        "raw": "LONG",
+        "error": null
+      },
+      {
+        "name": "OpenRouter",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
       },
       {
         "name": "DeepSeek",
@@ -303,16 +91,15 @@
       },
       {
         "name": "Gemini",
-        "direction": "unknown",
-        "raw": "",
-        "error": "\u041e\u0448\u0438\u0431\u043a\u0430"
+        "direction": "long",
+        "raw": "LONG",
+        "error": null
       }
     ],
-    "consensus": "none",
-    "long_votes": 0,
+    "consensus": "long",
+    "long_votes": 3,
     "short_votes": 0,
-    "price": 2324.09,
-    "timestamp": "2026-05-03T12:55:50.454126"
-  },
-  "telegram_trade_counter": 51
+    "price": 2324.85,
+    "timestamp": "2026-05-03T13:31:28.213104"
+  }
 }

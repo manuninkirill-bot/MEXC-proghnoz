@@ -20,7 +20,8 @@ def _build_prompt(price: float, candles: list) -> str:
         f"You are a professional crypto trader analyzing ETH/USDT.\n"
         f"Current ETH price: ${price:.2f}\n"
         f"Last 10 one-minute candles (time, open, high, low, close):\n{candle_text}\n\n"
-        f"Based on this price action, should I open a LONG or SHORT position for the next 1 hour?\n"
+        f"Will the ETH price go UP or DOWN in the next 10 minutes?\n"
+        f"If you predict UP — reply LONG. If you predict DOWN — reply SHORT.\n"
         f"Reply with ONLY one word: LONG or SHORT."
     )
 

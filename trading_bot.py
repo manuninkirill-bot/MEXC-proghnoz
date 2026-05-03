@@ -24,7 +24,8 @@ LEVERAGE = 1  # No leverage - binary options style
 ISOLATED = True  # изолированная маржа
 FIXED_BET = 5.0  # Fixed $5 bet per trade (binary options)
 TIMEFRAMES = {"1m": 1, "3m": 3, "5m": 5, "15m": 15, "30m": 30}
-FIXED_TRADE_SECONDS = 3600  # Fixed 1-hour trade duration
+FIXED_TRADE_SECONDS = 600  # Fixed 10-minute trade duration (AI mode)
+AI_POLL_INTERVAL_SECONDS = 300  # 5 minutes between AI polls
 
 # Таймфреймы, необходимые для сигнала по каждому уровню стратегии
 STRATEGY_TIMEFRAMES = {
@@ -498,100 +499,73 @@ class TradingBot:
             return 3000.0
 
     def strategy_loop(self, should_continue=lambda: True):
-        logging.info(f"Starting strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
-        
+        """AI-driven strategy: poll AI every 5 min → vote → open 10-min position."""
+        logging.info(f"Starting AI strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
+        from ai_advisor import poll_all_ai
+
+        last_poll_time = 0.0  # Unix timestamp последнего опроса AI
+
         while should_continue():
             try:
-                # 1) Получаем свечи и направления
-                dfs = {}
-                dirs = {}
-                for tf in TIMEFRAMES.keys():
-                    df = self.fetch_ohlcv_tf(tf)
-                    dfs[tf] = df
-                    if df is not None:
-                        dirs[tf] = self.get_direction_from_psar(df)
-                    else:
-                        dirs[tf] = None
+                now_ts = time.time()
 
-                # Определяем необходимые таймфреймы: сначала мультивыбор, иначе уровень
-                if state.get("strategy_tfs"):
-                    required_tfs = state["strategy_tfs"]
-                    level = None
-                else:
-                    level = state.get("strategy_level", 3)
-                    required_tfs = STRATEGY_TIMEFRAMES.get(level, STRATEGY_TIMEFRAMES[3])
+                # 1) Обновляем кэш цены из 1m свечей
+                df_1m = self.fetch_ohlcv_tf('1m', limit=15)
+                if df_1m is not None and len(df_1m) > 0:
+                    state["last_known_price"] = float(df_1m["close"].iloc[-1])
 
-                # Пропускаем итерацию, если нет данных по обязательным таймфреймам
-                if any(dirs.get(tf) is None for tf in required_tfs):
-                    time.sleep(5)
-                    continue
-
-                # Cache last close from 1m candles as a reliable price reference
-                if dfs.get("1m") is not None and len(dfs["1m"]) > 0:
-                    state["last_known_price"] = float(dfs["1m"]["close"].iloc[-1])
-
-                dir_1m = dirs["1m"]
-                
-                tfs_label = "+".join(required_tfs)
-                logging.info(f"[{self.now()}] SAR directions [{tfs_label}] => " + " ".join(f"{tf}:{dirs.get(tf)}" for tf in required_tfs))
-                
-                # Store current SAR directions for status reporting
-                self._current_sar_directions = dirs
-
-                # Проверка на закрытие (если есть позиции)
+                # 2) Закрываем просроченные позиции (по 10 мин)
                 for i in range(len(state["positions"]) - 1, -1, -1):
                     pos = state["positions"][i]
                     entry_t = datetime.fromisoformat(pos["entry_time"])
                     trade_duration = (datetime.utcnow() - entry_t).total_seconds()
-                    
-                    # Принудительное закрытие по фиксированному времени (10 минут = 600 сек)
                     position_close_time = pos.get("close_time_seconds", FIXED_TRADE_SECONDS)
                     if trade_duration >= position_close_time:
-                        logging.info(f"⏱️ Closing position {i} after {trade_duration:.1f}s (time limit reached)")
+                        logging.info(f"⏱️ Closing position {i} after {trade_duration:.1f}s (10 min limit)")
                         self.close_position(position_idx=i, close_reason="fixed_time")
-                        state["skip_next_signal"] = True
                         self.save_state_to_file()
-                
-                # Отслеживание смены 1m SAR для сброса флага пропуска
-                if state["last_1m_dir"] and state["last_1m_dir"] != dir_1m:
-                    if state["skip_next_signal"]:
-                        logging.info(f"✅ Resetting skip flag after 1m SAR change: {state['last_1m_dir']} -> {dir_1m}")
-                        state["skip_next_signal"] = False
-                        self.save_state_to_file()
-                
-                # Сохраняем текущее направление для отслеживания смен
-                state["last_1m_dir"] = dir_1m
-                
-                # Вход когда ВСЕ требуемые таймфреймы уровня стратегии совпадают
-                all_align = (
-                    dir_1m in ["long", "short"] and
-                    all(dirs.get(tf) == dir_1m for tf in required_tfs)
-                )
-                
-                if all_align and not state["skip_next_signal"]:
-                    logging.info(f"✅ Entry signal [{tfs_label}] SAR = {dir_1m.upper()}")
-                    
-                    # вход в позицию (контр трейд инвертирует направление)
-                    effective_dir = dir_1m
-                    if state.get("counter_trade", False):
-                        effective_dir = "short" if dir_1m == "long" else "long"
-                        logging.info(f"🔄 Counter trade active: {dir_1m.upper()} → {effective_dir.upper()}")
-                    side = "buy" if effective_dir == "long" else "sell"
-                    price = self.get_current_price()
-                    size_base, notional = self.compute_order_size_usdt(state["balance"], price if price > 0 else 1.0)
-                    logging.info(f"Signal to OPEN {side} — size_base={size_base:.6f} notional=${notional:.2f} price={price}")
-                    
-                    self.place_market_order(side, amount_base=size_base)
-                    
-                    # Блокируем повторный вход до следующего флипа 1m SAR
-                    state["skip_next_signal"] = True
-                    
-                    self.save_state_to_file()
-                    time.sleep(1)
-                elif state["skip_next_signal"] and all_align:
-                    logging.info(f"🔄 Skip flag active [{tfs_label}]: {dirs} — wait for SAR flip")
 
-                time.sleep(5)  # маленькая пауза в основном цикле
+                # 3) Раз в 5 минут — опрос AI и принятие решения
+                if now_ts - last_poll_time >= AI_POLL_INTERVAL_SECONDS:
+                    last_poll_time = now_ts
+
+                    # Не открываем новую, если уже есть открытая
+                    if state.get("positions"):
+                        logging.info("⏸️ AI poll skipped: position already open")
+                    else:
+                        price = state.get("last_known_price") or self.get_current_price()
+                        candles = []
+                        if df_1m is not None:
+                            for _, row in df_1m.iterrows():
+                                candles.append({
+                                    'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                                    'open': round(float(row['open']), 2),
+                                    'high': round(float(row['high']), 2),
+                                    'low':  round(float(row['low']),  2),
+                                    'close': round(float(row['close']), 2),
+                                })
+
+                        logging.info(f"🤖 Polling AI servers @ ${price:.2f}")
+                        poll = poll_all_ai(price, candles)
+                        state["ai_poll"] = poll
+                        logging.info(f"🤖 AI vote: LONG={poll['long_votes']} SHORT={poll['short_votes']} → {poll['consensus'].upper()}")
+
+                        if poll["consensus"] in ("long", "short"):
+                            effective_dir = poll["consensus"]
+                            if state.get("counter_trade", False):
+                                effective_dir = "short" if effective_dir == "long" else "long"
+                                logging.info(f"🔄 Counter trade: {poll['consensus'].upper()} → {effective_dir.upper()}")
+
+                            side = "buy" if effective_dir == "long" else "sell"
+                            cur_price = self.get_current_price() or price
+                            size_base, notional = self.compute_order_size_usdt(state["balance"], cur_price if cur_price > 0 else 1.0)
+                            logging.info(f"✅ AI OPEN {side.upper()} — size={size_base:.6f} notional=${notional:.2f} @ ${cur_price}")
+                            self.place_market_order(side, amount_base=size_base)
+                            self.save_state_to_file()
+                        else:
+                            logging.info("➖ Нет консенсуса AI — пропускаем вход")
+
+                time.sleep(5)
             except Exception as e:
-                logging.error(f"Main loop error: {e}")
+                logging.error(f"AI strategy loop error: {e}", exc_info=True)
                 time.sleep(5)

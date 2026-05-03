@@ -1,6 +1,14 @@
 # Overview
 
-This project is a binary options trading bot for ETH/USDT that uses a Parabolic SAR (SAR) indicator strategy to generate trading signals. The system includes a Flask-based web dashboard for monitoring, real-time Telegram notifications, and a market simulator for testing. The bot operates as a fixed $5 bet system with 10-minute trades.
+This project is a binary options trading bot for ETH/USDT (MEXC). Trading decisions are made by **polling 7 AI servers** (ChatGPT, Gemini, Grok, DeepSeek, Groq, OpenRouter, Mistral) — every 5 minutes the bot asks each AI whether ETH price will go UP or DOWN in the next 10 minutes, takes the majority vote, and opens a $5 position for 10 minutes. The system includes a Flask-based web dashboard for monitoring, optional Telegram notifications, and a market simulator for testing.
+
+## AI Trading Loop (trading_bot.py → strategy_loop)
+- `AI_POLL_INTERVAL_SECONDS = 300` (5 min between polls)
+- `FIXED_TRADE_SECONDS = 600` (10 min position duration)
+- Skip new poll if a position is already open
+- `counter_trade` flag inverts the consensus direction
+- Free AI keys: `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `MISTRAL_API_KEY` (Groq=Llama 3.3 70B, OpenRouter=google/gemma-4-31b-it:free, Mistral=mistral-small-latest)
+- Paid keys: `OPENAI_API_KEY`, `GEMINI_API_KEY` (gemini-2.5-flash with thinkingBudget=0), `XAI_API_KEY`, `DEEPSEEK_API_KEY`
 
 # User Preferences
 
