@@ -85,16 +85,23 @@ def ask_gemini(prompt: str) -> dict:
         return {"name": "Gemini", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
     try:
         resp = requests.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}",
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}",
             headers={"Content-Type": "application/json"},
             json={
                 "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"maxOutputTokens": 10, "temperature": 0.2}
+                "generationConfig": {
+                    "maxOutputTokens": 200,
+                    "temperature": 0.2,
+                    "thinkingConfig": {"thinkingBudget": 0},
+                },
             },
-            timeout=20,
+            timeout=30,
         )
         if resp.status_code == 200:
-            raw = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+            parts = resp.json()["candidates"][0]["content"].get("parts", [])
+            raw = parts[0]["text"] if parts else ""
+            if not raw:
+                return {"name": "Gemini", "direction": "unknown", "raw": "", "error": "Пустой ответ"}
             return {"name": "Gemini", "direction": _parse_direction(raw), "raw": raw, "error": None}
         err = f"HTTP {resp.status_code}: {resp.text[:300]}"
         return {"name": "Gemini", "direction": "unknown", "raw": "", "error": _friendly_error(err)}

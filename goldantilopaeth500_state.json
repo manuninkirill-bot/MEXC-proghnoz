@@ -1,23 +1,25 @@
 {
-  "balance": 30.0,
-  "available": 30.0,
-  "positions": [
-    {
-      "side": "short",
-      "entry_price": 2084.91,
-      "size_base": 0.0023964953651779636,
-      "notional": 5.0,
-      "entry_time": "2026-03-14T06:25:06.090147",
-      "close_time_seconds": 600,
-      "trade_number": 50,
-      "bet": 5.0
-    }
-  ],
-  "last_trade_time": "2026-03-14T06:26:31.959636",
+  "balance": 34.0,
+  "available": 34.0,
+  "positions": [],
+  "last_trade_time": "2026-05-03T12:56:53.628915",
   "last_1m_dir": "short",
   "one_min_flip_count": 0,
-  "skip_next_signal": false,
+  "skip_next_signal": true,
+  "counter_trade": false,
   "trades": [
+    {
+      "time": "2026-05-03T12:56:53.628897",
+      "side": "short",
+      "entry_price": 2323.09,
+      "exit_price": 2323.08,
+      "size_base": 0.0021523057651662222,
+      "pnl": 4.0,
+      "notional": 5.0,
+      "duration": "6\u0441",
+      "close_reason": "manual",
+      "result": "WIN"
+    },
     {
       "time": "2026-03-14T06:26:31.959609",
       "side": "short",
@@ -245,24 +247,72 @@
       "duration": "10\u043c 6\u0441",
       "close_reason": "fixed_time",
       "result": "LOSE"
-    },
-    {
-      "time": "2026-03-14T02:02:28.794849",
-      "side": "long",
-      "entry_price": 2092.33,
-      "exit_price": 2090.64,
-      "size_base": 0.002390217318558603,
-      "pnl": -5.0,
-      "notional": 5.0,
-      "duration": "10\u043c 4\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
     }
   ],
   "bet": 5.0,
   "trade_duration": 600,
+  "strategy_level": 3,
+  "strategy_tfs": [
+    "1m",
+    "3m",
+    "5m"
+  ],
+  "payouts": {
+    "600": {
+      "up": null,
+      "down": null
+    },
+    "1800": {
+      "up": null,
+      "down": null
+    },
+    "3600": {
+      "up": null,
+      "down": null
+    }
+  },
   "in_position": false,
   "position": null,
-  "last_known_price": 2084.9,
-  "telegram_trade_counter": 50
+  "last_known_price": 2323.08,
+  "sar_directions": {
+    "1m": "short",
+    "3m": "short",
+    "5m": "short",
+    "15m": "long",
+    "30m": "long"
+  },
+  "ai_poll": {
+    "results": [
+      {
+        "name": "Grok",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+      },
+      {
+        "name": "DeepSeek",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
+      },
+      {
+        "name": "ChatGPT",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "Gemini",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041e\u0448\u0438\u0431\u043a\u0430"
+      }
+    ],
+    "consensus": "none",
+    "long_votes": 0,
+    "short_votes": 0,
+    "price": 2324.09,
+    "timestamp": "2026-05-03T12:55:50.454126"
+  },
+  "telegram_trade_counter": 51
 }
