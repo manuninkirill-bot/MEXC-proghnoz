@@ -561,7 +561,7 @@ class TradingBot:
                         logging.info(f"🤖 Polling AI servers @ ${price:.2f} (waiting for ALL responses…)")
                         poll = poll_all_ai(price, candles_1m, candles_5m)
                         state["ai_poll"] = poll
-                        logging.info(f"🤖 AI vote: LONG={poll['long_votes']} SHORT={poll['short_votes']} → {poll['consensus'].upper()}")
+                        logging.info(f"🤖 AI vote: LONG={poll['long_votes']} SHORT={poll['short_votes']} → {poll['consensus'].upper()} (need ≥2 same to trade)")
 
                         if poll["consensus"] in ("long", "short"):
                             effective_dir = poll["consensus"]

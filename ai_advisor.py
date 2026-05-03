@@ -371,9 +371,11 @@ def poll_all_ai(price: float, candles_1m: list, candles_5m: list | None = None) 
     longs = sum(1 for r in results if r["direction"] == "long")
     shorts = sum(1 for r in results if r["direction"] == "short")
 
-    if longs > shorts:
+    # Минимум 2 одинаковых голоса для открытия позиции
+    MIN_VOTES = 2
+    if longs >= MIN_VOTES and longs > shorts:
         consensus = "long"
-    elif shorts > longs:
+    elif shorts >= MIN_VOTES and shorts > longs:
         consensus = "short"
     else:
         consensus = "none"
