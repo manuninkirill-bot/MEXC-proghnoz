@@ -1,19 +1,19 @@
 {
   "balance": 100.0,
-  "available": 100.0,
+  "available": 95.0,
   "positions": [
     {
-      "side": "long",
-      "entry_price": 2324.85,
-      "size_base": 0.002150676387723939,
+      "side": "short",
+      "entry_price": 2322.99,
+      "size_base": 0.0021523984175566835,
       "notional": 5.0,
-      "entry_time": "2026-05-03T13:31:28.547815",
+      "entry_time": "2026-05-03T13:47:06.169075",
       "close_time_seconds": 600,
-      "trade_number": 52,
+      "trade_number": 1,
       "bet": 5.0
     }
   ],
-  "last_trade_time": "2026-05-03T13:31:28.547815",
+  "last_trade_time": "2026-05-03T13:47:06.169075",
   "last_1m_dir": "short",
   "one_min_flip_count": 0,
   "skip_next_signal": true,
@@ -43,7 +43,7 @@
   },
   "in_position": false,
   "position": null,
-  "last_known_price": 2324.85,
+  "last_known_price": 2322.99,
   "sar_directions": {
     "1m": "short",
     "3m": "short",
@@ -54,25 +54,31 @@
   "ai_poll": {
     "results": [
       {
-        "name": "Groq",
-        "direction": "long",
-        "raw": "LONG",
-        "error": null
-      },
-      {
         "name": "Grok",
         "direction": "unknown",
         "raw": "",
         "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
       },
       {
-        "name": "Mistral",
-        "direction": "long",
-        "raw": "LONG",
+        "name": "Groq",
+        "direction": "short",
+        "raw": "SHORT",
         "error": null
       },
       {
-        "name": "OpenRouter",
+        "name": "Gemini",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "Mistral",
+        "direction": "short",
+        "raw": "SHORT",
+        "error": null
+      },
+      {
+        "name": "ChatGPT",
         "direction": "unknown",
         "raw": "",
         "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
@@ -84,22 +90,17 @@
         "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
       },
       {
-        "name": "ChatGPT",
+        "name": "OpenRouter",
         "direction": "unknown",
         "raw": "",
         "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
-      },
-      {
-        "name": "Gemini",
-        "direction": "long",
-        "raw": "LONG",
-        "error": null
       }
     ],
-    "consensus": "long",
-    "long_votes": 3,
-    "short_votes": 0,
-    "price": 2324.85,
-    "timestamp": "2026-05-03T13:31:28.213104"
-  }
+    "consensus": "short",
+    "long_votes": 0,
+    "short_votes": 2,
+    "price": 2323.11,
+    "timestamp": "2026-05-03T13:47:05.950605"
+  },
+  "telegram_trade_counter": 1
 }
