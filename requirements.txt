@@ -9,3 +9,8 @@ sqlalchemy
 python-dotenv
 requests
 werkzeug
+email_validator
+flask
+flask-sqlalchemy
+gunicorn
+psycopg2-binary

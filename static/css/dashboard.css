@@ -862,6 +862,189 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 }
 
 /* ═══════════════════════════════════════════
+   AI СЕРВЕРЫ — ПАНЕЛЬ
+═══════════════════════════════════════════ */
+.ai-servers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.ai-server-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color .25s, box-shadow .25s, background .25s;
+    cursor: default;
+}
+
+.ai-card--loading {
+    border-color: rgba(245,158,11,0.4);
+    background: rgba(245,158,11,0.04);
+    animation: blink 1s infinite;
+}
+
+.ai-card--long {
+    border-color: rgba(16,185,129,0.5);
+    background: rgba(16,185,129,0.07);
+    box-shadow: 0 0 12px rgba(16,185,129,0.2);
+}
+
+.ai-card--short {
+    border-color: rgba(239,68,68,0.5);
+    background: rgba(239,68,68,0.07);
+    box-shadow: 0 0 12px rgba(239,68,68,0.2);
+}
+
+.ai-card--unknown {
+    border-color: rgba(148,163,184,0.25);
+    opacity: 0.7;
+}
+
+.ai-server-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.ai-icon--chatgpt  { background: rgba(16,185,129,0.15); color: #10b981; }
+.ai-icon--gemini   { background: rgba(59,130,246,0.15);  color: #3b82f6; }
+.ai-icon--grok     { background: rgba(139,92,246,0.15);  color: #8b5cf6; }
+.ai-icon--deepseek { background: rgba(245,158,11,0.15);  color: #f59e0b; }
+
+.ai-server-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ai-server-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    background: var(--bg-base);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+}
+
+.ai-badge--loading { color: var(--yellow); border-color: rgba(245,158,11,0.4); }
+.ai-badge--long    { color: var(--green);  border-color: rgba(16,185,129,0.5); background: rgba(16,185,129,0.12); }
+.ai-badge--short   { color: var(--red);    border-color: rgba(239,68,68,0.5);  background: rgba(239,68,68,0.12); }
+.ai-badge--unknown { color: var(--text-dim); }
+
+/* Консенсус-бейдж в заголовке панели */
+.ai-consensus-badge--idle    { background: var(--bg-card); color: var(--text-dim); border: 1px solid var(--border); }
+.ai-consensus-badge--loading { background: rgba(245,158,11,0.15); color: var(--yellow); border: 1px solid rgba(245,158,11,0.4); }
+.ai-consensus-badge--long    { background: rgba(16,185,129,0.2); color: var(--green); border: 1px solid rgba(16,185,129,0.5); animation: glow-green 1.5s infinite alternate; }
+.ai-consensus-badge--short   { background: rgba(239,68,68,0.2);  color: var(--red);   border: 1px solid rgba(239,68,68,0.5);  animation: glow-red  1.5s infinite alternate; }
+.ai-consensus-badge--tie     { background: rgba(148,163,184,0.15); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* Счётчик голосов */
+.ai-tally {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 7px 10px;
+    background: var(--bg-base);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ai-tally__long  { color: var(--green); }
+.ai-tally__short { color: var(--red); }
+.ai-tally__vs    { color: var(--text-dim); font-size: 11px; }
+
+/* Кнопка опроса */
+.ai-poll-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-act);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: background .15s, border-color .15s, box-shadow .15s;
+    letter-spacing: 0.3px;
+}
+
+.ai-poll-btn:hover:not(:disabled) {
+    background: var(--bg-hover);
+    border-color: var(--blue);
+    box-shadow: 0 0 12px rgba(59,130,246,0.2);
+    color: #fff;
+}
+
+.ai-poll-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Кнопки открытия позиции */
+.ai-action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-open-btn {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: opacity .15s, transform .1s, box-shadow .15s;
+}
+
+.ai-open-btn:hover  { opacity: .88; transform: translateY(-1px); }
+.ai-open-btn:active { transform: translateY(0); }
+
+.ai-open-btn--long  {
+    background: var(--green);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(16,185,129,0.3);
+}
+
+.ai-open-btn--short {
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(239,68,68,0.3);
+}
+
+.ai-poll-time {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: center;
+    padding-top: 2px;
+}
+
+/* ═══════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════ */
 @media (max-width: 768px) {

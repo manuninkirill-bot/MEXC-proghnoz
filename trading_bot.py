@@ -24,7 +24,7 @@ LEVERAGE = 1  # No leverage - binary options style
 ISOLATED = True  # изолированная маржа
 FIXED_BET = 5.0  # Fixed $5 bet per trade (binary options)
 TIMEFRAMES = {"1m": 1, "3m": 3, "5m": 5, "15m": 15, "30m": 30}
-FIXED_TRADE_SECONDS = 600  # Fixed 10-minute trade duration
+FIXED_TRADE_SECONDS = 3600  # Fixed 1-hour trade duration
 
 # Таймфреймы, необходимые для сигнала по каждому уровню стратегии
 STRATEGY_TIMEFRAMES = {

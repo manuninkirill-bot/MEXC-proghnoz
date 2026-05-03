@@ -344,6 +344,75 @@ def api_telegram_info():
         'bot_configured': telegram_notifier is not None
     })
 
+@app.route('/api/ai_poll', methods=['POST'])
+def api_ai_poll():
+    """Poll all 4 AI servers for LONG/SHORT recommendation"""
+    try:
+        from ai_advisor import poll_all_ai
+        price = state.get('last_known_price', 0.0)
+        if bot_instance:
+            try:
+                price = bot_instance.get_current_price() or price
+            except Exception:
+                pass
+
+        candles = []
+        if bot_instance:
+            try:
+                df = bot_instance.fetch_ohlcv_tf('1m', limit=15)
+                if df is not None and len(df) > 0:
+                    for _, row in df.iterrows():
+                        candles.append({
+                            'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                            'open': round(float(row['open']), 2),
+                            'high': round(float(row['high']), 2),
+                            'low':  round(float(row['low']),  2),
+                            'close': round(float(row['close']), 2),
+                        })
+            except Exception as e:
+                logging.warning(f"Candle fetch for AI poll failed: {e}")
+
+        poll_result = poll_all_ai(price, candles)
+        state['ai_poll'] = poll_result
+        return jsonify(poll_result)
+    except Exception as e:
+        logging.error(f"AI poll error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/ai_open_position', methods=['POST'])
+def api_ai_open_position():
+    """Open a position manually based on AI consensus direction"""
+    data = request.get_json() or {}
+    side = data.get('side', 'long')
+    if side not in ('long', 'short'):
+        return jsonify({'error': 'Invalid side'}), 400
+
+    current_price = state.get('last_known_price', 2300.0)
+    if bot_instance:
+        try:
+            current_price = bot_instance.get_current_price() or current_price
+        except Exception:
+            pass
+
+    duration = state.get('trade_duration', 3600)
+    pos = {
+        'side': side,
+        'entry_price': current_price,
+        'size_base': round(state.get('bet', 5.0) / max(current_price, 1), 8),
+        'notional': state.get('bet', 5.0),
+        'entry_time': datetime.utcnow().isoformat(),
+        'close_time_seconds': duration,
+        'trade_number': len(state.get('trades', [])) + 1,
+        'bet': state.get('bet', 5.0),
+        'source': 'ai',
+    }
+    state.setdefault('positions', []).append(pos)
+    state['available'] = max(0.0, state.get('available', 1000) - pos['bet'])
+    logging.info(f"AI position opened: {side} @ ${current_price:.2f}")
+    return jsonify({'message': f'Position {side.upper()} opened', 'position': pos})
+
+
 @app.route('/api/debug_sar')
 def api_debug_sar():
     """Получение отладочной информации о SAR индикаторе"""

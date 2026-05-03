@@ -945,6 +945,119 @@ class TradingDashboard {
         setTimeout(() => n.remove(), duration);
     }
 
+    /* ─── AI POLL ─── */
+    async pollAI() {
+        const btn = document.getElementById('ai-poll-btn');
+        const badge = document.getElementById('ai-consensus-badge');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Опрашиваю AI...';
+        }
+        if (badge) {
+            badge.className = 'badge ai-consensus-badge--loading';
+            badge.textContent = '⏳ Ожидание...';
+        }
+
+        const nameMap = { ChatGPT: 'chatgpt', Gemini: 'gemini', Grok: 'grok', DeepSeek: 'deepseek' };
+        Object.values(nameMap).forEach(id => {
+            const el = document.getElementById(`ai-vote-${id}`);
+            const card = document.getElementById(`ai-card-${id}`);
+            if (el) { el.textContent = '⏳'; el.className = 'ai-server-badge ai-badge--loading'; }
+            if (card) card.className = 'ai-server-card ai-card--loading';
+        });
+
+        try {
+            const r = await fetch('/api/ai_poll', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+            const data = await r.json();
+
+            if (data.error) {
+                this.showNotification('error', 'Ошибка AI опроса: ' + data.error);
+                return;
+            }
+
+            (data.results || []).forEach(res => {
+                const id = nameMap[res.name];
+                if (!id) return;
+                const el = document.getElementById(`ai-vote-${id}`);
+                const card = document.getElementById(`ai-card-${id}`);
+                if (el) {
+                    if (res.direction === 'long') {
+                        el.textContent = '▲ LONG';
+                        el.className = 'ai-server-badge ai-badge--long';
+                    } else if (res.direction === 'short') {
+                        el.textContent = '▼ SHORT';
+                        el.className = 'ai-server-badge ai-badge--short';
+                    } else {
+                        el.textContent = res.error ? '✗ Ошибка' : '?';
+                        el.className = 'ai-server-badge ai-badge--unknown';
+                        if (res.error) el.title = res.error;
+                    }
+                }
+                if (card) {
+                    card.className = 'ai-server-card ' + (
+                        res.direction === 'long' ? 'ai-card--long' :
+                        res.direction === 'short' ? 'ai-card--short' : 'ai-card--unknown'
+                    );
+                }
+            });
+
+            const longs = data.long_votes || 0;
+            const shorts = data.short_votes || 0;
+            const consensus = data.consensus || 'none';
+
+            const longEl = document.getElementById('ai-long-count');
+            const shortEl = document.getElementById('ai-short-count');
+            const tally = document.getElementById('ai-tally');
+            if (longEl) longEl.textContent = longs;
+            if (shortEl) shortEl.textContent = shorts;
+            if (tally) tally.style.display = 'flex';
+
+            if (badge) {
+                if (consensus === 'long') {
+                    badge.className = 'badge ai-consensus-badge--long';
+                    badge.textContent = `▲ LONG (${longs}/${longs + shorts})`;
+                } else if (consensus === 'short') {
+                    badge.className = 'badge ai-consensus-badge--short';
+                    badge.textContent = `▼ SHORT (${shorts}/${longs + shorts})`;
+                } else {
+                    badge.className = 'badge ai-consensus-badge--tie';
+                    badge.textContent = `≈ Ничья`;
+                }
+            }
+
+            const actionBtns = document.getElementById('ai-action-btns');
+            if (actionBtns) actionBtns.style.display = 'flex';
+
+            const timeEl = document.getElementById('ai-poll-time');
+            if (timeEl) {
+                const t = new Date();
+                timeEl.textContent = `Последний опрос: ${t.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+                timeEl.style.display = 'block';
+            }
+
+            if (consensus !== 'none') {
+                this._playBeep(consensus === 'long' ? 880 : 440);
+            }
+        } catch (e) {
+            this.showNotification('error', 'Ошибка соединения при AI опросе');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-satellite-dish"></i> Опросить AI';
+            }
+        }
+    }
+
+    async openAIPosition(side) {
+        const r = await this._post('/api/ai_open_position', { side });
+        if (r.ok) {
+            this.showNotification('success', `Позиция ${side.toUpperCase()} открыта на 1 час`);
+            setTimeout(() => this.updateDashboard(), 500);
+        } else {
+            this.showNotification('error', r.data.error || 'Ошибка открытия позиции');
+        }
+    }
+
     /* ─── POLLING ─── */
     startDataUpdates() {
         setInterval(() => this.updateDashboard(), 3000);

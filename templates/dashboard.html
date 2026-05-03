@@ -6,7 +6,7 @@
     <title>goldantelopeethx500 — MEXC Signal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=21">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=22">
 </head>
 <body>
 <div class="container-fluid px-3 py-3">
@@ -113,40 +113,61 @@
         <!-- Right column -->
         <div class="col-xl-4 d-flex flex-column gap-3">
 
-            <!-- SAR Signal Panel -->
+            <!-- AI Servers Panel -->
             <div class="panel">
                 <div class="panel__header">
-                    <span><i class="fas fa-satellite-dish"></i> Сигналы</span>
-                    <span id="strategy-level-label" class="badge bg-primary" style="font-size:11px">L3 · 1m+3m+5m</span>
+                    <span><i class="fas fa-robot"></i> AI Серверы</span>
+                    <span id="ai-consensus-badge" class="badge ai-consensus-badge--idle">— Нет опроса</span>
                 </div>
-                <div class="panel__body">
+                <div class="panel__body p-2">
 
-                    <!-- SAR Rows с мультивыбором таймфреймов -->
-                    <div class="sar-row mb-2" id="sar-1m-container">
-                        <button class="lvl-btn--inline" data-tf="1m" onclick="window.dashboard.toggleStrategyTf('1m')" title="Вкл/выкл 1m в стратегии">L1</button>
-                        <span class="sar-level">1 m</span>
-                        <span id="sar-1m" class="badge sar-badge">N/A</span>
+                    <!-- AI Server Cards -->
+                    <div class="ai-servers-grid">
+                        <div class="ai-server-card" id="ai-card-chatgpt">
+                            <div class="ai-server-icon ai-icon--chatgpt"><i class="fas fa-comment-dots"></i></div>
+                            <div class="ai-server-name">ChatGPT</div>
+                            <div class="ai-server-badge" id="ai-vote-chatgpt">—</div>
+                        </div>
+                        <div class="ai-server-card" id="ai-card-gemini">
+                            <div class="ai-server-icon ai-icon--gemini"><i class="fas fa-gem"></i></div>
+                            <div class="ai-server-name">Gemini</div>
+                            <div class="ai-server-badge" id="ai-vote-gemini">—</div>
+                        </div>
+                        <div class="ai-server-card" id="ai-card-grok">
+                            <div class="ai-server-icon ai-icon--grok"><i class="fas fa-bolt"></i></div>
+                            <div class="ai-server-name">Grok</div>
+                            <div class="ai-server-badge" id="ai-vote-grok">—</div>
+                        </div>
+                        <div class="ai-server-card" id="ai-card-deepseek">
+                            <div class="ai-server-icon ai-icon--deepseek"><i class="fas fa-brain"></i></div>
+                            <div class="ai-server-name">DeepSeek</div>
+                            <div class="ai-server-badge" id="ai-vote-deepseek">—</div>
+                        </div>
                     </div>
-                    <div class="sar-row mb-2" id="sar-3m-container">
-                        <button class="lvl-btn--inline" data-tf="3m" onclick="window.dashboard.toggleStrategyTf('3m')" title="Вкл/выкл 3m в стратегии">L2</button>
-                        <span class="sar-level">3 m</span>
-                        <span id="sar-3m" class="badge sar-badge">N/A</span>
+
+                    <!-- Vote tally -->
+                    <div class="ai-tally mt-2" id="ai-tally" style="display:none">
+                        <span class="ai-tally__long"><i class="fas fa-arrow-up"></i> LONG: <b id="ai-long-count">0</b></span>
+                        <span class="ai-tally__vs">vs</span>
+                        <span class="ai-tally__short"><i class="fas fa-arrow-down"></i> SHORT: <b id="ai-short-count">0</b></span>
                     </div>
-                    <div class="sar-row mb-2" id="sar-5m-container">
-                        <button class="lvl-btn--inline" data-tf="5m" onclick="window.dashboard.toggleStrategyTf('5m')" title="Вкл/выкл 5m в стратегии">L3</button>
-                        <span class="sar-level">5 m</span>
-                        <span id="sar-5m" class="badge sar-badge">N/A</span>
+
+                    <!-- Poll button -->
+                    <button id="ai-poll-btn" class="ai-poll-btn mt-2" onclick="window.dashboard.pollAI()">
+                        <i class="fas fa-satellite-dish"></i> Опросить AI
+                    </button>
+
+                    <!-- Open position buttons (shown after poll) -->
+                    <div id="ai-action-btns" class="ai-action-btns mt-2" style="display:none">
+                        <button class="ai-open-btn ai-open-btn--long" onclick="window.dashboard.openAIPosition('long')">
+                            <i class="fas fa-arrow-up"></i> LONG (1ч)
+                        </button>
+                        <button class="ai-open-btn ai-open-btn--short" onclick="window.dashboard.openAIPosition('short')">
+                            <i class="fas fa-arrow-down"></i> SHORT (1ч)
+                        </button>
                     </div>
-                    <div class="sar-row mb-2" id="sar-15m-container">
-                        <button class="lvl-btn--inline" data-tf="15m" onclick="window.dashboard.toggleStrategyTf('15m')" title="Вкл/выкл 15m в стратегии">L4</button>
-                        <span class="sar-level">15 m</span>
-                        <span id="sar-15m" class="badge sar-badge">N/A</span>
-                    </div>
-                    <div class="sar-row mb-2" id="sar-30m-container">
-                        <button class="lvl-btn--inline" data-tf="30m" onclick="window.dashboard.toggleStrategyTf('30m')" title="Вкл/выкл 30m в стратегии">L5</button>
-                        <span class="sar-level">30 m</span>
-                        <span id="sar-30m" class="badge sar-badge">N/A</span>
-                    </div>
+
+                    <div id="ai-poll-time" class="ai-poll-time" style="display:none"></div>
                 </div>
             </div>
 
@@ -194,6 +215,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=21"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=22"></script>
 </body>
 </html>
