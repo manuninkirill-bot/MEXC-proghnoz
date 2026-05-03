@@ -197,7 +197,7 @@ def ask_openrouter(prompt: str) -> dict:
             "https://openrouter.ai/api/v1/chat/completions",
             headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
             json={
-                "model": "deepseek/deepseek-chat-v3.1:free",
+                "model": "google/gemma-4-31b-it:free",
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 10,
                 "temperature": 0.2,
