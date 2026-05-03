@@ -1,24 +1,37 @@
 {
-  "balance": 100.0,
-  "available": 95.0,
+  "balance": 104.0,
+  "available": 99.0,
   "positions": [
     {
       "side": "short",
-      "entry_price": 2322.99,
-      "size_base": 0.0021523984175566835,
+      "entry_price": 2322.5,
+      "size_base": 0.002152852529601722,
       "notional": 5.0,
-      "entry_time": "2026-05-03T13:47:06.169075",
+      "entry_time": "2026-05-03T13:57:12.168524",
       "close_time_seconds": 600,
-      "trade_number": 1,
+      "trade_number": 2,
       "bet": 5.0
     }
   ],
-  "last_trade_time": "2026-05-03T13:47:06.169075",
+  "last_trade_time": "2026-05-03T13:57:12.168524",
   "last_1m_dir": "short",
   "one_min_flip_count": 0,
   "skip_next_signal": true,
   "counter_trade": false,
-  "trades": [],
+  "trades": [
+    {
+      "time": "2026-05-03T13:57:10.658219",
+      "side": "short",
+      "entry_price": 2322.99,
+      "exit_price": 2322.5,
+      "size_base": 0.0021523984175566835,
+      "pnl": 4.0,
+      "notional": 5.0,
+      "duration": "10\u043c 4\u0441",
+      "close_reason": "fixed_time",
+      "result": "WIN"
+    }
+  ],
   "bet": 5.0,
   "trade_duration": 600,
   "strategy_level": 3,
@@ -43,22 +56,16 @@
   },
   "in_position": false,
   "position": null,
-  "last_known_price": 2322.99,
+  "last_known_price": 2322.5,
   "sar_directions": {
     "1m": "short",
     "3m": "short",
     "5m": "short",
-    "15m": "long",
+    "15m": "short",
     "30m": "long"
   },
   "ai_poll": {
     "results": [
-      {
-        "name": "Grok",
-        "direction": "unknown",
-        "raw": "",
-        "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
-      },
       {
         "name": "Groq",
         "direction": "short",
@@ -66,10 +73,10 @@
         "error": null
       },
       {
-        "name": "Gemini",
+        "name": "Grok",
         "direction": "unknown",
         "raw": "",
-        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
       },
       {
         "name": "Mistral",
@@ -78,7 +85,7 @@
         "error": null
       },
       {
-        "name": "ChatGPT",
+        "name": "Gemini",
         "direction": "unknown",
         "raw": "",
         "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
@@ -94,13 +101,19 @@
         "direction": "unknown",
         "raw": "",
         "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "ChatGPT",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
       }
     ],
     "consensus": "short",
     "long_votes": 0,
     "short_votes": 2,
-    "price": 2323.11,
-    "timestamp": "2026-05-03T13:47:05.950605"
+    "price": 2322.5,
+    "timestamp": "2026-05-03T13:57:11.963413"
   },
-  "telegram_trade_counter": 1
+  "telegram_trade_counter": 2
 }
