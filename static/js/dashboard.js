@@ -984,13 +984,15 @@ class TradingDashboard {
                     if (res.direction === 'long') {
                         el.textContent = '▲ LONG';
                         el.className = 'ai-server-badge ai-badge--long';
+                        el.title = '';
                     } else if (res.direction === 'short') {
                         el.textContent = '▼ SHORT';
                         el.className = 'ai-server-badge ai-badge--short';
+                        el.title = '';
                     } else {
-                        el.textContent = res.error ? '✗ Ошибка' : '?';
-                        el.className = 'ai-server-badge ai-badge--unknown';
-                        if (res.error) el.title = res.error;
+                        el.textContent = res.error || '?';
+                        el.className = 'ai-server-badge ai-badge--error';
+                        el.title = res.error || '';
                     }
                 }
                 if (card) {
