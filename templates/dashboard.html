@@ -6,7 +6,7 @@
     <title>goldantelopeethx500 — MEXC Signal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=24">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}?v=25">
 </head>
 <body>
 <div class="container-fluid px-3 py-3">
@@ -167,10 +167,57 @@
                         <span class="ai-tally__short"><i class="fas fa-arrow-down"></i> SHORT: <b id="ai-short-count">0</b></span>
                     </div>
 
-                    <!-- Poll button -->
-                    <button id="ai-poll-btn" class="ai-poll-btn mt-2" onclick="window.dashboard.pollAI()">
-                        <i class="fas fa-satellite-dish"></i> Опросить AI
-                    </button>
+                    <!-- Poll buttons -->
+                    <div class="ai-actions mt-2">
+                        <button id="ai-poll-btn" class="ai-poll-btn" onclick="window.dashboard.pollAI()">
+                            <i class="fas fa-satellite-dish"></i> Опросить AI
+                        </button>
+                        <button id="ai-council-btn" class="ai-council-btn" onclick="window.dashboard.openCouncil()">
+                            <i class="fas fa-users"></i> Созвать совет
+                        </button>
+                    </div>
+
+                    <!-- AI Council Modal -->
+                    <div id="council-modal" class="council-modal" style="display:none">
+                        <div class="council-modal__backdrop" onclick="window.dashboard.closeCouncil()"></div>
+                        <div class="council-modal__content">
+                            <div class="council-modal__header">
+                                <span><i class="fas fa-users"></i> Заседание AI Совета</span>
+                                <button class="council-modal__close" onclick="window.dashboard.closeCouncil()">&times;</button>
+                            </div>
+                            <div class="council-modal__body">
+                                <div class="council-question">
+                                    <label>Вопрос для совета:</label>
+                                    <select id="council-question-preset" onchange="window.dashboard.fillCouncilQuestion(this.value)">
+                                        <option value="">— выберите готовый вопрос или впишите свой —</option>
+                                        <option value="Куда пойдёт цена ETH/USDT в следующие 10 минут — LONG или SHORT?">Направление цены на 10 минут</option>
+                                        <option value="Стоит ли вообще открывать позицию сейчас или подождать? Если торговать — какое направление?">Открывать ли сделку сейчас?</option>
+                                        <option value="Куда пойдёт цена ETH/USDT в следующий 1 час — LONG или SHORT?">Направление на 1 час</option>
+                                        <option value="Сильный ли это тренд или возможен скорый разворот? Дай LONG если продолжение тренда, SHORT если разворот.">Тренд или разворот?</option>
+                                        <option value="Если бы у вас была открыта SHORT-позиция от текущей цены, держать или закрывать? LONG = закрывать, SHORT = держать.">Анализ открытого SHORT</option>
+                                    </select>
+                                    <textarea id="council-question-input" rows="2" placeholder="Например: Куда пойдёт цена в следующие 10 минут?"></textarea>
+                                </div>
+                                <div class="council-actions">
+                                    <button id="council-start-btn" class="ai-council-btn" onclick="window.dashboard.startCouncil()">
+                                        <i class="fas fa-gavel"></i> Начать заседание
+                                    </button>
+                                    <span id="council-status" class="council-status"></span>
+                                </div>
+                                <div id="council-result" class="council-result" style="display:none">
+                                    <div class="council-round">
+                                        <h4><i class="fas fa-1"></i> Раунд 1 — независимое мнение</h4>
+                                        <div id="council-round1" class="council-opinions"></div>
+                                    </div>
+                                    <div class="council-round">
+                                        <h4><i class="fas fa-2"></i> Раунд 2 — после обсуждения</h4>
+                                        <div id="council-round2" class="council-opinions"></div>
+                                    </div>
+                                    <div class="council-verdict" id="council-verdict"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Open position buttons (shown after poll) -->
                     <div id="ai-action-btns" class="ai-action-btns mt-2" style="display:none">
@@ -230,6 +277,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=24"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=25"></script>
 </body>
 </html>

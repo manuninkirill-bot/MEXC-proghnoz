@@ -1060,6 +1060,108 @@ class TradingDashboard {
         }
     }
 
+    /* ─── AI COUNCIL ─── */
+    openCouncil() {
+        const m = document.getElementById('council-modal');
+        if (m) m.style.display = 'block';
+        const input = document.getElementById('council-question-input');
+        if (input && !input.value) {
+            input.value = 'Куда пойдёт цена ETH/USDT в следующие 10 минут — LONG или SHORT?';
+        }
+    }
+    closeCouncil() {
+        const m = document.getElementById('council-modal');
+        if (m) m.style.display = 'none';
+    }
+    fillCouncilQuestion(q) {
+        const input = document.getElementById('council-question-input');
+        if (input && q) input.value = q;
+    }
+    async startCouncil() {
+        const btn = document.getElementById('council-start-btn');
+        const status = document.getElementById('council-status');
+        const result = document.getElementById('council-result');
+        const q = (document.getElementById('council-question-input') || {}).value || '';
+
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Идёт обсуждение...'; }
+        if (status) status.textContent = 'Раунд 1 → раунд 2 (это занимает 5–15 секунд)';
+        if (result) result.style.display = 'none';
+
+        try {
+            const r = await fetch('/api/ai_council', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: q })
+            });
+            const data = await r.json();
+            if (data.error) {
+                this.showNotification('error', 'Ошибка совета: ' + data.error);
+                return;
+            }
+            this._renderCouncil(data);
+        } catch (e) {
+            this.showNotification('error', 'Ошибка соединения');
+        } finally {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-gavel"></i> Начать заседание'; }
+            if (status) status.textContent = '';
+        }
+    }
+    _renderCouncil(data) {
+        const result = document.getElementById('council-result');
+        const r1 = document.getElementById('council-round1');
+        const r2 = document.getElementById('council-round2');
+        const verdict = document.getElementById('council-verdict');
+
+        const esc = (s) => String(s == null ? '' : s)
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+        const renderOpinion = (op, showChange = false) => {
+            const dir = (op.direction === 'long' || op.direction === 'short') ? op.direction : 'unknown';
+            const arrow = dir === 'long' ? '▲' : dir === 'short' ? '▼' : '✗';
+            const cls   = dir;
+            const prev  = (op.previous === 'long' || op.previous === 'short') ? op.previous : '?';
+            const changedTag = (showChange && op.changed)
+                ? `<span class="op-changed">⚡ изменил мнение (${prev.toUpperCase()} → ${dir.toUpperCase()})</span>`
+                : '';
+            const reasonOrErr = op.error
+                ? `<span class="op-error">${esc(op.error)}</span>`
+                : `<span class="op-reason">${esc(op.reason || op.raw || '(без аргумента)')}</span>`;
+            return `
+                <div class="op-card op-${cls}">
+                    <div class="op-head">
+                        <span class="op-name">${esc(op.name)}</span>
+                        <span class="op-vote">${arrow} ${dir.toUpperCase()}</span>
+                    </div>
+                    ${reasonOrErr}
+                    ${changedTag}
+                </div>
+            `;
+        };
+
+        if (r1) r1.innerHTML = (data.round1 || []).map(o => renderOpinion(o, false)).join('');
+        if (r2) r2.innerHTML = (data.round2 || []).map(o => renderOpinion(o, true)).join('');
+
+        const c = data.consensus || 'none';
+        const longs = data.long_votes || 0;
+        const shorts = data.short_votes || 0;
+        let vText, vCls;
+        if (c === 'long')      { vText = `▲ КОНСЕНСУС: LONG (${longs} : ${shorts})`;  vCls = 'long'; }
+        else if (c === 'short'){ vText = `▼ КОНСЕНСУС: SHORT (${shorts} : ${longs})`; vCls = 'short'; }
+        else                   { vText = `≈ Без консенсуса (нужно ≥2 одинаковых голоса). LONG=${longs}, SHORT=${shorts}`; vCls = 'tie'; }
+        if (verdict) {
+            verdict.className = 'council-verdict council-verdict--' + vCls;
+            verdict.innerHTML = `<div class="verdict-text">${vText}</div>` +
+                ((c === 'long' || c === 'short')
+                    ? `<button class="ai-action-btn ai-action-btn--${c}" onclick="window.dashboard.openAIPosition('${c}'); window.dashboard.closeCouncil();">
+                         Открыть ${c === 'long' ? 'BUY' : 'SELL'} на $5
+                       </button>`
+                    : '');
+        }
+        if (result) result.style.display = 'block';
+        if (c !== 'none') this._playBeep(c === 'long' ? 880 : 440);
+    }
+
     /* ─── POLLING ─── */
     startDataUpdates() {
         setInterval(() => this.updateDashboard(), 3000);

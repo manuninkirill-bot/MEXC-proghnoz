@@ -1,24 +1,36 @@
 {
-  "balance": 99.0,
-  "available": 94.0,
+  "balance": 94.0,
+  "available": 89.0,
   "positions": [
     {
       "side": "short",
-      "entry_price": 2324.51,
-      "size_base": 0.0021509909615359795,
+      "entry_price": 2325.41,
+      "size_base": 0.002150158466678994,
       "notional": 5.0,
-      "entry_time": "2026-05-03T14:07:18.005554",
+      "entry_time": "2026-05-03T14:17:23.069453",
       "close_time_seconds": 600,
-      "trade_number": 3,
+      "trade_number": 4,
       "bet": 5.0
     }
   ],
-  "last_trade_time": "2026-05-03T14:07:18.005554",
+  "last_trade_time": "2026-05-03T14:17:23.069453",
   "last_1m_dir": "short",
   "one_min_flip_count": 0,
   "skip_next_signal": true,
   "counter_trade": false,
   "trades": [
+    {
+      "time": "2026-05-03T14:17:21.388475",
+      "side": "short",
+      "entry_price": 2324.51,
+      "exit_price": 2325.41,
+      "size_base": 0.0021509909615359795,
+      "pnl": -5.0,
+      "notional": 5.0,
+      "duration": "10\u043c 3\u0441",
+      "close_reason": "fixed_time",
+      "result": "LOSE"
+    },
     {
       "time": "2026-05-03T14:07:16.645523",
       "side": "short",
@@ -68,7 +80,7 @@
   },
   "in_position": false,
   "position": null,
-  "last_known_price": 2324.51,
+  "last_known_price": 2325.41,
   "sar_directions": {
     "1m": "long",
     "3m": "long",
@@ -97,13 +109,13 @@
         "error": null
       },
       {
-        "name": "ChatGPT",
+        "name": "Gemini",
         "direction": "unknown",
         "raw": "",
         "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
       },
       {
-        "name": "Gemini",
+        "name": "OpenRouter",
         "direction": "unknown",
         "raw": "",
         "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
@@ -115,7 +127,7 @@
         "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
       },
       {
-        "name": "OpenRouter",
+        "name": "ChatGPT",
         "direction": "unknown",
         "raw": "",
         "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
@@ -124,8 +136,8 @@
     "consensus": "short",
     "long_votes": 0,
     "short_votes": 2,
-    "price": 2324.51,
-    "timestamp": "2026-05-03T14:07:17.815128"
+    "price": 2325.41,
+    "timestamp": "2026-05-03T14:17:22.882664"
   },
-  "telegram_trade_counter": 3
+  "telegram_trade_counter": 4
 }

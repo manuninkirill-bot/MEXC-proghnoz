@@ -1122,3 +1122,114 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
         pointer-events: none;
     }
 }
+
+/* ─── AI Council Modal (v25) ─── */
+.ai-actions { display: flex; gap: 8px; }
+.ai-actions .ai-poll-btn, .ai-actions .ai-council-btn { flex: 1; }
+
+.ai-council-btn {
+    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    color: #fff; border: none; border-radius: 10px;
+    padding: 10px 14px; font-weight: 600; cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.ai-council-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124,58,237,.35); }
+.ai-council-btn:disabled { opacity: .6; cursor: wait; }
+
+.council-modal {
+    position: fixed; inset: 0; z-index: 9999;
+}
+.council-modal__backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+}
+.council-modal__content {
+    position: relative;
+    max-width: 900px; width: calc(100% - 32px);
+    max-height: 90vh; overflow-y: auto;
+    margin: 5vh auto;
+    background: #1a1d29; color: #e6e8ee;
+    border: 1px solid rgba(255,255,255,.1); border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.council-modal__header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient(135deg, rgba(124,58,237,.2), rgba(37,99,235,.2));
+    border-radius: 14px 14px 0 0;
+    font-weight: 700; font-size: 16px;
+}
+.council-modal__close {
+    background: transparent; border: 0; color: #fff; font-size: 24px;
+    cursor: pointer; line-height: 1; padding: 0 6px;
+}
+.council-modal__body { padding: 16px 18px 22px; }
+
+.council-question label { display: block; font-size: 13px; color: #9ca3af; margin-bottom: 6px; }
+.council-question select,
+.council-question textarea {
+    width: 100%; background: #0f1219; color: #e6e8ee;
+    border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
+    padding: 8px 10px; font-size: 14px; margin-bottom: 8px;
+}
+.council-question textarea { resize: vertical; min-height: 50px; }
+
+.council-actions { display: flex; align-items: center; gap: 12px; margin: 8px 0 14px; }
+.council-status { color: #9ca3af; font-size: 13px; }
+
+.council-result { margin-top: 12px; }
+.council-round { margin-bottom: 16px; }
+.council-round h4 {
+    font-size: 14px; color: #9ca3af; margin: 8px 0;
+    text-transform: uppercase; letter-spacing: .5px;
+}
+.council-opinions {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+}
+.op-card {
+    background: #0f1219; border: 1px solid rgba(255,255,255,.08);
+    border-left-width: 4px; border-radius: 8px; padding: 10px 12px;
+    font-size: 13px; line-height: 1.4;
+}
+.op-long    { border-left-color: #10b981; }
+.op-short   { border-left-color: #ef4444; }
+.op-unknown { border-left-color: #6b7280; opacity: .65; }
+
+.op-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px; font-weight: 600;
+}
+.op-name { color: #d1d5db; }
+.op-vote { font-size: 13px; }
+.op-long .op-vote    { color: #10b981; }
+.op-short .op-vote   { color: #ef4444; }
+.op-unknown .op-vote { color: #6b7280; }
+
+.op-reason { display: block; color: #cbd5e1; font-size: 12.5px; }
+.op-error { display: block; color: #f87171; font-size: 12px; font-style: italic; }
+.op-changed {
+    display: inline-block; margin-top: 6px;
+    font-size: 11px; color: #fbbf24; font-weight: 600;
+    background: rgba(251,191,36,.12); padding: 2px 6px; border-radius: 4px;
+}
+
+.council-verdict {
+    margin-top: 16px; padding: 14px 16px; border-radius: 10px;
+    text-align: center; font-weight: 700; font-size: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.council-verdict--long  { background: rgba(16,185,129,.15); color: #34d399; border: 1px solid rgba(16,185,129,.4); }
+.council-verdict--short { background: rgba(239,68,68,.15);  color: #f87171; border: 1px solid rgba(239,68,68,.4); }
+.council-verdict--tie   { background: rgba(107,114,128,.15); color: #9ca3af; border: 1px solid rgba(107,114,128,.4); }
+.council-verdict .ai-action-btn {
+    padding: 8px 16px; border-radius: 8px; border: 0; cursor: pointer; font-weight: 700;
+}
+.council-verdict .ai-action-btn--long  { background: #10b981; color: #fff; }
+.council-verdict .ai-action-btn--short { background: #ef4444; color: #fff; }
+
+@media (max-width: 600px) {
+    .ai-actions { flex-direction: column; }
+    .council-modal__content { margin: 2vh auto; max-height: 96vh; }
+    .council-opinions { grid-template-columns: 1fr; }
+}

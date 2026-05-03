@@ -160,7 +160,7 @@ def _friendly_error(raw_error: str) -> str:
     return "Ошибка"
 
 
-def ask_chatgpt(prompt: str) -> dict:
+def ask_chatgpt(prompt: str, max_tokens: int = 10) -> dict:
     api_key = os.getenv("OPENAI_API_KEY", "")
     if not api_key:
         return {"name": "ChatGPT", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
@@ -171,10 +171,10 @@ def ask_chatgpt(prompt: str) -> dict:
             json={
                 "model": "gpt-4o-mini",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 10,
+                "max_tokens": max_tokens,
                 "temperature": 0.2,
             },
-            timeout=20,
+            timeout=30,
         )
         if resp.status_code == 200:
             raw = resp.json()["choices"][0]["message"]["content"]
@@ -186,7 +186,7 @@ def ask_chatgpt(prompt: str) -> dict:
         return {"name": "ChatGPT", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def ask_groq(prompt: str) -> dict:
+def ask_groq(prompt: str, max_tokens: int = 10) -> dict:
     api_key = os.getenv("GROQ_API_KEY", "")
     if not api_key:
         return {"name": "Groq", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
@@ -197,10 +197,10 @@ def ask_groq(prompt: str) -> dict:
             json={
                 "model": "llama-3.3-70b-versatile",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 10,
+                "max_tokens": max_tokens,
                 "temperature": 0.2,
             },
-            timeout=20,
+            timeout=30,
         )
         if resp.status_code == 200:
             raw = resp.json()["choices"][0]["message"]["content"]
@@ -212,7 +212,7 @@ def ask_groq(prompt: str) -> dict:
         return {"name": "Groq", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def ask_gemini(prompt: str) -> dict:
+def ask_gemini(prompt: str, max_tokens: int = 200) -> dict:
     api_key = os.getenv("GEMINI_API_KEY", "")
     if not api_key:
         return {"name": "Gemini", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
@@ -223,7 +223,7 @@ def ask_gemini(prompt: str) -> dict:
             json={
                 "contents": [{"parts": [{"text": prompt}]}],
                 "generationConfig": {
-                    "maxOutputTokens": 200,
+                    "maxOutputTokens": max_tokens,
                     "temperature": 0.2,
                     "thinkingConfig": {"thinkingBudget": 0},
                 },
@@ -243,7 +243,7 @@ def ask_gemini(prompt: str) -> dict:
         return {"name": "Gemini", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def ask_grok(prompt: str) -> dict:
+def ask_grok(prompt: str, max_tokens: int = 10) -> dict:
     api_key = os.getenv("XAI_API_KEY", "")
     if not api_key:
         return {"name": "Grok", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
@@ -254,10 +254,10 @@ def ask_grok(prompt: str) -> dict:
             json={
                 "model": "grok-3-mini",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 10,
+                "max_tokens": max_tokens,
                 "temperature": 0.2,
             },
-            timeout=20,
+            timeout=30,
         )
         if resp.status_code == 200:
             raw = resp.json()["choices"][0]["message"]["content"]
@@ -269,7 +269,7 @@ def ask_grok(prompt: str) -> dict:
         return {"name": "Grok", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def ask_deepseek(prompt: str) -> dict:
+def ask_deepseek(prompt: str, max_tokens: int = 10) -> dict:
     api_key = os.getenv("DEEPSEEK_API_KEY", "")
     if not api_key:
         return {"name": "DeepSeek", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
@@ -280,10 +280,10 @@ def ask_deepseek(prompt: str) -> dict:
             json={
                 "model": "deepseek-chat",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 10,
+                "max_tokens": max_tokens,
                 "temperature": 0.2,
             },
-            timeout=20,
+            timeout=30,
         )
         if resp.status_code == 200:
             raw = resp.json()["choices"][0]["message"]["content"]
@@ -295,7 +295,7 @@ def ask_deepseek(prompt: str) -> dict:
         return {"name": "DeepSeek", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def ask_openrouter(prompt: str) -> dict:
+def ask_openrouter(prompt: str, max_tokens: int = 10) -> dict:
     api_key = os.getenv("OPENROUTER_API_KEY", "")
     if not api_key:
         return {"name": "OpenRouter", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
@@ -306,10 +306,10 @@ def ask_openrouter(prompt: str) -> dict:
             json={
                 "model": "google/gemma-4-31b-it:free",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 10,
+                "max_tokens": max_tokens,
                 "temperature": 0.2,
             },
-            timeout=25,
+            timeout=30,
         )
         if resp.status_code == 200:
             raw = resp.json()["choices"][0]["message"]["content"]
@@ -321,7 +321,7 @@ def ask_openrouter(prompt: str) -> dict:
         return {"name": "OpenRouter", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def ask_mistral(prompt: str) -> dict:
+def ask_mistral(prompt: str, max_tokens: int = 10) -> dict:
     api_key = os.getenv("MISTRAL_API_KEY", "")
     if not api_key:
         return {"name": "Mistral", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
@@ -332,10 +332,10 @@ def ask_mistral(prompt: str) -> dict:
             json={
                 "model": "mistral-small-latest",
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 10,
+                "max_tokens": max_tokens,
                 "temperature": 0.2,
             },
-            timeout=20,
+            timeout=30,
         )
         if resp.status_code == 200:
             raw = resp.json()["choices"][0]["message"]["content"]
@@ -345,6 +345,166 @@ def ask_mistral(prompt: str) -> dict:
     except Exception as e:
         logger.error(f"Mistral error: {e}")
         return {"name": "Mistral", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
+
+
+def _parse_direction_and_reason(text) -> tuple[str, str]:
+    """Извлекает направление (long/short/unknown) и аргумент (короткий текст) из ответа AI."""
+    if not text or not isinstance(text, str):
+        return "unknown", ""
+    raw = text.strip()
+    upper = raw.upper()
+    direction = "unknown"
+    if "LONG" in upper and "SHORT" not in upper:
+        direction = "long"
+    elif "SHORT" in upper and "LONG" not in upper:
+        direction = "short"
+    elif "LONG" in upper and "SHORT" in upper:
+        direction = "long" if upper.find("LONG") < upper.find("SHORT") else "short"
+    # Удаляем слово LONG/SHORT и двоеточие/тире, чтобы остался только аргумент
+    reason = raw
+    for token in ("LONG:", "SHORT:", "LONG —", "SHORT —", "LONG -", "SHORT -", "LONG.", "SHORT.", "LONG", "SHORT"):
+        for variant in (token, token.lower(), token.title()):
+            if variant in reason:
+                reason = reason.replace(variant, "", 1)
+                break
+    reason = reason.strip(" \t\n\r:—-.,").strip()
+    if len(reason) > 220:
+        reason = reason[:217] + "..."
+    return direction, reason
+
+
+def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: list | None, question: str) -> str:
+    base = _build_prompt(price, candles_1m, candles_5m)
+    # Заменяем финальную инструкцию на формат с аргументом
+    cut = base.split("=== DECISION ===")[0]
+    return (
+        cut
+        + "=== COUNCIL QUESTION ===\n"
+        + question + "\n\n"
+        + "=== ANSWER FORMAT ===\n"
+        + "Reply on ONE line in this EXACT format:\n"
+        + "LONG: <one short sentence why> \n"
+        + "OR\n"
+        + "SHORT: <one short sentence why>\n"
+        + "Keep the reasoning under 25 words. No markdown, no extra lines."
+    )
+
+
+def _build_council_prompt_round2(price: float, candles_1m: list, candles_5m: list | None,
+                                  question: str, peer_opinions: list) -> str:
+    base = _build_prompt(price, candles_1m, candles_5m)
+    cut = base.split("=== DECISION ===")[0]
+    peers_text = "\n".join(
+        f"  • {p['name']}: {p['direction'].upper()} — {p['reason'] or '(без аргумента)'}"
+        for p in peer_opinions if p['direction'] in ('long', 'short')
+    ) or "  (нет валидных мнений)"
+    return (
+        cut
+        + "=== COUNCIL QUESTION ===\n"
+        + question + "\n\n"
+        + "=== YOUR COLLEAGUES' OPINIONS (Round 1) ===\n"
+        + peers_text + "\n\n"
+        + "=== YOUR TASK ===\n"
+        + "You have heard your colleagues. Now give your FINAL answer.\n"
+        + "You may keep your previous direction or change it if their arguments persuaded you.\n"
+        + "Reply on ONE line in this EXACT format:\n"
+        + "LONG: <one short sentence why> \n"
+        + "OR\n"
+        + "SHORT: <one short sentence why>\n"
+        + "Keep the reasoning under 25 words. No markdown."
+    )
+
+
+def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
+    """Запускает все 7 AI параллельно с указанным размером ответа. Возвращает список с direction+reason."""
+    askers = {
+        "ChatGPT":    ask_chatgpt,
+        "Gemini":     ask_gemini,
+        "Grok":       ask_grok,
+        "DeepSeek":   ask_deepseek,
+        "Groq":       ask_groq,
+        "OpenRouter": ask_openrouter,
+        "Mistral":    ask_mistral,
+    }
+    out = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as ex:
+        futures = {ex.submit(fn, prompt, max_tokens): name for name, fn in askers.items()}
+        for fut in concurrent.futures.as_completed(futures):
+            name = futures[fut]
+            try:
+                r = fut.result()
+                d, reason = _parse_direction_and_reason(r.get("raw", ""))
+                # если parse не сработал, используем поле direction из ответа
+                if d == "unknown" and r.get("direction") in ("long", "short"):
+                    d = r["direction"]
+                out.append({
+                    "name": name,
+                    "direction": d,
+                    "reason": reason,
+                    "raw": r.get("raw", ""),
+                    "error": r.get("error"),
+                })
+            except Exception as e:
+                out.append({"name": name, "direction": "unknown", "reason": "", "raw": "", "error": str(e)})
+    return out
+
+
+def discuss_all_ai(price: float, candles_1m: list, candles_5m: list | None = None,
+                   question: str | None = None) -> dict:
+    """
+    Двухраундовое заседание AI совета.
+    1. Каждый AI даёт направление + аргумент независимо.
+    2. Каждому AI показываем мнения коллег и просим финальный ответ.
+    """
+    if not question:
+        question = "Куда пойдёт цена ETH/USDT в следующие 10 минут — LONG или SHORT?"
+
+    # ── Раунд 1 ──
+    prompt1 = _build_council_prompt_round1(price, candles_1m, candles_5m, question)
+    round1 = _ask_all_parallel(prompt1, max_tokens=120)
+
+    # Только AI с валидным направлением участвуют в раунде 2
+    valid_peers = [r for r in round1 if r["direction"] in ("long", "short")]
+
+    # ── Раунд 2 ──
+    prompt2 = _build_council_prompt_round2(price, candles_1m, candles_5m, question, valid_peers)
+    round2_raw = _ask_all_parallel(prompt2, max_tokens=120)
+
+    # Сопоставляем по имени, помечаем changed=True если поменял мнение
+    r1_by_name = {r["name"]: r for r in round1}
+    round2 = []
+    for r in round2_raw:
+        prev = r1_by_name.get(r["name"], {})
+        round2.append({
+            **r,
+            "changed": (
+                prev.get("direction") in ("long", "short")
+                and r["direction"] in ("long", "short")
+                and prev["direction"] != r["direction"]
+            ),
+            "previous": prev.get("direction", "unknown"),
+        })
+
+    longs = sum(1 for r in round2 if r["direction"] == "long")
+    shorts = sum(1 for r in round2 if r["direction"] == "short")
+    MIN_VOTES = 2
+    if longs >= MIN_VOTES and longs > shorts:
+        consensus = "long"
+    elif shorts >= MIN_VOTES and shorts > longs:
+        consensus = "short"
+    else:
+        consensus = "none"
+
+    return {
+        "question": question,
+        "price": price,
+        "round1": round1,
+        "round2": round2,
+        "consensus": consensus,
+        "long_votes": longs,
+        "short_votes": shorts,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
 
 
 def poll_all_ai(price: float, candles_1m: list, candles_5m: list | None = None) -> dict:

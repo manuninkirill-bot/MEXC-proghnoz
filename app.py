@@ -393,6 +393,61 @@ def api_ai_poll():
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/api/ai_council', methods=['POST'])
+def api_ai_council():
+    """Двухраундовое заседание AI: каждый AI слышит мнение коллег и может изменить решение."""
+    try:
+        from ai_advisor import discuss_all_ai
+        data = request.get_json(silent=True) or {}
+        question = data.get('question') or None
+
+        price = state.get('last_known_price', 0.0)
+        if bot_instance:
+            try:
+                price = bot_instance.get_current_price() or price
+            except Exception:
+                pass
+
+        candles_1m, candles_5m = [], []
+        if bot_instance:
+            try:
+                df1 = bot_instance.fetch_ohlcv_tf('1m', limit=35)
+                if df1 is not None and len(df1) > 0:
+                    for _, row in df1.iterrows():
+                        candles_1m.append({
+                            'time':  pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                            'open':  round(float(row['open']),  2),
+                            'high':  round(float(row['high']),  2),
+                            'low':   round(float(row['low']),   2),
+                            'close': round(float(row['close']), 2),
+                            'volume': round(float(row.get('volume', 0)), 2),
+                        })
+                df5 = bot_instance.fetch_ohlcv_tf('5m', limit=15)
+                if df5 is not None and len(df5) > 0:
+                    for _, row in df5.iterrows():
+                        candles_5m.append({
+                            'time':  pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                            'open':  round(float(row['open']),  2),
+                            'high':  round(float(row['high']),  2),
+                            'low':   round(float(row['low']),   2),
+                            'close': round(float(row['close']), 2),
+                            'volume': round(float(row.get('volume', 0)), 2),
+                        })
+            except Exception as e:
+                logging.warning(f"Candle fetch for AI council failed: {e}")
+
+        meeting = discuss_all_ai(price, candles_1m, candles_5m, question=question)
+        # Сохраняем последние 10 заседаний в state
+        meetings = state.get('meetings', [])
+        meetings.insert(0, meeting)
+        state['meetings'] = meetings[:10]
+        state['last_meeting'] = meeting
+        return jsonify(meeting)
+    except Exception as e:
+        logging.error(f"AI council error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/ai_open_position', methods=['POST'])
 def api_ai_open_position():
     """Open a position manually based on AI consensus direction"""
