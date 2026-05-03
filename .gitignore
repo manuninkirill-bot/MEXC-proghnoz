@@ -39,8 +39,10 @@ instance/
 *.swo
 *~
 
-# State files
+# State files (рантайм-данные торговли)
 goldantilopabtc500_state.json
+goldantilopaeth500_state.json
+*_state.json
 
 # Logs
 *.log

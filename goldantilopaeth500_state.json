@@ -1,24 +1,48 @@
 {
-  "balance": 94.0,
-  "available": 89.0,
+  "balance": 88.0,
+  "available": 83.0,
   "positions": [
     {
       "side": "short",
-      "entry_price": 2325.41,
-      "size_base": 0.002150158466678994,
+      "entry_price": 2325.06,
+      "size_base": 0.002150482138095361,
       "notional": 5.0,
-      "entry_time": "2026-05-03T14:17:23.069453",
+      "entry_time": "2026-05-03T14:52:08.660500",
       "close_time_seconds": 600,
-      "trade_number": 4,
+      "trade_number": 6,
       "bet": 5.0
     }
   ],
-  "last_trade_time": "2026-05-03T14:17:23.069453",
+  "last_trade_time": "2026-05-03T14:52:08.660500",
   "last_1m_dir": "short",
   "one_min_flip_count": 0,
   "skip_next_signal": true,
   "counter_trade": false,
   "trades": [
+    {
+      "time": "2026-05-03T14:47:28.794224",
+      "side": "short",
+      "entry_price": 2325.06,
+      "exit_price": 2324.11,
+      "size_base": 0.00215048,
+      "pnl": 4.0,
+      "notional": 5.0,
+      "duration": "10\u043c 5\u0441",
+      "close_reason": "fixed_time",
+      "result": "WIN"
+    },
+    {
+      "time": "2026-05-03T14:41:52.786929",
+      "side": "short",
+      "entry_price": 2323.19,
+      "exit_price": 2324.74,
+      "size_base": 0.0021522131207520694,
+      "pnl": -5.0,
+      "notional": 5.0,
+      "duration": "10\u043c 1\u0441",
+      "close_reason": "fixed_time",
+      "result": "LOSE"
+    },
     {
       "time": "2026-05-03T14:17:21.388475",
       "side": "short",
@@ -80,7 +104,7 @@
   },
   "in_position": false,
   "position": null,
-  "last_known_price": 2325.41,
+  "last_known_price": 2325.06,
   "sar_directions": {
     "1m": "long",
     "3m": "long",
@@ -91,28 +115,22 @@
   "ai_poll": {
     "results": [
       {
-        "name": "Grok",
-        "direction": "unknown",
-        "raw": "",
-        "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
-      },
-      {
         "name": "Groq",
         "direction": "short",
         "raw": "SHORT",
         "error": null
       },
       {
+        "name": "Grok",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+      },
+      {
         "name": "Mistral",
         "direction": "short",
         "raw": "SHORT",
         "error": null
-      },
-      {
-        "name": "Gemini",
-        "direction": "unknown",
-        "raw": "",
-        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
       },
       {
         "name": "OpenRouter",
@@ -127,6 +145,12 @@
         "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
       },
       {
+        "name": "Gemini",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
         "name": "ChatGPT",
         "direction": "unknown",
         "raw": "",
@@ -136,8 +160,630 @@
     "consensus": "short",
     "long_votes": 0,
     "short_votes": 2,
-    "price": 2325.41,
-    "timestamp": "2026-05-03T14:17:22.882664"
+    "price": 2325.06,
+    "timestamp": "2026-05-03T14:52:08.483718"
   },
-  "telegram_trade_counter": 4
+  "meetings": [
+    {
+      "question": "\u0415\u0441\u043b\u0438 \u0431\u044b \u0443 \u0432\u0430\u0441 \u0431\u044b\u043b\u0430 \u043e\u0442\u043a\u0440\u044b\u0442\u0430 SHORT-\u043f\u043e\u0437\u0438\u0446\u0438\u044f \u043e\u0442 \u0442\u0435\u043a\u0443\u0449\u0435\u0439 \u0446\u0435\u043d\u044b, \u0434\u0435\u0440\u0436\u0430\u0442\u044c \u0438\u043b\u0438 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0442\u044c? LONG = \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0442\u044c, SHORT = \u0434\u0435\u0440\u0436\u0430\u0442\u044c.",
+      "price": 2323.7,
+      "round1": [
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "No clear trend reversal indication",
+          "raw": "SHORT: No clear trend reversal indication.",
+          "error": null
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "No data suggests trend continuation; price near recent highs favors holding",
+          "raw": "SHORT: No data suggests trend continuation; price near recent highs favors holding short.",
+          "error": null
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
+        }
+      ],
+      "round2": [
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "No clear trend reversal indication",
+          "raw": "SHORT: No clear trend reversal indication.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "No reversal signals, price near recent highs, trend continuation favored",
+          "raw": "SHORT: No reversal signals, price near recent highs, trend continuation favored.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        }
+      ],
+      "consensus": "short",
+      "long_votes": 0,
+      "short_votes": 2,
+      "timestamp": "2026-05-03T14:30:37.146956"
+    },
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 1 \u0447\u0430\u0441 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2323.6,
+      "round1": [
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+        },
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "No clear trend or momentum available to predict a  position",
+          "raw": "SHORT: No clear trend or momentum available to predict a long position.",
+          "error": null
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "Price at resistance with no bullish momentum or volume confirmation",
+          "raw": "SHORT: Price at resistance with no bullish momentum or volume confirmation.",
+          "error": null
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
+        }
+      ],
+      "round2": [
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "Lack of bullish momentum and potential resistance",
+          "raw": "SHORT: Lack of bullish momentum and potential resistance.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "Price at resistance with no bullish momentum or volume confirmation",
+          "raw": "SHORT: Price at resistance with no bullish momentum or volume confirmation.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        }
+      ],
+      "consensus": "short",
+      "long_votes": 0,
+      "short_votes": 2,
+      "timestamp": "2026-05-03T14:28:27.426262"
+    },
+    {
+      "question": "\u0421\u0442\u043e\u0438\u0442 \u043b\u0438 \u0432\u043e\u043e\u0431\u0449\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u043f\u043e\u0437\u0438\u0446\u0438\u044e \u0441\u0435\u0439\u0447\u0430\u0441 \u0438\u043b\u0438 \u043f\u043e\u0434\u043e\u0436\u0434\u0430\u0442\u044c? \u0415\u0441\u043b\u0438 \u0442\u043e\u0440\u0433\u043e\u0432\u0430\u0442\u044c \u2014 \u043a\u0430\u043a\u043e\u0435 \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435?",
+      "price": 2322.68,
+      "round1": [
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+        },
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "No clear trend or momentum available to base a trade decision",
+          "raw": "SHORT: No clear trend or momentum available to base a trade decision.",
+          "error": null
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Mistral",
+          "direction": "unknown",
+          "reason": "WAIT: No data for momentum, volume, or trend analysis",
+          "raw": "WAIT: No data for momentum, volume, or trend analysis.",
+          "error": null
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
+        }
+      ],
+      "round2": [
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "No clear trend or momentum available to base a trade decision",
+          "raw": "SHORT: No clear trend or momentum available to base a trade decision.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "No clear trend or momentum available to base a trade decision",
+          "raw": "SHORT: No clear trend or momentum available to base a trade decision.",
+          "error": null,
+          "changed": false,
+          "previous": "unknown"
+        }
+      ],
+      "consensus": "short",
+      "long_votes": 0,
+      "short_votes": 2,
+      "timestamp": "2026-05-03T14:26:55.954554"
+    },
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2322.88,
+      "round1": [
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "No clear trend or momentum available to predict a  position",
+          "raw": "SHORT: No clear trend or momentum available to predict a long position.",
+          "error": null
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "Price at resistance with no bullish momentum or volume confirmation",
+          "raw": "SHORT: Price at resistance with no bullish momentum or volume confirmation.",
+          "error": null
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
+        }
+      ],
+      "round2": [
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "Lack of bullish momentum and unclear trend direction",
+          "raw": "SHORT: Lack of bullish momentum and unclear trend direction.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "No clear trend or momentum, price at resistance with no bullish confirmation",
+          "raw": "SHORT: No clear trend or momentum, price at resistance with no bullish confirmation.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435",
+          "changed": false,
+          "previous": "unknown"
+        }
+      ],
+      "consensus": "short",
+      "long_votes": 0,
+      "short_votes": 2,
+      "timestamp": "2026-05-03T14:26:32.408400"
+    }
+  ],
+  "last_meeting": {
+    "question": "\u0415\u0441\u043b\u0438 \u0431\u044b \u0443 \u0432\u0430\u0441 \u0431\u044b\u043b\u0430 \u043e\u0442\u043a\u0440\u044b\u0442\u0430 SHORT-\u043f\u043e\u0437\u0438\u0446\u0438\u044f \u043e\u0442 \u0442\u0435\u043a\u0443\u0449\u0435\u0439 \u0446\u0435\u043d\u044b, \u0434\u0435\u0440\u0436\u0430\u0442\u044c \u0438\u043b\u0438 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0442\u044c? LONG = \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0442\u044c, SHORT = \u0434\u0435\u0440\u0436\u0430\u0442\u044c.",
+    "price": 2323.7,
+    "round1": [
+      {
+        "name": "Groq",
+        "direction": "short",
+        "reason": "No clear trend reversal indication",
+        "raw": "SHORT: No clear trend reversal indication.",
+        "error": null
+      },
+      {
+        "name": "Grok",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435"
+      },
+      {
+        "name": "Mistral",
+        "direction": "short",
+        "reason": "No data suggests trend continuation; price near recent highs favors holding",
+        "raw": "SHORT: No data suggests trend continuation; price near recent highs favors holding short.",
+        "error": null
+      },
+      {
+        "name": "Gemini",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "ChatGPT",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "OpenRouter",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "DeepSeek",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
+      }
+    ],
+    "round2": [
+      {
+        "name": "Groq",
+        "direction": "short",
+        "reason": "No clear trend reversal indication",
+        "raw": "SHORT: No clear trend reversal indication.",
+        "error": null,
+        "changed": false,
+        "previous": "short"
+      },
+      {
+        "name": "Grok",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041d\u0435\u0442 \u043a\u0440\u0435\u0434\u0438\u0442\u043e\u0432 \u043d\u0430 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435",
+        "changed": false,
+        "previous": "unknown"
+      },
+      {
+        "name": "Gemini",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+        "changed": false,
+        "previous": "unknown"
+      },
+      {
+        "name": "OpenRouter",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+        "changed": false,
+        "previous": "unknown"
+      },
+      {
+        "name": "DeepSeek",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435",
+        "changed": false,
+        "previous": "unknown"
+      },
+      {
+        "name": "ChatGPT",
+        "direction": "unknown",
+        "reason": "",
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+        "changed": false,
+        "previous": "unknown"
+      },
+      {
+        "name": "Mistral",
+        "direction": "short",
+        "reason": "No reversal signals, price near recent highs, trend continuation favored",
+        "raw": "SHORT: No reversal signals, price near recent highs, trend continuation favored.",
+        "error": null,
+        "changed": false,
+        "previous": "short"
+      }
+    ],
+    "consensus": "short",
+    "long_votes": 0,
+    "short_votes": 2,
+    "timestamp": "2026-05-03T14:30:37.146956"
+  },
+  "telegram_trade_counter": 6
 }
