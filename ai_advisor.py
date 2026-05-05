@@ -421,7 +421,11 @@ def _ask_openrouter_model(name: str, model: str, prompt: str, max_tokens: int = 
             timeout=30,
         )
         if resp.status_code == 200:
-            raw = resp.json()["choices"][0]["message"].get("content") or ""
+            data = resp.json()
+            choices = data.get("choices") or []
+            if not choices:
+                return {"name": name, "direction": "unknown", "raw": "", "error": "Пустой ответ"}
+            raw = choices[0].get("message", {}).get("content") or ""
             if not raw:
                 return {"name": name, "direction": "unknown", "raw": "", "error": "Пустой ответ"}
             return {"name": name, "direction": _parse_direction(raw), "raw": raw, "error": None}
