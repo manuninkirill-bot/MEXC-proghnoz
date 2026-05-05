@@ -18,7 +18,7 @@
             <span class="top-bar__sub">GoldantelopeMEXC</span>
         </div>
         <div class="top-bar__controls">
-            <span id="bot-status" class="status-pill status-pill--stopped">● STOPPED</span>
+            <span id="bot-status" class="status-pill {{ 'status-pill--running' if bot_running else 'status-pill--stopped' }}">{{ '● RUNNING' if bot_running else '● STOPPED' }}</span>
             <button id="start-bot" class="ctrl-btn ctrl-btn--green">
                 <i class="fas fa-play"></i> Start
             </button>
@@ -63,7 +63,7 @@
         <div class="col-md-3 col-6">
             <div class="stat-card stat-card--yellow">
                 <div class="stat-card__label"><i class="fab fa-ethereum me-1"></i> ETH Цена</div>
-                <div class="stat-card__value" id="current-price">$0.00</div>
+                <div class="stat-card__value" id="current-price">${{ "%.2f"|format(init_price) if init_price else "0.00" }}</div>
             </div>
         </div>
 

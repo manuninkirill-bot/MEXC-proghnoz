@@ -5,6 +5,9 @@ import threading
 import random
 from datetime import datetime, timedelta
 
+# Глобальная блокировка — гарантирует не более одной позиции одновременно
+_position_lock = threading.Lock()
+
 import ccxt
 import pandas as pd
 from ta.trend import PSARIndicator
@@ -665,7 +668,12 @@ class TradingBot:
             cur_price = self.get_current_price() or price
             size_base, notional = self.compute_order_size_usdt(state["balance"], cur_price if cur_price > 0 else 1.0)
             logging.info(f"✅ AI OPEN {side.upper()} ${notional} — size={size_base:.6f} @ ${cur_price}")
-            self.place_market_order(side, amount_base=size_base)
+            # Двойная проверка под блокировкой: исключает гонку с Flask-потоком
+            with _position_lock:
+                if state.get("positions"):
+                    logging.info("🚫 Позиция открылась параллельно (гонка потоков) — пропускаем")
+                    return False
+                self.place_market_order(side, amount_base=size_base)
             self.save_state_to_file()
             return True
         else:

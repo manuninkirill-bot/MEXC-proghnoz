@@ -1,24 +1,37 @@
 {
-  "balance": 98.0,
-  "available": 88.0,
-  "positions": [
-    {
-      "side": "long",
-      "entry_price": 2370.82,
-      "size_base": 0.004217949907626897,
-      "notional": 10.0,
-      "entry_time": "2026-05-05T19:21:15.635632",
-      "close_time_seconds": 600,
-      "trade_number": 3,
-      "bet": 10.0
-    }
-  ],
-  "last_trade_time": "2026-05-05T19:21:15.635632",
+  "balance": 78.0,
+  "available": 78.0,
+  "positions": [],
+  "last_trade_time": "2026-05-05T19:52:43.084985",
   "last_1m_dir": null,
   "one_min_flip_count": 0,
   "skip_next_signal": false,
   "counter_trade": false,
   "trades": [
+    {
+      "time": "2026-05-05T19:52:43.084966",
+      "side": "long",
+      "entry_price": 2371.22,
+      "exit_price": 2369.4,
+      "size_base": 0.0042172383836168725,
+      "pnl": -10.0,
+      "notional": 10.0,
+      "duration": "10\u043c 1\u0441",
+      "close_reason": "fixed_time",
+      "result": "LOSE"
+    },
+    {
+      "time": "2026-05-05T19:31:19.545826",
+      "side": "long",
+      "entry_price": 2370.82,
+      "exit_price": 2370.22,
+      "size_base": 0.004217949907626897,
+      "pnl": -10.0,
+      "notional": 10.0,
+      "duration": "10\u043c 3\u0441",
+      "close_reason": "fixed_time",
+      "result": "LOSE"
+    },
     {
       "time": "2026-05-05T19:09:58.655987",
       "side": "long",
@@ -67,39 +80,39 @@
     }
   },
   "sar_directions": {
-    "1m": "long",
-    "3m": "long",
+    "1m": "short",
+    "3m": "short",
     "5m": "short",
     "15m": "long",
-    "30m": "short"
+    "30m": "long"
   },
-  "last_known_price": 2370.82,
+  "last_known_price": 2369.4,
   "bot_was_running": true,
-  "council_running": true,
+  "council_running": false,
   "meetings": [
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2370.59,
+      "price": 2371.2,
       "round1": [
         {
           "name": "Mistral",
-          "direction": "long",
-          "reason": "Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and prior  trade was profitable",
-          "raw": "LONG: Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and prior LONG trade was profitable.",
+          "direction": "short",
+          "reason": "Recent 5 candles show 4 bullish but RSI neutral and low volume; dominant trend favors slight downward pressure",
+          "raw": "SHORT: Recent 5 candles show 4 bullish but RSI neutral and low volume; dominant trend favors slight downward pressure.",
           "error": null
         },
         {
           "name": "GPT-OSS-20B",
           "direction": "long",
-          "reason": "Recent 5\u2011minute trend bullish (3/5 up), RSI >45, price still nudging higher despite low volume",
-          "raw": "LONG: Recent 5\u2011minute trend bullish (3/5 up), RSI >45, price still nudging higher despite low volume.",
+          "reason": "Recent 4/5 candles up, SMA5>20, weak bullish bias, low volume but trend dominates, so expect a \u2011term rally",
+          "raw": "LONG: Recent 4/5 candles up, SMA5>20, weak bullish bias, low volume but trend dominates, so expect a short\u2011term rally.",
           "error": null
         },
         {
           "name": "GPT-OSS-120B",
           "direction": "long",
-          "reason": "Weak bullish SMA bias and recent upward micro\u2011move suggest price may edge higher in the next 10 minutes",
-          "raw": "LONG: Weak bullish SMA bias and recent upward micro\u2011move suggest price may edge higher in the next 10 minutes.",
+          "reason": "Majority of recent candles bullish, RSI above 45, price showing slight upward trend despite low volume",
+          "raw": "LONG: Majority of recent candles bullish, RSI above 45, price showing slight upward trend despite low volume.",
           "error": null
         }
       ],
@@ -107,17 +120,17 @@
         {
           "name": "Mistral",
           "direction": "long",
-          "reason": "Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and price trending up despite low volume",
-          "raw": "LONG: Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and price trending up despite low volume.",
+          "reason": "Recent 4/5 bullish candles with weak SMA bias and low volume favor slight upward continuation",
+          "raw": "LONG: Recent 4/5 bullish candles with weak SMA bias and low volume favor slight upward continuation.",
           "error": null,
-          "changed": false,
-          "previous": "long"
+          "changed": true,
+          "previous": "short"
         },
         {
           "name": "GPT-OSS-20B",
           "direction": "long",
-          "reason": "Recent 3/5 candles up, SMA5>20, and price still nudging higher despite low volume",
-          "raw": "LONG: Recent 3/5 candles up, SMA5>20, and price still nudging higher despite low volume.",
+          "reason": "4/5 recent candles up, RSI >45, SMA5>20, bullish bias dominates despite low volume",
+          "raw": "LONG: 4/5 recent candles up, RSI >45, SMA5>20, bullish bias dominates despite low volume.",
           "error": null,
           "changed": false,
           "previous": "long"
@@ -125,8 +138,8 @@
         {
           "name": "GPT-OSS-120B",
           "direction": "long",
-          "reason": "Weak bullish SMA bias dominates despite low volume and mixed 1\u2011minute candles",
-          "raw": "LONG: Weak bullish SMA bias dominates despite low volume and mixed 1\u2011minute candles.",
+          "reason": "Majority bullish candles, RSI above 45, slight upward price trend despite low volume supports a \u2011term rise",
+          "raw": "LONG: Majority bullish candles, RSI above 45, slight upward price trend despite low volume supports a short\u2011term rise.",
           "error": null,
           "changed": false,
           "previous": "long"
@@ -135,31 +148,91 @@
       "consensus": "long",
       "long_votes": 3,
       "short_votes": 0,
-      "timestamp": "2026-05-05T19:21:15.390654"
+      "timestamp": "2026-05-05T19:42:41.160146"
     },
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2370.5,
+      "price": 2371.09,
       "round1": [
         {
           "name": "Mistral",
-          "direction": "short",
-          "reason": "Last 5 candles bearish, price trending down despite weak SMA bullish bias",
-          "raw": "SHORT: Last 5 candles bearish, price trending down despite weak SMA bullish bias.",
+          "direction": "long",
+          "reason": "Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward momentum",
+          "raw": "LONG: Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward momentum.",
           "error": null
         },
         {
           "name": "GPT-OSS-20B",
           "direction": "long",
-          "reason": "3 of last 5 candles bullish, RSI 51.6 >45, weak upward bias, and price has been trending up overall",
-          "raw": "LONG: 3 of last 5 candles bullish, RSI 51.6 >45, weak upward bias, and price has been trending up overall.",
+          "reason": "Recent 4/5 candles up, RSI near neutral, and low volume favors the prevailing bullish bias",
+          "raw": "LONG: Recent 4/5 candles up, RSI near neutral, and low volume favors the prevailing bullish bias.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "long",
+          "reason": "Four of the last five 1\u2011minute candles closed higher, RSI above 45 and price is making higher highs, indicating \u2011term upward momentum",
+          "raw": "LONG: Four of the last five 1\u2011minute candles closed higher, RSI above 45 and price is making higher highs, indicating short\u2011term upward momentum.",
+          "error": null
+        }
+      ],
+      "round2": [
+        {
+          "name": "Mistral",
+          "direction": "long",
+          "reason": "Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward momentum",
+          "raw": "LONG: Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward momentum.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "long",
+          "reason": "4 of last 5 candles up, RSI >45, price making higher highs, weak bearish SMA gap ignored due to prevailing bullish bias",
+          "raw": "LONG: 4 of last 5 candles up, RSI >45, price making higher highs, weak bearish SMA gap ignored due to prevailing bullish bias.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "long",
+          "reason": "4 of last 5 candles bullish, RSI above 45 and price making higher highs indicate \u2011term upward momentum",
+          "raw": "LONG: 4 of last 5 candles bullish, RSI above 45 and price making higher highs indicate short\u2011term upward momentum.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        }
+      ],
+      "consensus": "long",
+      "long_votes": 3,
+      "short_votes": 0,
+      "timestamp": "2026-05-05T19:41:25.243034"
+    },
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2370.27,
+      "round1": [
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "Last 5 candles bearish, RSI 45, weak SMA gap, low volume favors downside",
+          "raw": "SHORT: Last 5 candles bearish, RSI 45, weak SMA gap, low volume favors downside.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "Recent 3/5 bearish candles, RSI 45.0 bearish, low volume and weak SMA5< SMA20 confirm \u2011term downward bias",
+          "raw": "SHORT: Recent 3/5 bearish candles, RSI 45.0 bearish, low volume and weak SMA5< SMA20 confirm short\u2011term downward bias.",
           "error": null
         },
         {
           "name": "GPT-OSS-120B",
           "direction": "short",
-          "reason": "Recent candles show slight downtrend, RSI below 55 and enough bearish closes meet  criteria",
-          "raw": "SHORT: Recent candles show slight downtrend, RSI below 55 and enough bearish closes meet short criteria.",
+          "reason": "Three of the last five 1\u2011minute candles fell, RSI is 45 (<55) and bearish SMA bias suggests downside pressure",
+          "raw": "SHORT: Three of the last five 1\u2011minute candles fell, RSI is 45 (<55) and bearish SMA bias suggests downside pressure.",
           "error": null
         }
       ],
@@ -167,8 +240,17 @@
         {
           "name": "Mistral",
           "direction": "short",
-          "reason": "Last 5 candles bearish, price trending down despite weak SMA bullish bias",
-          "raw": "SHORT: Last 5 candles bearish, price trending down despite weak SMA bullish bias.",
+          "reason": "Last 5 candles bearish, RSI 45, weak SMA gap, low volume favors downside",
+          "raw": "SHORT: Last 5 candles bearish, RSI 45, weak SMA gap, low volume favors downside.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "short",
+          "reason": "Majority bearish candles, RSI 45, SMA5< SMA20 and low volume all point to downward pressure",
+          "raw": "SHORT: Majority bearish candles, RSI 45, SMA5< SMA20 and low volume all point to downward pressure.",
           "error": null,
           "changed": false,
           "previous": "short"
@@ -176,17 +258,8 @@
         {
           "name": "GPT-OSS-20B",
           "direction": "short",
-          "reason": "Recent candles show a slight downtrend, RSI is neutral, and volume is low, so a cautious  edge is preferred",
-          "raw": "SHORT: Recent candles show a slight downtrend, RSI is neutral, and volume is low, so a cautious short edge is preferred.",
-          "error": null,
-          "changed": true,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "Recent down tick and weak bullish bias suggest slight downside in the next 10 minutes",
-          "raw": "SHORT: Recent down tick and weak bullish bias suggest slight downside in the next 10 minutes.",
+          "reason": "Bearish bias confirmed by 3/5 down candles, RSI 45, weak SMA gap, and low volume signals a likely \u2011term decline",
+          "raw": "SHORT: Bearish bias confirmed by 3/5 down candles, RSI 45, weak SMA gap, and low volume signals a likely short\u2011term decline.",
           "error": null,
           "changed": false,
           "previous": "short"
@@ -195,31 +268,271 @@
       "consensus": "short",
       "long_votes": 0,
       "short_votes": 3,
-      "timestamp": "2026-05-05T19:19:45.070842"
+      "timestamp": "2026-05-05T19:40:01.320869"
+    },
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2369.34,
+      "round1": [
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "RSI bearish, 4/5 last 1m candles down, low volume favors downside continuation",
+          "raw": "SHORT: RSI bearish, 4/5 last 1m candles down, low volume favors downside continuation.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "short",
+          "reason": "Four of the last five 1\u2011minute candles fell, RSI is deep bearish, and SMA5 is below SMA20, indicating downward pressure",
+          "raw": "SHORT: Four of the last five 1\u2011minute candles fell, RSI is deep bearish, and SMA5 is below SMA20, indicating downward pressure.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "Bearish bias, 4/5 recent candles down, RSI 37.2, price below recent highs, low volume confirms \u2011term downtrend",
+          "raw": "SHORT: Bearish bias, 4/5 recent candles down, RSI 37.2, price below recent highs, low volume confirms short\u2011term downtrend.",
+          "error": null
+        }
+      ],
+      "round2": [
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "RSI bearish (37.2), 4/5 last 1m candles down, low volume favors downside continuation",
+          "raw": "SHORT: RSI bearish (37.2), 4/5 last 1m candles down, low volume favors downside continuation.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "4 of last 5 candles down, RSI 37.2 bearish, SMA5 below SMA20, low volume confirms \u2011term downside bias",
+          "raw": "SHORT: 4 of last 5 candles down, RSI 37.2 bearish, SMA5 below SMA20, low volume confirms short\u2011term downside bias.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "short",
+          "reason": "Majority of recent 1\u2011min candles down, RSI deep bearish, SMA5< SMA20 and low volume support downside momentum",
+          "raw": "SHORT: Majority of recent 1\u2011min candles down, RSI deep bearish, SMA5< SMA20 and low volume support downside momentum.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        }
+      ],
+      "consensus": "short",
+      "long_votes": 0,
+      "short_votes": 3,
+      "timestamp": "2026-05-05T19:38:38.477201"
+    },
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2369.53,
+      "round1": [
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "4/5 last 1m candles bearish, RSI 44.5, price trending down with low volume",
+          "raw": "SHORT: 4/5 last 1m candles bearish, RSI 44.5, price trending down with low volume.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "short",
+          "reason": "Majority of recent candles are bearish, RSI below 55, and price shows slight downtrend despite low volume",
+          "raw": "SHORT: Majority of recent candles are bearish, RSI below 55, and price shows slight downtrend despite low volume.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "Recent 4/5 bearish candles, RSI below 55, and price is sliding down on weak volume",
+          "raw": "SHORT: Recent 4/5 bearish candles, RSI below 55, and price is sliding down on weak volume.",
+          "error": null
+        }
+      ],
+      "round2": [
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "4/5 last 1m candles bearish, RSI 44.5, price trending down with low volume",
+          "raw": "SHORT: 4/5 last 1m candles bearish, RSI 44.5, price trending down with low volume.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "Recent 4/5 bearish 1\u2011min candles, RSI 44.5, weak volume and SMA5< SMA20 confirm a \u2011term downtrend",
+          "raw": "SHORT: Recent 4/5 bearish 1\u2011min candles, RSI 44.5, weak volume and SMA5< SMA20 confirm a short\u2011term downtrend.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "short",
+          "reason": "4/5 recent 1m candles down, RSI 44.5, SMA5<SMA20, price slipping despite low volume",
+          "raw": "SHORT: 4/5 recent 1m candles down, RSI 44.5, SMA5<SMA20, price slipping despite low volume.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        }
+      ],
+      "consensus": "short",
+      "long_votes": 0,
+      "short_votes": 3,
+      "timestamp": "2026-05-05T19:37:17.152510"
+    },
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2371.0,
+      "round1": [
+        {
+          "name": "Mistral",
+          "direction": "long",
+          "reason": "Recent 5/5 bullish 1m candles, weak SMA gap, and low volume favor upward continuation",
+          "raw": "LONG: Recent 5/5 bullish 1m candles, weak SMA gap, and low volume favor upward continuation.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "long",
+          "reason": "Recent 4/5 candles up, SMA5 > SMA20, low volume but bullish bias dominates, so expect a \u2011term rally",
+          "raw": "LONG: Recent 4/5 candles up, SMA5 > SMA20, low volume but bullish bias dominates, so expect a short\u2011term rally.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "long",
+          "reason": "Majority of recent candles bullish, RSI above 45, price showing slight upward trend despite low volume",
+          "raw": "LONG: Majority of recent candles bullish, RSI above 45, price showing slight upward trend despite low volume.",
+          "error": null
+        }
+      ],
+      "round2": [
+        {
+          "name": "Mistral",
+          "direction": "long",
+          "reason": "Recent 4/5 bullish 1m candles, weak SMA gap, and low volume favor upward continuation",
+          "raw": "LONG: Recent 4/5 bullish 1m candles, weak SMA gap, and low volume favor upward continuation.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "long",
+          "reason": "Recent 4/5 bullish candles, SMA5>20, RSI ~50, and overall trend up despite low volume",
+          "raw": "LONG: Recent 4/5 bullish candles, SMA5>20, RSI ~50, and overall trend up despite low volume.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "long",
+          "reason": "4 of last 5 candles bullish, RSI >45, slight uptrend despite low volume, so price likely rises",
+          "raw": "LONG: 4 of last 5 candles bullish, RSI >45, slight uptrend despite low volume, so price likely rises.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        }
+      ],
+      "consensus": "long",
+      "long_votes": 3,
+      "short_votes": 0,
+      "timestamp": "2026-05-05T19:36:01.997679"
+    },
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2372.16,
+      "round1": [
+        {
+          "name": "Mistral",
+          "direction": "long",
+          "reason": "RSI bullish, 4/5 last 1m candles up, SMA5 > SMA20 despite weak gap",
+          "raw": "LONG: RSI bullish, 4/5 last 1m candles up, SMA5 > SMA20 despite weak gap.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "long",
+          "reason": "Bullish bias, 4/5 recent candles up, RSI in bullish zone, low volume but trend dominates",
+          "raw": "LONG: Bullish bias, 4/5 recent candles up, RSI in bullish zone, low volume but trend dominates.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "long",
+          "reason": "Recent 4 of 5 candles bullish, RSI in bullish zone, SMA slight bullish bias despite low volume, indicating upward momentum",
+          "raw": "LONG: Recent 4 of 5 candles bullish, RSI in bullish zone, SMA slight bullish bias despite low volume, indicating upward momentum.",
+          "error": null
+        }
+      ],
+      "round2": [
+        {
+          "name": "Mistral",
+          "direction": "long",
+          "reason": "RSI bullish, 4/5 last 1m candles up, SMA5 > SMA20 despite weak gap",
+          "raw": "LONG: RSI bullish, 4/5 last 1m candles up, SMA5 > SMA20 despite weak gap.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "long",
+          "reason": "4 of last 5 candles up, RSI in bullish zone, SMA5>20, trend dominates despite low volume",
+          "raw": "LONG: 4 of last 5 candles up, RSI in bullish zone, SMA5>20, trend dominates despite low volume.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "long",
+          "reason": "RSI 61.5, 4/5 candles bullish, SMA5>20, price ticking higher despite low volume",
+          "raw": "LONG: RSI 61.5, 4/5 candles bullish, SMA5>20, price ticking higher despite low volume.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        }
+      ],
+      "consensus": "long",
+      "long_votes": 3,
+      "short_votes": 0,
+      "timestamp": "2026-05-05T19:34:25.915746"
     },
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 1 \u0447\u0430\u0441 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2371.99,
+      "price": 2371.11,
       "round1": [
         {
           "name": "Mistral",
           "direction": "long",
-          "reason": "Last 5 candles 4/5 bullish, RSI 57, price trending up despite weak SMA gap",
-          "raw": "LONG: Last 5 candles 4/5 bullish, RSI 57, price trending up despite weak SMA gap.",
+          "reason": "Recent 5/5 last 1m candles closed up with weak bearish SMA gap, favoring -term bullish momentum",
+          "raw": "LONG: Recent 5/5 last 1m candles closed up with weak bearish SMA gap, favoring short-term bullish momentum.",
           "error": null
         },
         {
           "name": "GPT-OSS-20B",
           "direction": "long",
-          "reason": "Recent 4/5 bullish candles, RSI 57, and weak bearish SMA bias suggest \u2011term upward bias despite low volume",
-          "raw": "LONG: Recent 4/5 bullish candles, RSI 57, and weak bearish SMA bias suggest short\u2011term upward bias despite low volume.",
+          "reason": "Recent 5\u2011minute bullish momentum and weak bearish bias suggest a \u2011term uptrend despite low volume",
+          "raw": "LONG: Recent 5\u2011minute bullish momentum and weak bearish bias suggest a short\u2011term uptrend despite low volume.",
           "error": null
         },
         {
           "name": "GPT-OSS-120B",
           "direction": "long",
-          "reason": "Recent 1\u2011minute candles show 4 of 5 bullish, RSI 57 and price climbing, meeting  criteria despite low volume",
-          "raw": "LONG: Recent 1\u2011minute candles show 4 of 5 bullish, RSI 57 and price climbing, meeting long criteria despite low volume.",
+          "reason": "Recent 4 of 5 one\u2011minute candles bullish, RSI above 45, price edging higher despite low volume, indicating \u2011term upward momentum",
+          "raw": "LONG: Recent 4 of 5 one\u2011minute candles bullish, RSI above 45, price edging higher despite low volume, indicating short\u2011term upward momentum.",
           "error": null
         }
       ],
@@ -227,17 +540,8 @@
         {
           "name": "Mistral",
           "direction": "long",
-          "reason": "Last 5 candles 4/5 bullish, RSI 57, and price trending up despite weak SMA gap",
-          "raw": "LONG: Last 5 candles 4/5 bullish, RSI 57, and price trending up despite weak SMA gap.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "long",
-          "reason": "4 of last 5 candles bullish, RSI 57, price rising, meeting  criteria despite low volume",
-          "raw": "LONG: 4 of last 5 candles bullish, RSI 57, price rising, meeting long criteria despite low volume.",
+          "reason": "Recent 4/5 bullish 1m candles and weak bearish SMA gap favor -term upward momentum",
+          "raw": "LONG: Recent 4/5 bullish 1m candles and weak bearish SMA gap favor short-term upward momentum.",
           "error": null,
           "changed": false,
           "previous": "long"
@@ -245,8 +549,17 @@
         {
           "name": "GPT-OSS-20B",
           "direction": "long",
-          "reason": "RSI 57 and 4 of last 5 1\u2011min candles closed up, giving \u2011term bullish momentum despite weak SMA bias",
-          "raw": "LONG: RSI 57 and 4 of last 5 1\u2011min candles closed up, giving short\u2011term bullish momentum despite weak SMA bias.",
+          "reason": "Recent 4/5 one\u2011minute candles closed up, weak bearish SMA gap, and neutral RSI suggest \u2011term bullish momentum despite low volume",
+          "raw": "LONG: Recent 4/5 one\u2011minute candles closed up, weak bearish SMA gap, and neutral RSI suggest short\u2011term bullish momentum despite low volume.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "long",
+          "reason": "3 of last 5 candles bullish, RSI\u202f>\u202f45 and price edging higher, meeting  entry criteria",
+          "raw": "LONG: 3 of last 5 candles bullish, RSI\u202f>\u202f45 and price edging higher, meeting long entry criteria.",
           "error": null,
           "changed": false,
           "previous": "long"
@@ -255,317 +568,24 @@
       "consensus": "long",
       "long_votes": 3,
       "short_votes": 0,
-      "timestamp": "2026-05-05T19:18:32.662050"
+      "timestamp": "2026-05-05T19:33:54.820784"
     },
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2370.83,
-      "round1": [
-        {
-          "name": "Mistral",
-          "direction": "long",
-          "reason": "Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward continuation",
-          "raw": "LONG: Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward continuation.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "long",
-          "reason": "Recent 5\u2011minute bullish bias, RSI near neutral, and low volume suggests \u2011term momentum still favors an up move",
-          "raw": "LONG: Recent 5\u2011minute bullish bias, RSI near neutral, and low volume suggests short\u2011term momentum still favors an up move.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "long",
-          "reason": "4 of last 5 candles bullish, RSI >45, price edging up; dominant \u2011term momentum favors a rise",
-          "raw": "LONG: 4 of last 5 candles bullish, RSI >45, price edging up; dominant short\u2011term momentum favors a rise.",
-          "error": null
-        }
-      ],
-      "round2": [
-        {
-          "name": "Mistral",
-          "direction": "long",
-          "reason": "Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward continuation",
-          "raw": "LONG: Last 5 candles 4/5 bullish, RSI neutral, weak bearish SMA gap, low volume favors upward continuation.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "long",
-          "reason": "Recent 5\u2011minute bullish bias, 4/5 candles up, RSI >45, weak bearish SMA gap, low volume suggests \u2011term momentum still favors an up move",
-          "raw": "LONG: Recent 5\u2011minute bullish bias, 4/5 candles up, RSI >45, weak bearish SMA gap, low volume suggests short\u2011term momentum still favors an up move.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "long",
-          "reason": "4 of 5 recent candles bullish, RSI above 45, price edging up despite low volume, so upward momentum likely",
-          "raw": "LONG: 4 of 5 recent candles bullish, RSI above 45, price edging up despite low volume, so upward momentum likely.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        }
-      ],
-      "consensus": "long",
-      "long_votes": 3,
-      "short_votes": 0,
-      "timestamp": "2026-05-05T19:17:58.033250"
-    },
-    {
-      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2370.48,
-      "round1": [
-        {
-          "name": "Mistral",
-          "direction": "long",
-          "reason": "Recent 5 candles show 4 bullish closes and price holding above SMA5/SMA20",
-          "raw": "LONG: Recent 5 candles show 4 bullish closes and price holding above SMA5/SMA20.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "long",
-          "reason": "Recent 5\u2011minute candles mostly bullish, price nudging up, and weak bearish SMA bias; low volume but prevailing up\u2011trend suggests a \u2011term rally",
-          "raw": "LONG: Recent 5\u2011minute candles mostly bullish, price nudging up, and weak bearish SMA bias; low volume but prevailing up\u2011trend suggests a short\u2011term rally.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "long",
-          "reason": "Four of the last five 1\u2011min candles closed higher, RSI above 45 and price is rising, indicating \u2011term upward momentum",
-          "raw": "LONG: Four of the last five 1\u2011min candles closed higher, RSI above 45 and price is rising, indicating short\u2011term upward momentum.",
-          "error": null
-        }
-      ],
-      "round2": [
-        {
-          "name": "Mistral",
-          "direction": "long",
-          "reason": "4/5 last 1m candles bullish, price holding above SMAs, weak bearish bias, low volume favors prevailing up-trend",
-          "raw": "LONG: 4/5 last 1m candles bullish, price holding above SMAs, weak bearish bias, low volume favors prevailing up-trend.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "long",
-          "reason": "4 of last 5 candles closed up, RSI >45, price above weak bearish SMA bias, suggesting \u2011term bullish momentum",
-          "raw": "LONG: 4 of last 5 candles closed up, RSI >45, price above weak bearish SMA bias, suggesting short\u2011term bullish momentum.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "long",
-          "reason": "Four of five 1\u2011min candles bullish, RSI\u202f48.6\u202f>\u202f45 and price rising, outweighing weak bearish SMA bias",
-          "raw": "LONG: Four of five 1\u2011min candles bullish, RSI\u202f48.6\u202f>\u202f45 and price rising, outweighing weak bearish SMA bias.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        }
-      ],
-      "consensus": "long",
-      "long_votes": 3,
-      "short_votes": 0,
-      "timestamp": "2026-05-05T19:17:46.423032"
-    },
-    {
-      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2368.84,
-      "round1": [
-        {
-          "name": "Mistral",
-          "direction": "long",
-          "reason": "Recent 1m candles show 3/5 bullish closes with weak bearish SMA/R but low volume favors upward continuation",
-          "raw": "LONG: Recent 1m candles show 3/5 bullish closes with weak bearish SMA/R but low volume favors upward continuation.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "Bearish bias persists, RSI below 45, low volume and recent downtrend outweigh brief bullish candles",
-          "raw": "SHORT: Bearish bias persists, RSI below 45, low volume and recent downtrend outweigh brief bullish candles.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "Low volume and bearish SMA alignment outweigh mixed recent candles, indicating downside pressure",
-          "raw": "SHORT: Low volume and bearish SMA alignment outweigh mixed recent candles, indicating downside pressure.",
-          "error": null
-        }
-      ],
-      "round2": [
-        {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "Bearish SMA/R, RSI 39.8, and recent downtrend outweigh weak bullish candles; low volume confirms caution",
-          "raw": "SHORT: Bearish SMA/R, RSI 39.8, and recent downtrend outweigh weak bullish candles; low volume confirms caution.",
-          "error": null,
-          "changed": true,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "RSI below 45, weak bearish SMA, low volume and recent downtrend outweigh brief bullish candles",
-          "raw": "SHORT: RSI below 45, weak bearish SMA, low volume and recent downtrend outweigh brief bullish candles.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "Dominant bearish SMA and low RSI outweigh mixed bullish candles, indicating downside pressure",
-          "raw": "SHORT: Dominant bearish SMA and low RSI outweigh mixed bullish candles, indicating downside pressure.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        }
-      ],
-      "consensus": "short",
-      "long_votes": 0,
-      "short_votes": 3,
-      "timestamp": "2026-05-05T19:16:34.146780"
-    },
-    {
-      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2368.91,
+      "price": 2371.09,
       "round1": [
         {
           "name": "Mistral",
           "direction": "short",
-          "reason": "RSI bearish, 4/5 last 1m candles down, SMA5 < SMA20, low volume",
-          "raw": "SHORT: RSI bearish, 4/5 last 1m candles down, SMA5 < SMA20, low volume.",
+          "reason": "Last 5 candles bearish, price below SMA5, weak volume but dominant downtrend",
+          "raw": "SHORT: Last 5 candles bearish, price below SMA5, weak volume but dominant downtrend.",
           "error": null
         },
         {
           "name": "GPT-OSS-20B",
           "direction": "short",
-          "reason": "Recent 4/5 bearish candles, RSI in bearish zone, weak SMA5< SMA20, and low volume confirm  momentum",
-          "raw": "SHORT: Recent 4/5 bearish candles, RSI in bearish zone, weak SMA5< SMA20, and low volume confirm short momentum.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "Three of the last five candles are bearish, RSI is deep in bearish zone, and SMA5 is below SMA20 indicating downside",
-          "raw": "SHORT: Three of the last five candles are bearish, RSI is deep in bearish zone, and SMA5 is below SMA20 indicating downside.",
-          "error": null
-        }
-      ],
-      "round2": [
-        {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "RSI bearish, 4/5 last 1m candles down, SMA5 < SMA20, low volume confirms downside momentum",
-          "raw": "SHORT: RSI bearish, 4/5 last 1m candles down, SMA5 < SMA20, low volume confirms downside momentum.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "RSI in bearish zone, 4/5 recent candles down, SMA5 below SMA20, low volume confirms  bias",
-          "raw": "SHORT: RSI in bearish zone, 4/5 recent candles down, SMA5 below SMA20, low volume confirms short bias.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "4 of 5 recent 1m candles down, RSI 36.9 bearish, SMA5< SMA20, low volume confirms downside",
-          "raw": "SHORT: 4 of 5 recent 1m candles down, RSI 36.9 bearish, SMA5< SMA20, low volume confirms downside.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        }
-      ],
-      "consensus": "short",
-      "long_votes": 0,
-      "short_votes": 3,
-      "timestamp": "2026-05-05T19:15:11.947447"
-    },
-    {
-      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2368.45,
-      "round1": [
-        {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "RSI bearish, 3/5 last 1m candles down, price trending lower despite weak volume",
-          "raw": "SHORT: RSI bearish, 3/5 last 1m candles down, price trending lower despite weak volume.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "RSI in bearish zone, 4 of last 5 candles down, SMA5 below SMA20, weak trend and low volume confirm  bias",
-          "raw": "SHORT: RSI in bearish zone, 4 of last 5 candles down, SMA5 below SMA20, weak trend and low volume confirm short bias.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "Majority of recent candles are bearish, RSI deep in down zone, and SMA bias points lower, indicating further  pressure",
-          "raw": "SHORT: Majority of recent candles are bearish, RSI deep in down zone, and SMA bias points lower, indicating further short pressure.",
-          "error": null
-        }
-      ],
-      "round2": [
-        {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "RSI bearish, 4/5 last 1m candles down, price trending lower despite weak volume",
-          "raw": "SHORT: RSI bearish, 4/5 last 1m candles down, price trending lower despite weak volume.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "RSI 35.8 bearish, 4 of last 5 1\u2011min candles down, SMA5 below SMA20, weak volume confirms downward bias",
-          "raw": "SHORT: RSI 35.8 bearish, 4 of last 5 1\u2011min candles down, SMA5 below SMA20, weak volume confirms downward bias.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "RSI deep bearish, 4 of 5 one\u2011minute candles down, SMA5\u202f<\u202fSMA20 and price slipping despite low volume",
-          "raw": "SHORT: RSI deep bearish, 4 of 5 one\u2011minute candles down, SMA5\u202f<\u202fSMA20 and price slipping despite low volume.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        }
-      ],
-      "consensus": "short",
-      "long_votes": 0,
-      "short_votes": 3,
-      "timestamp": "2026-05-05T19:13:45.740955"
-    },
-    {
-      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2369.66,
-      "round1": [
-        {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "Last 5 candles bearish, RSI 43, low volume, price trending down",
-          "raw": "SHORT: Last 5 candles bearish, RSI 43, low volume, price trending down.",
+          "reason": "Recent 3/5 candles bearish, SMA5 below SMA20, low volume and sideways trend suggest a  move",
+          "raw": "SHORT: Recent 3/5 candles bearish, SMA5 below SMA20, low volume and sideways trend suggest a short move.",
           "error": null
         },
         {
@@ -576,17 +596,10 @@
           "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
         },
         {
-          "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "3 of last 5 candles bearish, RSI 43, price below recent highs \u2013 \u2011term momentum points down",
-          "raw": "SHORT: 3 of last 5 candles bearish, RSI 43, price below recent highs \u2013 short\u2011term momentum points down.",
-          "error": null
-        },
-        {
           "name": "GPT-OSS-120B",
-          "direction": "short",
-          "reason": "Three of the last five candles fell, RSI is bearish (43) and SMA5< SMA20, indicating downward pressure",
-          "raw": "SHORT: Three of the last five candles fell, RSI is bearish (43) and SMA5< SMA20, indicating downward pressure.",
+          "direction": "long",
+          "reason": "Three of the last five 1\u2011min candles are bullish, RSI is above 45, and price is rising despite low volume",
+          "raw": "LONG: Three of the last five 1\u2011min candles are bullish, RSI is above 45, and price is rising despite low volume.",
           "error": null
         }
       ],
@@ -594,40 +607,47 @@
         {
           "name": "Mistral",
           "direction": "short",
-          "reason": "Last 5 candles bearish, RSI 43, low volume, price trending down",
-          "raw": "SHORT: Last 5 candles bearish, RSI 43, low volume, price trending down.",
+          "reason": "Last 5 candles bearish, price below SMA5, weak volume but dominant downtrend suggests -term decline",
+          "raw": "SHORT: Last 5 candles bearish, price below SMA5, weak volume but dominant downtrend suggests short-term decline.",
           "error": null,
           "changed": false,
           "previous": "short"
         },
         {
           "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "3 of last 5 candles bearish, RSI 43, SMA5<SMA20, low volume confirms weak downtrend",
-          "raw": "SHORT: 3 of last 5 candles bearish, RSI 43, SMA5<SMA20, low volume confirms weak downtrend.",
+          "direction": "long",
+          "reason": "3 of last 5 candles bullish, RSI 53.3 >45, price is up, so \u2011term momentum favors a rise",
+          "raw": "LONG: 3 of last 5 candles bullish, RSI 53.3 >45, price is up, so short\u2011term momentum favors a rise.",
           "error": null,
-          "changed": false,
+          "changed": true,
           "previous": "short"
         },
         {
           "name": "GPT-OSS-120B",
           "direction": "short",
-          "reason": "3+ of last 5 candles down, RSI 43, SMA5<SMA20, low volume confirms bearish \u2011term bias",
-          "raw": "SHORT: 3+ of last 5 candles down, RSI 43, SMA5<SMA20, low volume confirms bearish short\u2011term bias.",
+          "reason": "Three of five recent candles are bearish, RSI under 55, and dominant downtrend outweighs low\u2011volume uncertainty",
+          "raw": "SHORT: Three of five recent candles are bearish, RSI under 55, and dominant downtrend outweighs low\u2011volume uncertainty.",
           "error": null,
-          "changed": false,
-          "previous": "short"
+          "changed": true,
+          "previous": "long"
         }
       ],
       "consensus": "short",
-      "long_votes": 0,
-      "short_votes": 3,
-      "timestamp": "2026-05-05T19:12:23.169338"
+      "long_votes": 1,
+      "short_votes": 2,
+      "timestamp": "2026-05-05T19:33:06.313901"
     },
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2370.18,
+      "price": 2370.22,
       "round1": [
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+        },
         {
           "name": "Gemini",
           "direction": "unknown",
@@ -637,13 +657,6 @@
         },
         {
           "name": "DeepSeek",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
-        },
-        {
-          "name": "Grok",
           "direction": "unknown",
           "reason": "",
           "raw": "",
@@ -664,13 +677,6 @@
           "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
         },
         {
-          "name": "Gemma-31B",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
-        },
-        {
           "name": "ChatGPT",
           "direction": "unknown",
           "reason": "",
@@ -678,7 +684,28 @@
           "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447"
         },
         {
+          "name": "Gemma-31B",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
           "name": "LLaMA-70B",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "4/5 last 1m candles bearish, RSI 42.3, low volume favors downside continuation",
+          "raw": "SHORT: 4/5 last 1m candles bearish, RSI 42.3, low volume favors downside continuation.",
+          "error": null
+        },
+        {
+          "name": "Hermes-405B",
           "direction": "unknown",
           "reason": "",
           "raw": "",
@@ -692,38 +719,24 @@
           "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
         },
         {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "RSI bearish, 3/5 last 1m candles down, weak volume favors downside continuation",
-          "raw": "SHORT: RSI bearish, 3/5 last 1m candles down, weak volume favors downside continuation.",
-          "error": null
-        },
-        {
-          "name": "Hermes-405B",
+          "name": "OpenRouter-Free",
           "direction": "unknown",
           "reason": "",
           "raw": "",
-          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+          "error": "\u041d\u0435\u0442 \u0441\u0440\u0435\u0434\u0441\u0442\u0432 \u043d\u0430 \u0441\u0447\u0451\u0442\u0435"
         },
         {
           "name": "GPT-OSS-20B",
           "direction": "short",
-          "reason": "Bearish bias, RSI 42.4, 3 of last 5 candles down, price slightly declining, low volume confirms -term downward momentum",
-          "raw": "SHORT: Bearish bias, RSI 42.4, 3 of last 5 candles down, price slightly declining, low volume confirms short-term downward momentum.",
+          "reason": "Recent 4/5 bearish candles, RSI in bearish zone, and low volume suggest a \u2011term pullback",
+          "raw": "SHORT: Recent 4/5 bearish candles, RSI in bearish zone, and low volume suggest a short\u2011term pullback.",
           "error": null
         },
         {
           "name": "GPT-OSS-120B",
           "direction": "short",
-          "reason": "RSI bearish, SMA5<SMA20 and price slipping despite low volume, indicating \u2011term downside",
-          "raw": "SHORT: RSI bearish, SMA5<SMA20 and price slipping despite low volume, indicating short\u2011term downside.",
-          "error": null
-        },
-        {
-          "name": "OpenRouter-Free",
-          "direction": "short",
-          "reason": "3 of last 5 candles fell, RSI in bearish zone, and SMA5 below SMA20 indicate downward pressure",
-          "raw": "SHORT: 3 of last 5 candles fell, RSI in bearish zone, and SMA5 below SMA20 indicate downward pressure.",
+          "reason": "4 of last 5 candles fell, RSI in bearish zone, price trending down despite weak bullish SMA bias",
+          "raw": "SHORT: 4 of last 5 candles fell, RSI in bearish zone, price trending down despite weak bullish SMA bias.",
           "error": null
         }
       ],
@@ -731,17 +744,8 @@
         {
           "name": "Mistral",
           "direction": "short",
-          "reason": "RSI bearish (42.4), 3/5 last 1m candles down, weak volume favors downside continuation",
-          "raw": "SHORT: RSI bearish (42.4), 3/5 last 1m candles down, weak volume favors downside continuation.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "short",
-          "reason": "RSI 42.4 bearish, 3/5 recent candles down, SMA5<SMA20, low volume confirms \u2011term downward momentum",
-          "raw": "SHORT: RSI 42.4 bearish, 3/5 recent candles down, SMA5<SMA20, low volume confirms short\u2011term downward momentum.",
+          "reason": "4/5 last 1m candles bearish, RSI 42.3, low volume favors downside continuation",
+          "raw": "SHORT: 4/5 last 1m candles bearish, RSI 42.3, low volume favors downside continuation.",
           "error": null,
           "changed": false,
           "previous": "short"
@@ -749,8 +753,17 @@
         {
           "name": "GPT-OSS-120B",
           "direction": "short",
-          "reason": "RSI 42.4, 3 of 5 recent 1m candles down, SMA5<SMA20 and low volume support bearish momentum",
-          "raw": "SHORT: RSI 42.4, 3 of 5 recent 1m candles down, SMA5<SMA20 and low volume support bearish momentum.",
+          "reason": "4/5 bearish candles, RSI 42.3, low volume and downtrend outweigh weak bullish SMA bias",
+          "raw": "SHORT: 4/5 bearish candles, RSI 42.3, low volume and downtrend outweigh weak bullish SMA bias.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "4 of last 5 candles bearish, RSI 42.3 in bearish zone, low volume and weak bullish SMA bias confirm \u2011term downside",
+          "raw": "SHORT: 4 of last 5 candles bearish, RSI 42.3 in bearish zone, low volume and weak bullish SMA bias confirm short\u2011term downside.",
           "error": null,
           "changed": false,
           "previous": "short"
@@ -758,42 +771,42 @@
         {
           "name": "OpenRouter-Free",
           "direction": "short",
-          "reason": "RSI bearish (42.4), 3/5 last candles down, SMA5<SMA20, and downward momentum favor s despite low volume",
-          "raw": "SHORT: RSI bearish (42.4), 3/5 last candles down, SMA5<SMA20, and downward momentum favor shorts despite low volume.",
+          "reason": "4/5 recent 1m candles down, RSI 42.3 bearish, low volume supports downside momentum",
+          "raw": "SHORT: 4/5 recent 1m candles down, RSI 42.3 bearish, low volume supports downside momentum.",
           "error": null,
           "changed": false,
-          "previous": "short"
+          "previous": "unknown"
         }
       ],
       "consensus": "short",
       "long_votes": 0,
       "short_votes": 4,
-      "timestamp": "2026-05-05T19:11:06.144525"
+      "timestamp": "2026-05-05T19:31:44.038192"
     }
   ],
   "last_meeting": {
     "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-    "price": 2370.59,
+    "price": 2371.2,
     "round1": [
       {
         "name": "Mistral",
-        "direction": "long",
-        "reason": "Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and prior  trade was profitable",
-        "raw": "LONG: Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and prior LONG trade was profitable.",
+        "direction": "short",
+        "reason": "Recent 5 candles show 4 bullish but RSI neutral and low volume; dominant trend favors slight downward pressure",
+        "raw": "SHORT: Recent 5 candles show 4 bullish but RSI neutral and low volume; dominant trend favors slight downward pressure.",
         "error": null
       },
       {
         "name": "GPT-OSS-20B",
         "direction": "long",
-        "reason": "Recent 5\u2011minute trend bullish (3/5 up), RSI >45, price still nudging higher despite low volume",
-        "raw": "LONG: Recent 5\u2011minute trend bullish (3/5 up), RSI >45, price still nudging higher despite low volume.",
+        "reason": "Recent 4/5 candles up, SMA5>20, weak bullish bias, low volume but trend dominates, so expect a \u2011term rally",
+        "raw": "LONG: Recent 4/5 candles up, SMA5>20, weak bullish bias, low volume but trend dominates, so expect a short\u2011term rally.",
         "error": null
       },
       {
         "name": "GPT-OSS-120B",
         "direction": "long",
-        "reason": "Weak bullish SMA bias and recent upward micro\u2011move suggest price may edge higher in the next 10 minutes",
-        "raw": "LONG: Weak bullish SMA bias and recent upward micro\u2011move suggest price may edge higher in the next 10 minutes.",
+        "reason": "Majority of recent candles bullish, RSI above 45, price showing slight upward trend despite low volume",
+        "raw": "LONG: Majority of recent candles bullish, RSI above 45, price showing slight upward trend despite low volume.",
         "error": null
       }
     ],
@@ -801,17 +814,17 @@
       {
         "name": "Mistral",
         "direction": "long",
-        "reason": "Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and price trending up despite low volume",
-        "raw": "LONG: Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and price trending up despite low volume.",
+        "reason": "Recent 4/5 bullish candles with weak SMA bias and low volume favor slight upward continuation",
+        "raw": "LONG: Recent 4/5 bullish candles with weak SMA bias and low volume favor slight upward continuation.",
         "error": null,
-        "changed": false,
-        "previous": "long"
+        "changed": true,
+        "previous": "short"
       },
       {
         "name": "GPT-OSS-20B",
         "direction": "long",
-        "reason": "Recent 3/5 candles up, SMA5>20, and price still nudging higher despite low volume",
-        "raw": "LONG: Recent 3/5 candles up, SMA5>20, and price still nudging higher despite low volume.",
+        "reason": "4/5 recent candles up, RSI >45, SMA5>20, bullish bias dominates despite low volume",
+        "raw": "LONG: 4/5 recent candles up, RSI >45, SMA5>20, bullish bias dominates despite low volume.",
         "error": null,
         "changed": false,
         "previous": "long"
@@ -819,8 +832,8 @@
       {
         "name": "GPT-OSS-120B",
         "direction": "long",
-        "reason": "Weak bullish SMA bias dominates despite low volume and mixed 1\u2011minute candles",
-        "raw": "LONG: Weak bullish SMA bias dominates despite low volume and mixed 1\u2011minute candles.",
+        "reason": "Majority bullish candles, RSI above 45, slight upward price trend despite low volume supports a \u2011term rise",
+        "raw": "LONG: Majority bullish candles, RSI above 45, slight upward price trend despite low volume supports a short\u2011term rise.",
         "error": null,
         "changed": false,
         "previous": "long"
@@ -829,7 +842,7 @@
     "consensus": "long",
     "long_votes": 3,
     "short_votes": 0,
-    "timestamp": "2026-05-05T19:21:15.390654"
+    "timestamp": "2026-05-05T19:42:41.160146"
   },
   "ai_poll": {
     "consensus": "long",
@@ -839,17 +852,17 @@
       {
         "name": "Mistral",
         "direction": "long",
-        "reason": "Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and price trending up despite low volume",
-        "raw": "LONG: Recent 5 candles show 3/5 bullish, SMA5 > SMA20, and price trending up despite low volume.",
+        "reason": "Recent 4/5 bullish candles with weak SMA bias and low volume favor slight upward continuation",
+        "raw": "LONG: Recent 4/5 bullish candles with weak SMA bias and low volume favor slight upward continuation.",
         "error": null,
-        "changed": false,
-        "previous": "long"
+        "changed": true,
+        "previous": "short"
       },
       {
         "name": "GPT-OSS-20B",
         "direction": "long",
-        "reason": "Recent 3/5 candles up, SMA5>20, and price still nudging higher despite low volume",
-        "raw": "LONG: Recent 3/5 candles up, SMA5>20, and price still nudging higher despite low volume.",
+        "reason": "4/5 recent candles up, RSI >45, SMA5>20, bullish bias dominates despite low volume",
+        "raw": "LONG: 4/5 recent candles up, RSI >45, SMA5>20, bullish bias dominates despite low volume.",
         "error": null,
         "changed": false,
         "previous": "long"
@@ -857,16 +870,17 @@
       {
         "name": "GPT-OSS-120B",
         "direction": "long",
-        "reason": "Weak bullish SMA bias dominates despite low volume and mixed 1\u2011minute candles",
-        "raw": "LONG: Weak bullish SMA bias dominates despite low volume and mixed 1\u2011minute candles.",
+        "reason": "Majority bullish candles, RSI above 45, slight upward price trend despite low volume supports a \u2011term rise",
+        "raw": "LONG: Majority bullish candles, RSI above 45, slight upward price trend despite low volume supports a short\u2011term rise.",
         "error": null,
         "changed": false,
         "previous": "long"
       }
     ]
   },
-  "last_trade_analysis": "Direction: LONG \u2192 Result: WIN (PnL: $+8.00)\nEntry: $2369.99 \u2192 Exit: $2372.14 (price moved UP by 0.091%)\nThe previous signal was CORRECT \u2014 trend may continue.",
+  "last_trade_analysis": "Direction: LONG \u2192 Result: LOSE (PnL: $-10.00)\nEntry: $2370.82 \u2192 Exit: $2370.22 (price moved DOWN by 0.025%)\nThe previous signal was WRONG \u2014 consider if a reversal is still in play.",
   "in_position": false,
   "position": null,
-  "telegram_trade_counter": 3
+  "telegram_trade_counter": 4,
+  "skip_council_count": 1
 }

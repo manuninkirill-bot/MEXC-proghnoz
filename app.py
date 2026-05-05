@@ -6,7 +6,7 @@ from flask import Flask, render_template, jsonify, request, session, redirect, u
 import threading
 from datetime import datetime
 import pandas as pd
-from trading_bot import TradingBot, state
+from trading_bot import TradingBot, state, _position_lock
 from telegram_notifications import TelegramNotifier
 
 # Загружаем переменные окружения из .env файла
@@ -118,10 +118,18 @@ def start_sar_updater():
 @app.route('/')
 def index():
     """Главная страница - дашборд"""
+    init_price = state.get('last_known_price', 0.0)
+    if bot_instance and not init_price:
+        try:
+            init_price = bot_instance.get_current_price() or 0.0
+        except Exception:
+            pass
     return render_template(
         'dashboard.html',
         init_balance=state.get('balance', 100.0),
         init_available=state.get('available', 100.0),
+        init_price=init_price,
+        bot_running=bot_running,
     )
 
 @app.route('/webapp')
@@ -142,12 +150,15 @@ def api_status():
         if not directions or all(v is None for v in directions.values()):
             directions = state.get('sar_directions', {tf: None for tf in ['1m', '3m', '5m', '15m', '30m']})
         
-        # Получаем текущую цену (из апдейтера или бота)
-        current_price = (
-            bot_instance.get_current_price()
-            if bot_instance
-            else state.get('last_known_price', 0.0)
-        )
+        # Получаем текущую цену; fallback на last_known_price если API недоступен
+        current_price = state.get('last_known_price', 0.0)
+        if bot_instance:
+            try:
+                p = bot_instance.get_current_price()
+                if p:
+                    current_price = p
+            except Exception:
+                pass
         
         return jsonify({
             'bot_running': bot_running,
@@ -494,10 +505,6 @@ def api_ai_open_position():
     if side not in ('long', 'short'):
         return jsonify({'error': 'Invalid side'}), 400
 
-    # Только одна позиция одновременно
-    if state.get('positions'):
-        return jsonify({'error': 'Позиция уже открыта — одновременно разрешена только одна'}), 409
-
     current_price = state.get('last_known_price', 2300.0)
     if bot_instance:
         try:
@@ -517,8 +524,12 @@ def api_ai_open_position():
         'bet': state.get('bet', 5.0),
         'source': 'ai',
     }
-    state.setdefault('positions', []).append(pos)
-    state['available'] = max(0.0, state.get('available', 1000) - pos['bet'])
+    # Под блокировкой: исключает гонку с bot strategy_loop
+    with _position_lock:
+        if state.get('positions'):
+            return jsonify({'error': 'Позиция уже открыта — одновременно разрешена только одна'}), 409
+        state.setdefault('positions', []).append(pos)
+        state['available'] = max(0.0, state.get('available', 1000) - pos['bet'])
     logging.info(f"AI position opened: {side} @ ${current_price:.2f}")
     return jsonify({'message': f'Position {side.upper()} opened', 'position': pos})
 
