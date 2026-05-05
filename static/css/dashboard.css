@@ -953,7 +953,7 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 .ai-icon--openrouter { background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; }
 .ai-icon--mistral    { background: linear-gradient(135deg, #ff7000, #ffb347); color: #fff; }
 .ai-server-free {
-    display: inline-block;
+    display: none;
     font-size: 8px;
     font-weight: 800;
     color: var(--green);
@@ -964,6 +964,10 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
     margin-left: 4px;
     letter-spacing: 0.5px;
     vertical-align: middle;
+}
+.ai-card--long .ai-server-free,
+.ai-card--short .ai-server-free {
+    display: inline-block;
 }
 .ai-badge--error   {
     color: var(--red);

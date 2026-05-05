@@ -2,10 +2,51 @@ import os
 import json
 import logging
 import requests
+import time
 from datetime import datetime
 import concurrent.futures
 
 logger = logging.getLogger(__name__)
+
+# ── AI status cache ──────────────────────────────────────────────
+# Tracks which AIs are available. Values:
+#   "ok"       — worked last time, include always
+#   "no_key"   — no API key configured, skip forever (until restart)
+#   "bad_key"  — wrong API key, skip forever
+#   "quota"    — quota exceeded, skip until _ai_status_until[name]
+_ai_status: dict[str, str] = {}
+_ai_status_until: dict[str, float] = {}   # epoch time when quota ban expires
+_QUOTA_BAN_SEC = 7200   # 2 hours
+
+
+def _update_ai_status(name: str, error: str | None) -> None:
+    """Update AI health cache based on response error."""
+    if not error:
+        _ai_status[name] = "ok"
+        _ai_status_until.pop(name, None)
+        return
+    e = error.lower()
+    if "api-ключ не задан" in e or "api key not set" in e:
+        _ai_status[name] = "no_key"
+    elif "неверный api-ключ" in e or "invalid" in e or "unauthorized" in e:
+        _ai_status[name] = "bad_key"
+    elif "квота" in e or "quota" in e or "rate" in e or "429" in e or "provider returned error" in e:
+        _ai_status[name] = "quota"
+        _ai_status_until[name] = time.time() + _QUOTA_BAN_SEC
+    # other transient errors — don't change status
+
+
+def _is_ai_available(name: str) -> bool:
+    """Return True if AI should be queried right now."""
+    status = _ai_status.get(name, "unknown")
+    if status in ("no_key", "bad_key"):
+        return False
+    if status == "quota":
+        if time.time() < _ai_status_until.get(name, 0):
+            return False
+        # quota ban expired — try again
+        _ai_status[name] = "unknown"
+    return True
 
 
 def _pct(a: float, b: float) -> float:
@@ -380,7 +421,9 @@ def _ask_openrouter_model(name: str, model: str, prompt: str, max_tokens: int = 
             timeout=30,
         )
         if resp.status_code == 200:
-            raw = resp.json()["choices"][0]["message"]["content"]
+            raw = resp.json()["choices"][0]["message"].get("content") or ""
+            if not raw:
+                return {"name": name, "direction": "unknown", "raw": "", "error": "Пустой ответ"}
             return {"name": name, "direction": _parse_direction(raw), "raw": raw, "error": None}
         err = f"HTTP {resp.status_code}: {resp.text[:200]}"
         return {"name": name, "direction": "unknown", "raw": "", "error": _friendly_error(err)}
@@ -518,34 +561,47 @@ def _build_council_prompt_round2(price: float, candles_1m: list, candles_5m: lis
 
 
 def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
-    """Запускает все AI параллельно с указанным размером ответа. Возвращает список с direction+reason."""
-    askers = {
+    """Запускает только доступные AI параллельно. Недоступные (нет ключа / квота) пропускаются."""
+    all_askers = {
         # Прямые API
-        "ChatGPT":        ask_chatgpt,
-        "Gemini":         ask_gemini,
-        "Grok":           ask_grok,
-        "DeepSeek":       ask_deepseek,
-        "Groq":           ask_groq,
-        "Mistral":        ask_mistral,
-        # OpenRouter — все модели через один ключ (работают по мере доступности лимитов)
-        "GPT-OSS-120B":   ask_or_gpt120b,
-        "GPT-OSS-20B":    ask_or_gpt20b,
-        "Nemotron-120B":  ask_or_nemotron,
-        "Hermes-405B":    ask_or_hermes,
-        "LLaMA-70B":      ask_or_llama,
-        "Gemma-31B":      ask_or_gemma,
-        "Qwen-80B":       ask_or_qwen,
+        "ChatGPT":         ask_chatgpt,
+        "Gemini":          ask_gemini,
+        "Grok":            ask_grok,
+        "DeepSeek":        ask_deepseek,
+        "Groq":            ask_groq,
+        "Mistral":         ask_mistral,
+        # OpenRouter
+        "GPT-OSS-120B":    ask_or_gpt120b,
+        "GPT-OSS-20B":     ask_or_gpt20b,
+        "Nemotron-120B":   ask_or_nemotron,
+        "Hermes-405B":     ask_or_hermes,
+        "LLaMA-70B":       ask_or_llama,
+        "Gemma-31B":       ask_or_gemma,
+        "Qwen-80B":        ask_or_qwen,
         "OpenRouter-Free": ask_openrouter,
     }
+
+    # Фильтруем: пропускаем известно недоступные
+    askers = {n: fn for n, fn in all_askers.items() if _is_ai_available(n)}
+    skipped = [n for n in all_askers if not _is_ai_available(n)]
+    if skipped:
+        logger.debug(f"⏭️ Пропущены недоступные AI: {', '.join(skipped)}")
+    logger.info(f"🤖 Запрашиваем {len(askers)} AI: {', '.join(askers)}")
+
     out = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=14) as ex:
+    if not askers:
+        logger.warning("⚠️ Нет доступных AI для опроса!")
+        return out
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(askers)) as ex:
         futures = {ex.submit(fn, prompt, max_tokens): name for name, fn in askers.items()}
         for fut in concurrent.futures.as_completed(futures):
             name = futures[fut]
             try:
                 r = fut.result()
+                err = r.get("error")
+                _update_ai_status(name, err)
                 d, reason = _parse_direction_and_reason(r.get("raw", ""))
-                # если parse не сработал, используем поле direction из ответа
                 if d == "unknown" and r.get("direction") in ("long", "short"):
                     d = r["direction"]
                 out.append({
@@ -553,7 +609,7 @@ def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
                     "direction": d,
                     "reason": reason,
                     "raw": r.get("raw", ""),
-                    "error": r.get("error"),
+                    "error": err,
                 })
             except Exception as e:
                 out.append({"name": name, "direction": "unknown", "reason": "", "raw": "", "error": str(e)})

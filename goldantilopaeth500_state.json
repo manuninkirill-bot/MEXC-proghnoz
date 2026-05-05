@@ -1,49 +1,13 @@
 {
-  "balance": 80.0,
-  "available": 70.0,
-  "positions": [
-    {
-      "side": "long",
-      "entry_price": 2363.94,
-      "size_base": 0.004230225809453709,
-      "notional": 10.0,
-      "entry_time": "2026-05-05T18:01:26.332875",
-      "close_time_seconds": 600,
-      "trade_number": 17,
-      "bet": 10.0
-    }
-  ],
+  "balance": 100.0,
+  "available": 100.0,
+  "positions": [],
   "last_trade_time": "2026-05-05T18:01:26.332875",
   "last_1m_dir": null,
   "one_min_flip_count": 0,
   "skip_next_signal": false,
   "counter_trade": false,
-  "trades": [
-    {
-      "time": "2026-05-05T17:54:30.167014",
-      "side": "short",
-      "entry_price": 2361.94,
-      "exit_price": 2362.1,
-      "size_base": 0.0042338078020610175,
-      "pnl": -10.0,
-      "notional": 10.0,
-      "duration": "10\u043c 3\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-05-05T17:44:22.332637",
-      "side": "short",
-      "entry_price": 2360.6,
-      "exit_price": 2361.64,
-      "size_base": 0.004236211132762857,
-      "pnl": -10.0,
-      "notional": 10.0,
-      "duration": "10\u043c 4\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    }
-  ],
+  "trades": [],
   "bet": 10.0,
   "trade_duration": 600,
   "strategy_level": 3,
@@ -68,12 +32,12 @@
   },
   "sar_directions": {
     "1m": "long",
-    "3m": "short",
-    "5m": "short",
+    "3m": "long",
+    "5m": "long",
     "15m": "short",
     "30m": "short"
   },
-  "last_known_price": 2363.94,
+  "last_known_price": 2370.54,
   "bot_was_running": true,
   "council_running": true,
   "meetings": [
@@ -1512,6 +1476,7 @@
       }
     ]
   },
-  "telegram_trade_counter": 17,
-  "last_trade_analysis": "Direction: SHORT \u2192 Result: LOSE (PnL: $-10.00)\nEntry: $2361.94 \u2192 Exit: $2362.10 (price moved UP by 0.007%)\nThe previous signal was WRONG \u2014 consider if a reversal is still in play."
+  "last_trade_analysis": "Direction: SHORT \u2192 Result: LOSE (PnL: $-10.00)\nEntry: $2361.94 \u2192 Exit: $2362.10 (price moved UP by 0.007%)\nThe previous signal was WRONG \u2014 consider if a reversal is still in play.",
+  "in_position": false,
+  "position": null
 }
