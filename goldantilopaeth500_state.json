@@ -1,6 +1,6 @@
 {
   "balance": 100.0,
-  "available": 70.0,
+  "available": 100.0,
   "positions": [],
   "last_trade_time": "2026-05-05T16:53:41.344330",
   "last_1m_dir": null,
@@ -9,7 +9,7 @@
   "counter_trade": false,
   "trades": [],
   "bet": 10.0,
-  "trade_duration": 3600,
+  "trade_duration": 600,
   "strategy_level": 3,
   "strategy_tfs": [
     "1m",
@@ -32,83 +32,64 @@
   },
   "in_position": false,
   "position": null,
-  "last_known_price": 2363.9,
+  "last_known_price": 2366.49,
   "sar_directions": {
-    "1m": "short",
+    "1m": "long",
     "3m": "long",
     "5m": "long",
     "15m": "short",
     "30m": "short"
   },
   "ai_poll": {
-    "consensus": "short",
-    "long_votes": 0,
-    "short_votes": 2,
     "results": [
       {
-        "name": "Grok",
+        "name": "Gemini",
         "direction": "unknown",
-        "reason": "",
-        "raw": "",
         "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
-        "changed": false,
-        "previous": "unknown"
+        "raw": ""
       },
       {
         "name": "DeepSeek",
         "direction": "unknown",
-        "reason": "",
-        "raw": "",
         "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
-        "changed": false,
-        "previous": "unknown"
+        "raw": ""
       },
       {
-        "name": "Gemini",
+        "name": "Grok",
         "direction": "unknown",
-        "reason": "",
-        "raw": "",
         "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
-        "changed": false,
-        "previous": "unknown"
+        "raw": ""
       },
       {
         "name": "Groq",
         "direction": "short",
-        "reason": "Recent bearish momentum and high volume confirm the downward trend",
-        "raw": "SHORT: Recent bearish momentum and high volume confirm the downward trend.",
-        "error": null,
-        "changed": false,
-        "previous": "short"
-      },
-      {
-        "name": "ChatGPT",
-        "direction": "unknown",
-        "reason": "",
-        "raw": "",
-        "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447",
-        "changed": false,
-        "previous": "unknown"
+        "raw": "SHORT",
+        "error": null
       },
       {
         "name": "Mistral",
         "direction": "short",
-        "reason": "Price broke below SMA5 with high volume and recent closes falling, indicating bearish momentum",
-        "raw": "SHORT: Price broke below SMA5 with high volume and recent closes falling, indicating bearish momentum.",
-        "error": null,
-        "changed": false,
-        "previous": "short"
+        "raw": "SHORT",
+        "error": null
+      },
+      {
+        "name": "ChatGPT",
+        "direction": "unknown",
+        "raw": "",
+        "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447"
       },
       {
         "name": "OpenRouter",
         "direction": "unknown",
-        "reason": "",
         "raw": "",
-        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
-        "changed": false,
-        "previous": "unknown"
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
       }
-    ]
+    ],
+    "consensus": "short",
+    "long_votes": 0,
+    "short_votes": 2,
+    "price": 2364.71,
+    "timestamp": "2026-05-05T17:03:31.812185"
   },
   "meetings": [
     {
