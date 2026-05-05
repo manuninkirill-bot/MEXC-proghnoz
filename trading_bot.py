@@ -627,16 +627,13 @@ class TradingBot:
             if not rsi_ok:
                 return False
 
-            # ── Фильтр 4: SMA разрыв (не меньше 0.05%) ──
+            # ── Фильтр 4: SMA направление (только проверка конфликта) ──
             if len(candles_1m) >= 20:
                 c5 = [c['close'] for c in candles_1m[-5:]]
                 c20 = [c['close'] for c in candles_1m[-20:]]
                 sma5 = sum(c5) / len(c5)
                 sma20 = sum(c20) / len(c20)
                 sma_gap = abs(sma5 - sma20) / sma20 * 100
-                if sma_gap < 0.05:
-                    logging.info(f"🚫 Фильтр SMA: разрыв слишком мал ({sma_gap:.3f}% < 0.05%) — сигнал слабый, пропускаем")
-                    return False
                 sma_dir = "SHORT" if sma5 < sma20 else "LONG"
                 if sma_dir != consensus.upper():
                     logging.info(f"🚫 Фильтр SMA: SMA говорит {sma_dir} но AI говорит {consensus.upper()} — конфликт, пропускаем")
