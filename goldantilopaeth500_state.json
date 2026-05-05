@@ -8,7 +8,7 @@
   "skip_next_signal": false,
   "counter_trade": false,
   "trades": [],
-  "bet": 5.0,
+  "bet": 10.0,
   "trade_duration": 3600,
   "strategy_level": 3,
   "strategy_tfs": [
@@ -32,7 +32,7 @@
   },
   "in_position": false,
   "position": null,
-  "last_known_price": 2364.2,
+  "last_known_price": 2363.9,
   "sar_directions": {
     "1m": "short",
     "3m": "long",

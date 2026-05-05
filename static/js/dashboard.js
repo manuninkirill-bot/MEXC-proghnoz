@@ -14,6 +14,7 @@ class TradingDashboard {
         this._chartZoomLevel = {};
         this._chartWindow = {};    // minutes: 1/3/5/15, null = локальные тики
         this._lastTFFetch  = {};   // timestamp последнего fetch для каждого idx
+        this._settingsLoaded = false;  // кнопки ставки/времени загружаются только раз
 
         this.bindEvents();
         this.startDataUpdates();
@@ -239,12 +240,17 @@ class TradingDashboard {
                 }
             }
 
-            // Sync buttons
-            if (data.bet !== undefined) this.syncBetButtons(data.bet);
-            if (data.trade_duration !== undefined) {
-                this._activeDuration = parseInt(data.trade_duration);
-                this.syncDurButtons(data.trade_duration);
-                this._highlightActivePayoutRow();
+            // Sync buttons — только при первой загрузке, не перебивать выбор пользователя
+            if (!this._settingsLoaded) {
+                if (data.bet !== undefined) this.syncBetButtons(data.bet);
+                if (data.trade_duration !== undefined) {
+                    this._activeDuration = parseInt(data.trade_duration);
+                    this.syncDurButtons(data.trade_duration);
+                    this._highlightActivePayoutRow();
+                }
+                if (data.bet !== undefined || data.trade_duration !== undefined) {
+                    this._settingsLoaded = true;
+                }
             }
             if (data.strategy_tfs) this.syncTfButtons(data.strategy_tfs);
             else if (data.strategy_level !== undefined) this.syncLevelButtons(data.strategy_level);
