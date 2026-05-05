@@ -973,7 +973,7 @@ class TradingDashboard {
             badge.textContent = '⏳ Ожидание...';
         }
 
-        const nameMap = { ChatGPT: 'chatgpt', Gemini: 'gemini', Grok: 'grok', DeepSeek: 'deepseek', Groq: 'groq', OpenRouter: 'openrouter', Mistral: 'mistral' };
+        const nameMap = { ChatGPT: 'chatgpt', Gemini: 'gemini', Grok: 'grok', DeepSeek: 'deepseek', Groq: 'groq', OpenRouter: 'openrouter', Mistral: 'mistral', 'GPT-OSS-120B': 'gpt120b', 'GPT-OSS-20B': 'gpt20b', 'OpenRouter-Free': 'orfree' };
         Object.values(nameMap).forEach(id => {
             const el = document.getElementById(`ai-vote-${id}`);
             const card = document.getElementById(`ai-card-${id}`);

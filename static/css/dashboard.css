@@ -920,6 +920,9 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 .ai-icon--gemini   { background: rgba(59,130,246,0.15);  color: #3b82f6; }
 .ai-icon--grok     { background: rgba(139,92,246,0.15);  color: #8b5cf6; }
 .ai-icon--deepseek { background: rgba(245,158,11,0.15);  color: #f59e0b; }
+.ai-icon--gpt120b  { background: rgba(16,185,129,0.15);  color: #10b981; }
+.ai-icon--gpt20b   { background: rgba(6,182,212,0.15);   color: #06b6d4; }
+.ai-icon--orfree   { background: rgba(168,85,247,0.15);  color: #a855f7; }
 
 .ai-server-name {
     font-size: 11px;
