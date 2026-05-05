@@ -542,8 +542,11 @@ class TradingBot:
                     'close': round(float(row['close']), 2),
                     'volume': round(float(row.get('volume', 0)), 2),
                 })
+        trade_dur = int(state.get("trade_duration", 600))
+        # Для 60-мин сделок нужно больше 5m свечей
+        limit_5m = 20 if trade_dur >= 3600 else 15
         candles_5m = []
-        df_5m = self.fetch_ohlcv_tf('5m', limit=15)
+        df_5m = self.fetch_ohlcv_tf('5m', limit=limit_5m)
         if df_5m is not None:
             for _, row in df_5m.iterrows():
                 candles_5m.append({
@@ -556,8 +559,11 @@ class TradingBot:
                 })
 
         last_analysis = state.get("last_trade_analysis")
-        logging.info(f"🏛️ {label}Созываем AI совет @ ${price:.2f} (2 раунда голосования…)")
-        meeting = discuss_all_ai(price, candles_1m, candles_5m, last_trade_analysis=last_analysis)
+        mins = trade_dur // 60
+        logging.info(f"🏛️ {label}Созываем AI совет @ ${price:.2f} (горизонт {mins}м, 2 раунда голосования…)")
+        meeting = discuss_all_ai(price, candles_1m, candles_5m,
+                                 last_trade_analysis=last_analysis,
+                                 trade_duration_sec=trade_dur)
 
         meetings = state.get('meetings', [])
         meetings.insert(0, meeting)

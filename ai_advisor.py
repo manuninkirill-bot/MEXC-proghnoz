@@ -70,18 +70,39 @@ def _stats(candles_1m: list) -> dict:
     }
 
 
-def _build_prompt(price: float, candles_1m: list, candles_5m: list | None = None) -> str:
+def _build_prompt(price: float, candles_1m: list, candles_5m: list | None = None,
+                  trade_duration_sec: int = 600) -> str:
     candles_5m = candles_5m or []
     s = _stats(candles_1m)
 
-    # Список свечей 1m (последние 30)
-    rows_1m = candles_1m[-30:] if candles_1m else []
+    # Адаптируем горизонт и свечи под длительность сделки
+    if trade_duration_sec <= 600:          # 10 минут
+        horizon_label = "10 minutes"
+        horizon_note = "Focus on short-term momentum (1m candles most relevant)."
+        rows_1m = candles_1m[-30:] if candles_1m else []
+        rows_5m = candles_5m[-6:] if candles_5m else []
+        candles_1m_label = "LAST 30 ONE-MINUTE CANDLES"
+        candles_5m_label = "LAST 6 FIVE-MINUTE CANDLES (30m context)"
+    elif trade_duration_sec <= 1800:       # 30 минут
+        horizon_label = "30 minutes"
+        horizon_note = "Focus on medium-term trend (5m candles most relevant, 1m for entry timing)."
+        rows_1m = candles_1m[-15:] if candles_1m else []
+        rows_5m = candles_5m[-12:] if candles_5m else []
+        candles_1m_label = "LAST 15 ONE-MINUTE CANDLES (entry timing)"
+        candles_5m_label = "LAST 12 FIVE-MINUTE CANDLES (1h trend)"
+    else:                                  # 60 минут
+        horizon_label = "60 minutes"
+        horizon_note = "Focus on macro trend (5m candles are primary, 1m candles secondary)."
+        rows_1m = candles_1m[-10:] if candles_1m else []
+        rows_5m = candles_5m[-15:] if candles_5m else []
+        candles_1m_label = "LAST 10 ONE-MINUTE CANDLES (recent momentum)"
+        candles_5m_label = "LAST 15 FIVE-MINUTE CANDLES (1.25h trend — PRIMARY)"
+
     text_1m = "\n".join(
         f"  {c['time']} O:{c['open']:.2f} H:{c['high']:.2f} L:{c['low']:.2f} C:{c['close']:.2f} V:{float(c.get('volume',0)):.2f}"
         for c in rows_1m
     ) or "  (нет данных)"
 
-    rows_5m = candles_5m[-12:] if candles_5m else []
     text_5m = "\n".join(
         f"  {c['time']} O:{c['open']:.2f} H:{c['high']:.2f} L:{c['low']:.2f} C:{c['close']:.2f} V:{float(c.get('volume',0)):.2f}"
         for c in rows_5m
@@ -113,19 +134,21 @@ def _build_prompt(price: float, candles_1m: list, candles_5m: list | None = None
 
     return (
         f"You are a professional crypto trader analyzing ETH/USDT perpetual futures on MEXC.\n"
-        f"Your task: predict the SHORT-TERM (next 10 minutes) price direction.\n\n"
+        f"Your task: predict the price direction for the NEXT {horizon_label.upper()}.\n"
+        f"HORIZON NOTE: {horizon_note}\n\n"
         f"=== MARKET SNAPSHOT ===\n{snap}\n"
         f"=== TECHNICAL STATISTICS ===\n{stats_block}\n"
-        f"=== LAST 30 ONE-MINUTE CANDLES (oldest → newest) ===\n{text_1m}\n\n"
-        f"=== LAST 12 FIVE-MINUTE CANDLES (oldest → newest, 1h history) ===\n{text_5m}\n\n"
+        f"=== {candles_1m_label} (oldest → newest) ===\n{text_1m}\n\n"
+        f"=== {candles_5m_label} (oldest → newest) ===\n{text_5m}\n\n"
         f"=== ANALYSIS GUIDE ===\n"
+        f"- Horizon: {horizon_label} — adjust your analysis to this timeframe.\n"
         f"- Look for momentum: are recent closes rising or falling?\n"
         f"- Watch volume: rising volume confirms a move; falling volume = weak move.\n"
         f"- RSI extremes (>70 or <30) often precede reversals.\n"
         f"- Trend direction (SMA5 vs SMA20) suggests dominant bias.\n"
         f"- Price near 30m High = resistance; near 30m Low = support.\n\n"
         f"=== DECISION ===\n"
-        f"Will ETH price go UP or DOWN over the NEXT 10 MINUTES?\n"
+        f"Will ETH price go UP or DOWN over the NEXT {horizon_label.upper()}?\n"
         f"If UP   → reply LONG.\n"
         f"If DOWN → reply SHORT.\n"
         f"Reply with EXACTLY ONE WORD: LONG or SHORT. No explanation, no punctuation."
@@ -374,8 +397,9 @@ def _parse_direction_and_reason(text) -> tuple[str, str]:
 
 
 def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: list | None,
-                                  question: str, last_trade_analysis: str | None = None) -> str:
-    base = _build_prompt(price, candles_1m, candles_5m)
+                                  question: str, last_trade_analysis: str | None = None,
+                                  trade_duration_sec: int = 600) -> str:
+    base = _build_prompt(price, candles_1m, candles_5m, trade_duration_sec)
     cut = base.split("=== DECISION ===")[0]
     analysis_block = ""
     if last_trade_analysis:
@@ -398,8 +422,9 @@ def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: lis
 
 
 def _build_council_prompt_round2(price: float, candles_1m: list, candles_5m: list | None,
-                                  question: str, peer_opinions: list) -> str:
-    base = _build_prompt(price, candles_1m, candles_5m)
+                                  question: str, peer_opinions: list,
+                                  trade_duration_sec: int = 600) -> str:
+    base = _build_prompt(price, candles_1m, candles_5m, trade_duration_sec)
     cut = base.split("=== DECISION ===")[0]
     peers_text = "\n".join(
         f"  • {p['name']}: {p['direction'].upper()} — {p['reason'] or '(без аргумента)'}"
@@ -457,25 +482,30 @@ def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
 
 
 def discuss_all_ai(price: float, candles_1m: list, candles_5m: list | None = None,
-                   question: str | None = None, last_trade_analysis: str | None = None) -> dict:
+                   question: str | None = None, last_trade_analysis: str | None = None,
+                   trade_duration_sec: int = 600) -> dict:
     """
     Двухраундовое заседание AI совета.
     1. Каждый AI даёт направление + аргумент независимо.
     2. Каждому AI показываем мнения коллег и просим финальный ответ.
     last_trade_analysis — текстовый анализ предыдущей сделки, передаётся в раунд 1.
+    trade_duration_sec — длительность сделки, адаптирует горизонт и набор свечей.
     """
     if not question:
-        question = "Куда пойдёт цена ETH/USDT в следующие 10 минут — LONG или SHORT?"
+        mins = trade_duration_sec // 60
+        question = f"Куда пойдёт цена ETH/USDT в следующие {mins} минут — LONG или SHORT?"
 
     # ── Раунд 1 ──
-    prompt1 = _build_council_prompt_round1(price, candles_1m, candles_5m, question, last_trade_analysis)
+    prompt1 = _build_council_prompt_round1(price, candles_1m, candles_5m, question,
+                                           last_trade_analysis, trade_duration_sec)
     round1 = _ask_all_parallel(prompt1, max_tokens=120)
 
     # Только AI с валидным направлением участвуют в раунде 2
     valid_peers = [r for r in round1 if r["direction"] in ("long", "short")]
 
     # ── Раунд 2 ──
-    prompt2 = _build_council_prompt_round2(price, candles_1m, candles_5m, question, valid_peers)
+    prompt2 = _build_council_prompt_round2(price, candles_1m, candles_5m, question,
+                                           valid_peers, trade_duration_sec)
     round2_raw = _ask_all_parallel(prompt2, max_tokens=120)
 
     # Сопоставляем по имени, помечаем changed=True если поменял мнение
