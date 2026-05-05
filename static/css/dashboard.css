@@ -866,16 +866,16 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 ═══════════════════════════════════════════ */
 .ai-servers-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 5px;
 }
 
 .ai-server-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    padding: 8px 4px;
+    gap: 3px;
+    padding: 7px 3px;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -907,13 +907,13 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 }
 
 .ai-server-icon {
-    width: 34px;
-    height: 34px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .ai-icon--chatgpt  { background: rgba(16,185,129,0.15); color: #10b981; }
@@ -925,22 +925,24 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 .ai-icon--orfree   { background: rgba(168,85,247,0.15);  color: #a855f7; }
 
 .ai-server-name {
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    text-align: center;
 }
 
 .ai-server-badge {
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 700;
-    padding: 3px 10px;
+    padding: 2px 5px;
     border-radius: 20px;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     background: var(--bg-base);
     color: var(--text-dim);
     border: 1px solid var(--border);
+    white-space: nowrap;
 }
 
 .ai-badge--loading { color: var(--yellow); border-color: rgba(245,158,11,0.4); }
