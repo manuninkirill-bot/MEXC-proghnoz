@@ -577,10 +577,11 @@ class TradingBot:
             logging.info("➖ Нет консенсуса AI — пропускаем вход")
 
     def strategy_loop(self, should_continue=lambda: True):
-        """AI Council strategy: every 30 min → 2-round AI council vote → open 1h position."""
+        """AI Council strategy: совет сразу при старте и после каждого закрытия позиции."""
         logging.info(f"Starting AI Council strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
 
-        last_council_time = time.time()  # первый совет — через 30 минут после старта
+        # Первый совет — сразу при запуске бота (если нет открытых позиций)
+        first_run = True
 
         while should_continue():
             try:
@@ -591,7 +592,15 @@ class TradingBot:
                 if df_1m is not None and len(df_1m) > 0:
                     state["last_known_price"] = float(df_1m["close"].iloc[-1])
 
-                # 2) Закрываем просроченные позиции; при закрытии — сразу новый совет
+                # 2) Совет сразу при первом старте (если нет открытых позиций)
+                if first_run:
+                    first_run = False
+                    if not state.get("positions"):
+                        self._run_council_and_open(df_1m, label="[старт] ")
+                    time.sleep(5)
+                    continue
+
+                # 3) Закрываем просроченные позиции; при закрытии — сразу новый совет
                 position_just_closed = False
                 for i in range(len(state["positions"]) - 1, -1, -1):
                     pos = state["positions"][i]
@@ -602,28 +611,15 @@ class TradingBot:
                         logging.info(f"⏱️ Closing position {i} after {trade_duration:.1f}s")
                         trade = self.close_position(position_idx=i, close_reason="fixed_time")
                         self.save_state_to_file()
-                        # Анализ завершённой сделки — сохраняем в state
                         if trade:
                             analysis = self._build_trade_analysis(trade)
                             state["last_trade_analysis"] = analysis
                             logging.info(f"📊 Анализ сделки: {analysis.replace(chr(10), ' | ')}")
                         position_just_closed = True
 
-                # 3) Если позиция только что закрылась — сразу созываем совет
+                # 4) После закрытия — сразу AI совет и новая позиция
                 if position_just_closed and not state.get("positions"):
                     self._run_council_and_open(df_1m, label="[после закрытия] ")
-                    last_council_time = now_ts  # сбрасываем таймер от текущего момента
-                    time.sleep(5)
-                    continue
-
-                # 4) Раз в 30 минут — плановый AI совет
-                if now_ts - last_council_time >= AI_POLL_INTERVAL_SECONDS:
-                    last_council_time += AI_POLL_INTERVAL_SECONDS
-
-                    if state.get("positions"):
-                        logging.info("⏸️ AI council skipped: position already open, next check in 30 min")
-                    else:
-                        self._run_council_and_open(df_1m, label="[плановый] ")
 
                 time.sleep(5)
             except Exception as e:
