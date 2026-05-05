@@ -3,17 +3,17 @@
   "available": 70.0,
   "positions": [
     {
-      "side": "short",
-      "entry_price": 2361.46,
-      "size_base": 0.004234668383118918,
+      "side": "long",
+      "entry_price": 2363.94,
+      "size_base": 0.004230225809453709,
       "notional": 10.0,
-      "entry_time": "2026-05-05T17:54:31.841444",
+      "entry_time": "2026-05-05T18:01:26.332875",
       "close_time_seconds": 600,
-      "trade_number": 16,
+      "trade_number": 17,
       "bet": 10.0
     }
   ],
-  "last_trade_time": "2026-05-05T17:54:31.841444",
+  "last_trade_time": "2026-05-05T18:01:26.332875",
   "last_1m_dir": null,
   "one_min_flip_count": 0,
   "skip_next_signal": false,
@@ -73,10 +73,134 @@
     "15m": "short",
     "30m": "short"
   },
-  "last_known_price": 2361.46,
+  "last_known_price": 2363.94,
   "bot_was_running": true,
   "council_running": true,
   "meetings": [
+    {
+      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
+      "price": 2363.75,
+      "round1": [
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+        },
+        {
+          "name": "Groq",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Mistral",
+          "direction": "long",
+          "reason": "RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors",
+          "raw": "LONG: RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors long.",
+          "error": null
+        }
+      ],
+      "round2": [
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Groq",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "OpenRouter",
+          "direction": "unknown",
+          "reason": "",
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
+          "changed": false,
+          "previous": "unknown"
+        },
+        {
+          "name": "Mistral",
+          "direction": "long",
+          "reason": "RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors",
+          "raw": "LONG: RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors.",
+          "error": null,
+          "changed": false,
+          "previous": "long"
+        }
+      ],
+      "consensus": "long",
+      "long_votes": 1,
+      "short_votes": 0,
+      "timestamp": "2026-05-05T18:01:26.180868"
+    },
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
       "price": 2362.1,
@@ -1192,135 +1316,11 @@
       "long_votes": 0,
       "short_votes": 1,
       "timestamp": "2026-05-05T17:33:03.707301"
-    },
-    {
-      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2363.65,
-      "round1": [
-        {
-          "name": "Grok",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
-        },
-        {
-          "name": "DeepSeek",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
-        },
-        {
-          "name": "Gemini",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
-        },
-        {
-          "name": "Groq",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
-        },
-        {
-          "name": "OpenRouter",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
-        },
-        {
-          "name": "ChatGPT",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447"
-        },
-        {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "RSI 48.4 nearing oversold, recent highs rejected at $2368.56 with declining volume",
-          "raw": "SHORT: RSI 48.4 nearing oversold, recent highs rejected at $2368.56 with declining volume.",
-          "error": null
-        }
-      ],
-      "round2": [
-        {
-          "name": "DeepSeek",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
-          "changed": false,
-          "previous": "unknown"
-        },
-        {
-          "name": "Gemini",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
-          "changed": false,
-          "previous": "unknown"
-        },
-        {
-          "name": "Grok",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d",
-          "changed": false,
-          "previous": "unknown"
-        },
-        {
-          "name": "Groq",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
-          "changed": false,
-          "previous": "unknown"
-        },
-        {
-          "name": "ChatGPT",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447",
-          "changed": false,
-          "previous": "unknown"
-        },
-        {
-          "name": "OpenRouter",
-          "direction": "unknown",
-          "reason": "",
-          "raw": "",
-          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430",
-          "changed": false,
-          "previous": "unknown"
-        },
-        {
-          "name": "Mistral",
-          "direction": "short",
-          "reason": "RSI near oversold, price rejected at $2368.56 with declining volume and sideways trend",
-          "raw": "SHORT: RSI near oversold, price rejected at $2368.56 with declining volume and sideways trend.",
-          "error": null,
-          "changed": false,
-          "previous": "short"
-        }
-      ],
-      "consensus": "short",
-      "long_votes": 0,
-      "short_votes": 1,
-      "timestamp": "2026-05-05T17:26:17.206680"
     }
   ],
   "last_meeting": {
     "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-    "price": 2362.1,
+    "price": 2363.75,
     "round1": [
       {
         "name": "Gemini",
@@ -1366,9 +1366,9 @@
       },
       {
         "name": "Mistral",
-        "direction": "short",
-        "reason": "Price broke below SMA5, RSI neutral, recent 1m candles showing lower highs",
-        "raw": "SHORT: Price broke below SMA5, RSI neutral, recent 1m candles showing lower highs.",
+        "direction": "long",
+        "reason": "RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors",
+        "raw": "LONG: RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors long.",
         "error": null
       }
     ],
@@ -1429,23 +1429,23 @@
       },
       {
         "name": "Mistral",
-        "direction": "short",
-        "reason": "Price below SMA5, lower highs in 1m candles, and weak bounce off lows suggest downward momentum",
-        "raw": "SHORT: Price below SMA5, lower highs in 1m candles, and weak bounce off lows suggest downward momentum.",
+        "direction": "long",
+        "reason": "RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors",
+        "raw": "LONG: RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors.",
         "error": null,
         "changed": false,
-        "previous": "short"
+        "previous": "long"
       }
     ],
-    "consensus": "short",
-    "long_votes": 0,
-    "short_votes": 1,
-    "timestamp": "2026-05-05T17:54:31.665879"
+    "consensus": "long",
+    "long_votes": 1,
+    "short_votes": 0,
+    "timestamp": "2026-05-05T18:01:26.180868"
   },
   "ai_poll": {
-    "consensus": "short",
-    "long_votes": 0,
-    "short_votes": 1,
+    "consensus": "long",
+    "long_votes": 1,
+    "short_votes": 0,
     "results": [
       {
         "name": "DeepSeek",
@@ -1503,15 +1503,15 @@
       },
       {
         "name": "Mistral",
-        "direction": "short",
-        "reason": "Price below SMA5, lower highs in 1m candles, and weak bounce off lows suggest downward momentum",
-        "raw": "SHORT: Price below SMA5, lower highs in 1m candles, and weak bounce off lows suggest downward momentum.",
+        "direction": "long",
+        "reason": "RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors",
+        "raw": "LONG: RSI bullish, SMA5>SMA20, last 5 candles 3/5 up, low volume but trend favors.",
         "error": null,
         "changed": false,
-        "previous": "short"
+        "previous": "long"
       }
     ]
   },
-  "telegram_trade_counter": 16,
+  "telegram_trade_counter": 17,
   "last_trade_analysis": "Direction: SHORT \u2192 Result: LOSE (PnL: $-10.00)\nEntry: $2361.94 \u2192 Exit: $2362.10 (price moved UP by 0.007%)\nThe previous signal was WRONG \u2014 consider if a reversal is still in play."
 }

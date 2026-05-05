@@ -108,7 +108,43 @@ def _build_prompt(price: float, candles_1m: list, candles_5m: list | None = None
         for c in rows_5m
     ) or "  (нет данных)"
 
+    # Явный анализ последних 5 свечей (направление тренда)
+    recent_candles = (rows_1m or candles_1m)[-5:] if (rows_1m or candles_1m) else []
+    bull_count = sum(1 for c in recent_candles if c['close'] > c['open'])
+    bear_count = len(recent_candles) - bull_count
+    if bull_count > bear_count:
+        candle_bias = f"BULLISH ({bull_count}/{len(recent_candles)} last candles closed UP)"
+        candle_warning = "⚠ Recent momentum is UP — be careful with SHORT signals."
+    elif bear_count > bull_count:
+        candle_bias = f"BEARISH ({bear_count}/{len(recent_candles)} last candles closed DOWN)"
+        candle_warning = "⚠ Recent momentum is DOWN — be careful with LONG signals."
+    else:
+        candle_bias = "NEUTRAL (mixed candles)"
+        candle_warning = "No clear short-term bias."
+
     if s:
+        # SMA gap strength
+        sma_gap_pct = abs(s['sma5'] - s['sma20']) / s['sma20'] * 100 if s['sma20'] else 0
+        sma_strength = "STRONG" if sma_gap_pct > 0.1 else "WEAK"
+        sma_dir = "SMA5 > SMA20 (bullish bias)" if s['sma5'] >= s['sma20'] else "SMA5 < SMA20 (bearish bias)"
+
+        # RSI interpretation
+        rsi = s['rsi14']
+        if rsi >= 70:
+            rsi_note = f"OVERBOUGHT ({rsi:.1f}) — reversal DOWN likely"
+        elif rsi <= 30:
+            rsi_note = f"OVERSOLD ({rsi:.1f}) — reversal UP likely"
+        elif rsi > 55:
+            rsi_note = f"BULLISH zone ({rsi:.1f}) — upward momentum"
+        elif rsi < 45:
+            rsi_note = f"BEARISH zone ({rsi:.1f}) — downward momentum"
+        else:
+            rsi_note = f"NEUTRAL ({rsi:.1f}) — no clear RSI signal"
+
+        # Volume strength
+        vol_ratio = s['cur_vol'] / s['avg_vol_30m'] if s['avg_vol_30m'] > 0 else 1.0
+        vol_note = f"{vol_ratio:.1f}× avg — {'HIGH volume confirms move' if vol_ratio >= 1.5 else 'LOW volume, signal less reliable'}"
+
         snap = (
             f"Current price:  ${s['current']:.2f}\n"
             f"1m  ago: ${s['ago_1m']:.2f}  ({_pct(s['current'], s['ago_1m']):+.3f}%)\n"
@@ -120,17 +156,27 @@ def _build_prompt(price: float, candles_1m: list, candles_5m: list | None = None
             f"High (30m): ${s['high_30m']:.2f}\n"
             f"Low  (30m): ${s['low_30m']:.2f}\n"
             f"Range (30m): ${s['range_30m']:.2f}  ({_pct(s['high_30m'], s['low_30m']):+.2f}%)\n"
-            f"RSI(14): {s['rsi14']:.1f}  (oversold<30, overbought>70)\n"
+            f"RSI(14): {rsi_note}\n"
             f"Trend:   {s['trend']}\n"
-            f"SMA5:    ${s['sma5']:.2f}\n"
-            f"SMA20:   ${s['sma20']:.2f}\n"
+            f"SMA: {sma_dir} (gap={sma_gap_pct:.3f}% — {sma_strength})\n"
             f"Volatility (σ20): ${s['volatility_std']:.3f}\n"
-            f"Avg volume (30m): {s['avg_vol_30m']:.2f} ETH\n"
-            f"Current candle volume: {s['cur_vol']:.2f} ETH\n"
+            f"Volume: {vol_note}\n"
+        )
+        bias_block = (
+            f"=== TREND BIAS (CRITICAL — READ BEFORE DECIDING) ===\n"
+            f"Last 5 candles: {candle_bias}\n"
+            f"{candle_warning}\n"
+            f"SMA alignment: {sma_dir} ({sma_strength} — gap {sma_gap_pct:.3f}%)\n"
+            f"RSI signal: {rsi_note}\n"
+            f"Volume strength: {vol_note}\n\n"
+            f"RULE: Only go SHORT if ≥3/5 last candles are bearish AND RSI<55 AND price trending DOWN.\n"
+            f"RULE: Only go LONG  if ≥3/5 last candles are bullish AND RSI>45 AND price trending UP.\n"
+            f"RULE: If signals conflict or volume is LOW — prefer the direction of the dominant trend.\n\n"
         )
     else:
         snap = f"Current price: ${price:.2f}\n"
         stats_block = "(no statistics available)\n"
+        bias_block = f"=== TREND BIAS ===\nLast 5 candles: {candle_bias}\n{candle_warning}\n\n"
 
     return (
         f"You are a professional crypto trader analyzing ETH/USDT perpetual futures on MEXC.\n"
@@ -138,15 +184,9 @@ def _build_prompt(price: float, candles_1m: list, candles_5m: list | None = None
         f"HORIZON NOTE: {horizon_note}\n\n"
         f"=== MARKET SNAPSHOT ===\n{snap}\n"
         f"=== TECHNICAL STATISTICS ===\n{stats_block}\n"
+        f"{bias_block}"
         f"=== {candles_1m_label} (oldest → newest) ===\n{text_1m}\n\n"
         f"=== {candles_5m_label} (oldest → newest) ===\n{text_5m}\n\n"
-        f"=== ANALYSIS GUIDE ===\n"
-        f"- Horizon: {horizon_label} — adjust your analysis to this timeframe.\n"
-        f"- Look for momentum: are recent closes rising or falling?\n"
-        f"- Watch volume: rising volume confirms a move; falling volume = weak move.\n"
-        f"- RSI extremes (>70 or <30) often precede reversals.\n"
-        f"- Trend direction (SMA5 vs SMA20) suggests dominant bias.\n"
-        f"- Price near 30m High = resistance; near 30m Low = support.\n\n"
         f"=== DECISION ===\n"
         f"Will ETH price go UP or DOWN over the NEXT {horizon_label.upper()}?\n"
         f"If UP   → reply LONG.\n"

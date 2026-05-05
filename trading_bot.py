@@ -578,10 +578,75 @@ class TradingBot:
         logging.info(f"🏛️ AI совет: LONG={meeting['long_votes']} SHORT={meeting['short_votes']} → {meeting['consensus'].upper()}")
 
         if meeting["consensus"] in ("long", "short"):
-            effective_dir = meeting["consensus"]
+            consensus = meeting["consensus"]
+
+            # ── Фильтр 1: Защита от серии убытков (2 подряд → пропуск) ──
+            recent_trades = state.get("trades", [])[:2]
+            consecutive_losses = sum(1 for t in recent_trades if t.get("result") == "LOSE")
+            skip_remaining = state.get("skip_council_count", 0)
+            if skip_remaining > 0:
+                state["skip_council_count"] = skip_remaining - 1
+                logging.info(f"🛡️ Фильтр серий: пропускаем совет (осталось пропусков: {skip_remaining})")
+                return False
+            if consecutive_losses >= 2:
+                state["skip_council_count"] = 1
+                logging.info(f"🛡️ 2 убытка подряд — следующий совет будет пропущен (защита активирована)")
+
+            # ── Фильтр 2: Направление свечей (3 из 5 должны совпадать) ──
+            recent_5 = candles_1m[-5:] if len(candles_1m) >= 5 else candles_1m
+            bull_c = sum(1 for c in recent_5 if c['close'] > c['open'])
+            bear_c = len(recent_5) - bull_c
+            candle_ok = True
+            if consensus == "short" and bull_c >= 3:
+                logging.info(f"🚫 Фильтр свечей: AI говорит SHORT но {bull_c}/5 свечей бычьи — пропускаем")
+                candle_ok = False
+            elif consensus == "long" and bear_c >= 3:
+                logging.info(f"🚫 Фильтр свечей: AI говорит LONG но {bear_c}/5 свечей медвежьи — пропускаем")
+                candle_ok = False
+            if not candle_ok:
+                return False
+
+            # ── Фильтр 3: RSI подтверждение ──
+            closes = [c['close'] for c in candles_1m[-16:]]
+            rsi_ok = True
+            if len(closes) >= 15:
+                gains = [max(0, closes[i] - closes[i-1]) for i in range(1, len(closes))]
+                losses = [max(0, closes[i-1] - closes[i]) for i in range(1, len(closes))]
+                avg_gain = sum(gains[-14:]) / 14
+                avg_loss = sum(losses[-14:]) / 14
+                rs = avg_gain / avg_loss if avg_loss > 0 else 100
+                rsi = 100 - (100 / (1 + rs))
+                if consensus == "short" and rsi < 45:
+                    logging.info(f"🚫 Фильтр RSI: SHORT при RSI={rsi:.1f} (<45, не медвежий) — пропускаем")
+                    rsi_ok = False
+                elif consensus == "long" and rsi > 55:
+                    logging.info(f"🚫 Фильтр RSI: LONG при RSI={rsi:.1f} (>55, не бычий) — пропускаем")
+                    rsi_ok = False
+                else:
+                    logging.info(f"✅ Фильтр RSI: RSI={rsi:.1f} — OK для {consensus.upper()}")
+            if not rsi_ok:
+                return False
+
+            # ── Фильтр 4: SMA разрыв (не меньше 0.05%) ──
+            if len(candles_1m) >= 20:
+                c5 = [c['close'] for c in candles_1m[-5:]]
+                c20 = [c['close'] for c in candles_1m[-20:]]
+                sma5 = sum(c5) / len(c5)
+                sma20 = sum(c20) / len(c20)
+                sma_gap = abs(sma5 - sma20) / sma20 * 100
+                if sma_gap < 0.05:
+                    logging.info(f"🚫 Фильтр SMA: разрыв слишком мал ({sma_gap:.3f}% < 0.05%) — сигнал слабый, пропускаем")
+                    return False
+                sma_dir = "SHORT" if sma5 < sma20 else "LONG"
+                if sma_dir != consensus.upper():
+                    logging.info(f"🚫 Фильтр SMA: SMA говорит {sma_dir} но AI говорит {consensus.upper()} — конфликт, пропускаем")
+                    return False
+                logging.info(f"✅ Фильтр SMA: gap={sma_gap:.3f}%, SMA→{sma_dir} совпадает с {consensus.upper()}")
+
+            effective_dir = consensus
             if state.get("counter_trade", False):
                 effective_dir = "short" if effective_dir == "long" else "long"
-                logging.info(f"🔄 Counter trade: {meeting['consensus'].upper()} → {effective_dir.upper()}")
+                logging.info(f"🔄 Counter trade: {consensus.upper()} → {effective_dir.upper()}")
 
             side = "buy" if effective_dir == "long" else "sell"
             cur_price = self.get_current_price() or price
