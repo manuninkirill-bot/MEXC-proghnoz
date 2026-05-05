@@ -503,7 +503,7 @@ class TradingBot:
         logging.info(f"Starting AI Council strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
         from ai_advisor import discuss_all_ai
 
-        last_council_time = 0.0  # Unix timestamp последнего совета AI
+        last_council_time = time.time()  # первый совет — через 30 минут после старта
 
         while should_continue():
             try:

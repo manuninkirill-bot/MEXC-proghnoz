@@ -487,10 +487,13 @@ def discuss_all_ai(price: float, candles_1m: list, candles_5m: list | None = Non
 
     longs = sum(1 for r in round2 if r["direction"] == "long")
     shorts = sum(1 for r in round2 if r["direction"] == "short")
+    responded = longs + shorts  # только AI которые дали валидный ответ
+    # Консенсус = большинство из ответивших (>50%) И минимум 2 голоса
     MIN_VOTES = 2
-    if longs >= MIN_VOTES and longs > shorts:
+    majority = (responded / 2) if responded > 0 else 999
+    if longs >= MIN_VOTES and longs > majority and longs > shorts:
         consensus = "long"
-    elif shorts >= MIN_VOTES and shorts > longs:
+    elif shorts >= MIN_VOTES and shorts > majority and shorts > longs:
         consensus = "short"
     else:
         consensus = "none"
