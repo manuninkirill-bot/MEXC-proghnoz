@@ -520,16 +520,15 @@ class TradingBot:
             f"{hint}"
         )
 
-    def _run_council_and_open(self, df_1m, label: str = "") -> None:
-        """Созывает AI-совет и при консенсусе открывает позицию."""
-        from ai_advisor import discuss_all_ai
+    def _run_council_and_open(self, df_1m, label: str = "") -> bool:
+        """Созывает AI-совет и при консенсусе открывает позицию. Возвращает True если позиция открыта."""
         state["council_running"] = True
         try:
-            self._run_council_and_open_inner(df_1m, label)
+            return self._run_council_and_open_inner(df_1m, label)
         finally:
             state["council_running"] = False
 
-    def _run_council_and_open_inner(self, df_1m, label: str = "") -> None:
+    def _run_council_and_open_inner(self, df_1m, label: str = "") -> bool:
         from ai_advisor import discuss_all_ai
         price = state.get("last_known_price") or self.get_current_price()
         candles_1m = []
@@ -584,15 +583,18 @@ class TradingBot:
             logging.info(f"✅ AI OPEN {side.upper()} ${notional} — size={size_base:.6f} @ ${cur_price}")
             self.place_market_order(side, amount_base=size_base)
             self.save_state_to_file()
+            return True
         else:
-            logging.info("➖ Нет консенсуса AI — пропускаем вход")
+            logging.info("➖ Нет консенсуса AI — повтор через 60 сек")
+            return False
 
     def strategy_loop(self, should_continue=lambda: True):
         """AI Council strategy: совет сразу при старте и после каждого закрытия позиции."""
         logging.info(f"Starting AI Council strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
 
-        # Первый совет — сразу при запуске бота (если нет открытых позиций)
         first_run = True
+        # Время следующего повторного совета при NONE-консенсусе (0 = не запланирован)
+        retry_council_at = 0.0
 
         while should_continue():
             try:
@@ -603,15 +605,17 @@ class TradingBot:
                 if df_1m is not None and len(df_1m) > 0:
                     state["last_known_price"] = float(df_1m["close"].iloc[-1])
 
-                # 2) Совет сразу при первом старте (если нет открытых позиций)
+                # 2) Первый старт — совет сразу если нет позиций
                 if first_run:
                     first_run = False
                     if not state.get("positions"):
-                        self._run_council_and_open(df_1m, label="[старт] ")
+                        opened = self._run_council_and_open(df_1m, label="[старт] ")
+                        if not opened:
+                            retry_council_at = time.time() + 60
                     time.sleep(5)
                     continue
 
-                # 3) Закрываем просроченные позиции; при закрытии — сразу новый совет
+                # 3) Закрываем просроченные позиции
                 position_just_closed = False
                 for i in range(len(state["positions"]) - 1, -1, -1):
                     pos = state["positions"][i]
@@ -628,9 +632,19 @@ class TradingBot:
                             logging.info(f"📊 Анализ сделки: {analysis.replace(chr(10), ' | ')}")
                         position_just_closed = True
 
-                # 4) После закрытия — сразу AI совет и новая позиция
+                # 4) После закрытия — сразу совет
                 if position_just_closed and not state.get("positions"):
-                    self._run_council_and_open(df_1m, label="[после закрытия] ")
+                    opened = self._run_council_and_open(df_1m, label="[после закрытия] ")
+                    if not opened:
+                        retry_council_at = time.time() + 60
+                    else:
+                        retry_council_at = 0.0
+
+                # 5) Повтор совета если был NONE и прошло 60 сек (и нет открытых позиций)
+                elif not state.get("positions") and retry_council_at > 0 and now_ts >= retry_council_at:
+                    logging.info("🔁 Повтор AI совета (предыдущий был NONE)…")
+                    opened = self._run_council_and_open(df_1m, label="[повтор] ")
+                    retry_council_at = 0.0 if opened else time.time() + 60
 
                 time.sleep(5)
             except Exception as e:

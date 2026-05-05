@@ -496,8 +496,14 @@ def discuss_all_ai(price: float, candles_1m: list, candles_5m: list | None = Non
     longs = sum(1 for r in round2 if r["direction"] == "long")
     shorts = sum(1 for r in round2 if r["direction"] == "short")
     responded = longs + shorts  # только AI которые дали валидный ответ
-    # Консенсус = большинство из ответивших (>50%) И минимум 2 голоса
-    MIN_VOTES = 2
+    # Логируем ошибки AI чтобы понять кто не отвечает
+    for r in round2:
+        if r.get("error"):
+            logger.warning(f"AI {r['name']} ошибка: {r['error']}")
+        elif r["direction"] == "unknown":
+            logger.warning(f"AI {r['name']} вернул unknown, raw={r.get('raw','')[:80]!r}")
+    # Консенсус = большинство из ответивших (>50%) И минимум 1 голос
+    MIN_VOTES = 1
     majority = (responded / 2) if responded > 0 else 999
     if longs >= MIN_VOTES and longs > majority and longs > shorts:
         consensus = "long"
@@ -542,8 +548,8 @@ def poll_all_ai(price: float, candles_1m: list, candles_5m: list | None = None) 
     longs = sum(1 for r in results if r["direction"] == "long")
     shorts = sum(1 for r in results if r["direction"] == "short")
 
-    # Минимум 2 одинаковых голоса для открытия позиции
-    MIN_VOTES = 2
+    # Минимум 1 голос для открытия позиции
+    MIN_VOTES = 1
     if longs >= MIN_VOTES and longs > shorts:
         consensus = "long"
     elif shorts >= MIN_VOTES and shorts > longs:

@@ -76,9 +76,12 @@ def bot_main_loop():
         
         bot_instance.strategy_loop(should_continue=should_continue)
     except Exception as e:
-        logging.error(f"Bot error: {e}")
+        logging.error(f"Bot error: {e}", exc_info=True)
+    finally:
+        # Сбрасываем in-memory флаг, НО не трогаем state-файл —
+        # bot_was_running в файле управляется только кнопками Start/Stop
         bot_running = False
-        _save_bot_running_flag(False)
+        logging.info("🛑 Поток бота завершён")
 
 # ── Фоновый апдейтер SAR — работает всегда, независимо от состояния бота ──
 _sar_worker = None
@@ -829,8 +832,8 @@ start_sar_updater()
 # Автозапуск бота если он был запущен до перезагрузки воркера
 if _bot_was_running:
     import time as _time
-    _time.sleep(2)  # дождаться полной инициализации SAR
-    bot_running = True
+    bot_running = True  # ставим True ДО паузы — UI сразу видит RUNNING
+    _time.sleep(2)      # дождаться полной инициализации SAR
     bot_thread = threading.Thread(target=bot_main_loop, daemon=True)
     bot_thread.start()
     logging.info("🔄 Бот автоматически перезапущен после перезагрузки воркера")
