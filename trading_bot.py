@@ -115,13 +115,25 @@ class TradingBot:
         try:
             with open("goldantilopaeth500_state.json", "r") as f:
                 data = json.load(f)
-                # Очищаем позиции при рестарте (чтобы не закрывать несуществующие)
-                if "positions" in data:
-                    data["positions"] = []
                 state.update(data)
-                # Если позиций нет — доступное = балансу (чтобы избежать накопления ошибок)
-                if not state.get("positions"):
-                    state["available"] = state["balance"]
+                # Проверяем позиции: просроченные убираем, активные восстанавливаем
+                now_dt = datetime.utcnow()
+                surviving = []
+                for pos in state.get("positions", []):
+                    try:
+                        entry_t = datetime.fromisoformat(pos["entry_time"])
+                        elapsed = (now_dt - entry_t).total_seconds()
+                        duration = pos.get("close_time_seconds", FIXED_TRADE_SECONDS)
+                        if elapsed < duration:
+                            surviving.append(pos)
+                        else:
+                            logging.info(f"♻️ Позиция {pos['side'].upper()} @ {pos['entry_price']} просрочена при рестарте — пропускаем")
+                    except Exception:
+                        pass
+                state["positions"] = surviving
+                # Пересчитываем доступный баланс
+                locked = sum(p.get("bet", 0) for p in surviving)
+                state["available"] = max(0.0, state["balance"] - locked)
         except:
             pass
 
