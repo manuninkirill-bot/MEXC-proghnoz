@@ -287,6 +287,16 @@ def api_set_settings():
     if 'trade_duration' in data:
         state['trade_duration'] = int(data['trade_duration'])
         logging.info(f"Trade duration updated to {state['trade_duration']}s")
+    # Сохраняем в файл чтобы настройки пережили перезагрузку
+    if bot_instance:
+        bot_instance.save_state_to_file()
+    else:
+        try:
+            import json
+            with open("goldantilopaeth500_state.json", "w") as f:
+                json.dump(state, f, default=str, indent=2)
+        except Exception as e:
+            logging.error(f"Settings save error: {e}")
     return jsonify({'bet': state['bet'], 'trade_duration': state['trade_duration']})
 
 @app.route('/api/toggle_counter_trade', methods=['POST'])
@@ -770,6 +780,21 @@ def telegram_webhook():
 
 # Инициализация при загрузке модуля
 init_telegram()
+
+# Загружаем сохранённые настройки (ставка, время) из файла при старте Flask
+try:
+    import json as _json
+    with open("goldantilopaeth500_state.json", "r") as _f:
+        _saved = _json.load(_f)
+        # Восстанавливаем только пользовательские настройки, не позиции
+        for _key in ("bet", "trade_duration", "balance", "available", "trades",
+                     "counter_trade", "strategy_tfs", "strategy_level", "payouts"):
+            if _key in _saved:
+                state[_key] = _saved[_key]
+    logging.info(f"Settings restored from file: bet=${state['bet']}, duration={state['trade_duration']}s")
+except Exception:
+    pass  # файла нет — оставляем дефолты
+
 start_sar_updater()
 
 # Настройка Telegram WebApp
