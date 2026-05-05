@@ -47,6 +47,22 @@ def init_telegram():
     else:
         logging.warning("Telegram credentials not configured")
 
+def _save_bot_running_flag(running: bool):
+    """Сохраняет флаг запуска бота в файл state."""
+    try:
+        import json as _j
+        try:
+            with open("goldantilopaeth500_state.json", "r") as f:
+                d = _j.load(f)
+        except Exception:
+            d = {}
+        d["bot_was_running"] = running
+        with open("goldantilopaeth500_state.json", "w") as f:
+            _j.dump(d, f, default=str, indent=2)
+    except Exception as e:
+        logging.error(f"Failed to save bot_running flag: {e}")
+
+
 def bot_main_loop():
     """Основной цикл торгового бота"""
     global bot_running, bot_instance
@@ -62,6 +78,7 @@ def bot_main_loop():
     except Exception as e:
         logging.error(f"Bot error: {e}")
         bot_running = False
+        _save_bot_running_flag(False)
 
 # ── Фоновый апдейтер SAR — работает всегда, независимо от состояния бота ──
 _sar_worker = None
@@ -161,6 +178,7 @@ def api_start_bot():
     
     try:
         bot_running = True
+        _save_bot_running_flag(True)
         bot_thread = threading.Thread(target=bot_main_loop, daemon=True)
         bot_thread.start()
         
@@ -168,6 +186,7 @@ def api_start_bot():
         return jsonify({'message': 'Бот успешно запущен', 'status': 'running'})
     except Exception as e:
         bot_running = False
+        _save_bot_running_flag(False)
         logging.error(f"Start bot error: {e}")
         return jsonify({'error': str(e)}), 500
 
@@ -181,6 +200,7 @@ def api_stop_bot():
     
     try:
         bot_running = False
+        _save_bot_running_flag(False)
         logging.info("Trading bot stopped")
         return jsonify({'message': 'Бот успешно остановлен', 'status': 'stopped'})
     except Exception as e:
@@ -781,21 +801,31 @@ def telegram_webhook():
 # Инициализация при загрузке модуля
 init_telegram()
 
-# Загружаем сохранённые настройки (ставка, время) из файла при старте Flask
+# Загружаем сохранённые настройки из файла при старте Flask
+_bot_was_running = False
 try:
     import json as _json
     with open("goldantilopaeth500_state.json", "r") as _f:
         _saved = _json.load(_f)
-        # Восстанавливаем только пользовательские настройки, не позиции
         for _key in ("bet", "trade_duration", "balance", "available", "trades",
                      "counter_trade", "strategy_tfs", "strategy_level", "payouts"):
             if _key in _saved:
                 state[_key] = _saved[_key]
-    logging.info(f"Settings restored from file: bet=${state['bet']}, duration={state['trade_duration']}s")
+        _bot_was_running = bool(_saved.get("bot_was_running", False))
+    logging.info(f"Settings restored: bet=${state['bet']}, duration={state['trade_duration']}s, bot_was_running={_bot_was_running}")
 except Exception:
     pass  # файла нет — оставляем дефолты
 
 start_sar_updater()
+
+# Автозапуск бота если он был запущен до перезагрузки воркера
+if _bot_was_running:
+    import time as _time
+    _time.sleep(2)  # дождаться полной инициализации SAR
+    bot_running = True
+    bot_thread = threading.Thread(target=bot_main_loop, daemon=True)
+    bot_thread.start()
+    logging.info("🔄 Бот автоматически перезапущен после перезагрузки воркера")
 
 # Настройка Telegram WebApp
 try:
