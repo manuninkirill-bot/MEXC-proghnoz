@@ -508,7 +508,7 @@ class TradingDashboard {
     }
 
     _getPriceHistorySince(isoTime) {
-        const entryMs = new Date(isoTime + (isoTime.endsWith('Z') ? '' : 'Z')).getTime();
+        const entryMs = new Date(isoTime.replace(/(\.\d{3})\d+/, '$1') + (isoTime.endsWith('Z') ? '' : 'Z')).getTime();
         return this._priceHistory.filter(p => p.time >= entryMs);
     }
 
@@ -517,7 +517,7 @@ class TradingDashboard {
         const winMin = this._chartWindow[idx];
         if (!winMin) return all;
         const cutoff = Date.now() - winMin * 60 * 1000;
-        const entryMs = new Date(entryIso + (entryIso.endsWith('Z') ? '' : 'Z')).getTime();
+        const entryMs = new Date(entryIso.replace(/(\.\d{3})\d+/, '$1') + (entryIso.endsWith('Z') ? '' : 'Z')).getTime();
         const from = Math.max(cutoff, entryMs);
         return this._priceHistory.filter(p => p.time >= from);
     }
@@ -888,7 +888,7 @@ class TradingDashboard {
         timers.forEach(timerEl => {
             const entryIso = timerEl.getAttribute('data-entry');
             const duration = parseInt(timerEl.getAttribute('data-duration') || '600');
-            const entryTime = new Date(entryIso + (entryIso.endsWith('Z') ? '' : 'Z'));
+            const entryTime = new Date(entryIso.replace(/(\.\d{3})\d+/, '$1') + (entryIso.endsWith('Z') ? '' : 'Z'));
             const remaining = Math.max(0, duration - (new Date() - entryTime) / 1000);
             const minutes = Math.floor(remaining / 60);
             const seconds = Math.floor(remaining % 60);
