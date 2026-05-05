@@ -260,7 +260,7 @@ class TradingDashboard {
             if (data.sar_directions) this.updateSARDirections(data.sar_directions);
 
             // Positions
-            this.updatePositionsList(data.positions || [], data.current_price);
+            this.updatePositionsList(data.positions || [], data.current_price, data.council_running || false);
 
             // Trades
             if (data.trades) this.updateTrades(data.trades);
@@ -758,22 +758,31 @@ class TradingDashboard {
     }
 
     /* ─── POSITIONS ─── */
-    updatePositionsList(positions, currentPrice) {
+    updatePositionsList(positions, currentPrice, councilRunning) {
         const noPositions = document.getElementById('no-positions');
+        const councilEl = document.getElementById('council-running');
         const positionsList = document.getElementById('positions-list');
         if (!positionsList) return;
 
         if (!positions || positions.length === 0) {
-            if (noPositions) noPositions.classList.remove('d-none');
             positionsList.innerHTML = '';
             clearInterval(this.timerInterval);
             this.timerInterval = null;
             this._positionsKey = null;
             this._destroyAllPositionCharts();
+            // Показываем либо "AI совет", либо "нет позиций"
+            if (councilRunning) {
+                if (councilEl) councilEl.classList.remove('d-none');
+                if (noPositions) noPositions.classList.add('d-none');
+            } else {
+                if (noPositions) noPositions.classList.remove('d-none');
+                if (councilEl) councilEl.classList.add('d-none');
+            }
             return;
         }
 
         if (noPositions) noPositions.classList.add('d-none');
+        if (councilEl) councilEl.classList.add('d-none');
         const currentPriceNum = parseFloat(currentPrice) || 0;
         const positionsKey = positions.map(p => p.entry_time).join('|');
         const needsRebuild = positionsKey !== this._positionsKey;

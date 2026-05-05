@@ -115,10 +115,13 @@ class TradingBot:
         try:
             with open("goldantilopaeth500_state.json", "r") as f:
                 data = json.load(f)
-                # Clear old positions on startup to avoid closing them immediately
+                # Очищаем позиции при рестарте (чтобы не закрывать несуществующие)
                 if "positions" in data:
                     data["positions"] = []
                 state.update(data)
+                # Если позиций нет — доступное = балансу (чтобы избежать накопления ошибок)
+                if not state.get("positions"):
+                    state["available"] = state["balance"]
         except:
             pass
 
@@ -519,6 +522,14 @@ class TradingBot:
 
     def _run_council_and_open(self, df_1m, label: str = "") -> None:
         """Созывает AI-совет и при консенсусе открывает позицию."""
+        from ai_advisor import discuss_all_ai
+        state["council_running"] = True
+        try:
+            self._run_council_and_open_inner(df_1m, label)
+        finally:
+            state["council_running"] = False
+
+    def _run_council_and_open_inner(self, df_1m, label: str = "") -> None:
         from ai_advisor import discuss_all_ai
         price = state.get("last_known_price") or self.get_current_price()
         candles_1m = []

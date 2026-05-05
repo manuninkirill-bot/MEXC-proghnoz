@@ -47,7 +47,7 @@
         <div class="col-md-3 col-6">
             <div class="stat-card stat-card--green">
                 <div class="stat-card__label"><i class="fas fa-wallet me-1"></i> Баланс</div>
-                <div class="stat-card__value" id="balance">$0.00</div>
+                <div class="stat-card__value" id="balance">${{ "%.2f"|format(init_balance) }}</div>
             </div>
         </div>
 
@@ -55,7 +55,7 @@
         <div class="col-md-3 col-6">
             <div class="stat-card stat-card--blue">
                 <div class="stat-card__label"><i class="fas fa-coins me-1"></i> Доступно</div>
-                <div class="stat-card__value" id="available">$0.00</div>
+                <div class="stat-card__value" id="available">${{ "%.2f"|format(init_available) }}</div>
             </div>
         </div>
 
@@ -101,9 +101,14 @@
                     <span><i class="fas fa-crosshairs"></i> Активные позиции</span>
                 </div>
                 <div class="panel__body p-0">
-                    <div id="no-positions" class="empty-state">
-                        <i class="fas fa-circle-notch fa-2x mb-2 opacity-50"></i>
+                    <div id="no-positions" class="empty-state d-none">
+                        <i class="fas fa-pause-circle fa-2x mb-2 opacity-50"></i>
                         <p class="mb-0 opacity-50">Нет открытых позиций</p>
+                    </div>
+                    <div id="council-running" class="empty-state d-none">
+                        <i class="fas fa-brain fa-2x mb-2 text-warning"></i>
+                        <p class="mb-0 text-warning fw-bold">🏛️ AI совет идёт...</p>
+                        <small class="text-muted">Голосование завершится через несколько секунд</small>
                     </div>
                     <div id="positions-list" class="list-group list-group-flush"></div>
                 </div>

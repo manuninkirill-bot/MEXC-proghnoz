@@ -115,7 +115,11 @@ def start_sar_updater():
 @app.route('/')
 def index():
     """Главная страница - дашборд"""
-    return render_template('dashboard.html')
+    return render_template(
+        'dashboard.html',
+        init_balance=state.get('balance', 100.0),
+        init_available=state.get('available', 100.0),
+    )
 
 @app.route('/webapp')
 def webapp():
@@ -163,6 +167,7 @@ def api_status():
             }),
             'payout_updated_at': state.get('payout_updated_at'),
             'counter_trade': state.get('counter_trade', False),
+            'council_running': state.get('council_running', False),
         })
     except Exception as e:
         logging.error(f"Status error: {e}")
@@ -812,6 +817,9 @@ try:
             if _key in _saved:
                 state[_key] = _saved[_key]
         _bot_was_running = bool(_saved.get("bot_was_running", False))
+        # При рестарте: если позиций нет — доступное = балансу
+        if not _saved.get("positions"):
+            state["available"] = state["balance"]
     logging.info(f"Settings restored: bet=${state['bet']}, duration={state['trade_duration']}s, bot_was_running={_bot_was_running}")
 except Exception:
     pass  # файла нет — оставляем дефолты
