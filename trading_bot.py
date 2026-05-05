@@ -22,10 +22,10 @@ USE_SIMULATOR = os.getenv("USE_SIMULATOR", "0") == "1"
 SYMBOL = "ETH/USDT:USDT"  # MEXC futures symbol format  # инструмент
 LEVERAGE = 1  # No leverage - binary options style
 ISOLATED = True  # изолированная маржа
-FIXED_BET = 5.0  # Fixed $5 bet per trade (binary options)
+FIXED_BET = 10.0  # Fixed $10 bet per trade
 TIMEFRAMES = {"1m": 1, "3m": 3, "5m": 5, "15m": 15, "30m": 30}
-FIXED_TRADE_SECONDS = 600  # Fixed 10-minute trade duration (AI mode)
-AI_POLL_INTERVAL_SECONDS = 300  # 5 minutes between AI polls
+FIXED_TRADE_SECONDS = 3600  # Fixed 1-hour trade duration
+AI_POLL_INTERVAL_SECONDS = 1800  # 30 minutes between AI council sessions
 
 # Таймфреймы, необходимые для сигнала по каждому уровню стратегии
 STRATEGY_TIMEFRAMES = {
@@ -51,8 +51,8 @@ state = {
     "skip_next_signal": False,  # пропускать следующий сигнал входа
     "counter_trade": False,     # инвертировать сигнал (контр трейд)
     "trades": [],  # список последних сделок
-    "bet": FIXED_BET,           # текущая ставка ($5 по умолчанию)
-    "trade_duration": FIXED_TRADE_SECONDS,  # текущая длительность (600 сек = 10 мин)
+    "bet": FIXED_BET,           # текущая ставка ($10 по умолчанию)
+    "trade_duration": FIXED_TRADE_SECONDS,  # текущая длительность (3600 сек = 1 час)
     "strategy_level": 3,        # уровень стратегии (1-5, legacy)
     "strategy_tfs": ["1m", "3m", "5m"],  # активные таймфреймы (мультивыбор)
     "payouts": {
@@ -499,39 +499,39 @@ class TradingBot:
             return 3000.0
 
     def strategy_loop(self, should_continue=lambda: True):
-        """AI-driven strategy: poll AI every 5 min → vote → open 10-min position."""
-        logging.info(f"Starting AI strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
-        from ai_advisor import poll_all_ai
+        """AI Council strategy: every 30 min → 2-round AI council vote → open 1h position."""
+        logging.info(f"Starting AI Council strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
+        from ai_advisor import discuss_all_ai
 
-        last_poll_time = 0.0  # Unix timestamp последнего опроса AI
+        last_council_time = 0.0  # Unix timestamp последнего совета AI
 
         while should_continue():
             try:
                 now_ts = time.time()
 
-                # 1) Обновляем кэш цены из 1m свечей (берём 35 для богатой статистики)
+                # 1) Обновляем кэш цены из 1m свечей
                 df_1m = self.fetch_ohlcv_tf('1m', limit=35)
                 if df_1m is not None and len(df_1m) > 0:
                     state["last_known_price"] = float(df_1m["close"].iloc[-1])
 
-                # 2) Закрываем просроченные позиции (по 10 мин)
+                # 2) Закрываем просроченные позиции (по 1 часу)
                 for i in range(len(state["positions"]) - 1, -1, -1):
                     pos = state["positions"][i]
                     entry_t = datetime.fromisoformat(pos["entry_time"])
                     trade_duration = (datetime.utcnow() - entry_t).total_seconds()
                     position_close_time = pos.get("close_time_seconds", FIXED_TRADE_SECONDS)
                     if trade_duration >= position_close_time:
-                        logging.info(f"⏱️ Closing position {i} after {trade_duration:.1f}s (10 min limit)")
+                        logging.info(f"⏱️ Closing position {i} after {trade_duration:.1f}s (1h limit)")
                         self.close_position(position_idx=i, close_reason="fixed_time")
                         self.save_state_to_file()
 
-                # 3) Раз в 5 минут — опрос AI и принятие решения
-                if now_ts - last_poll_time >= AI_POLL_INTERVAL_SECONDS:
-                    last_poll_time = now_ts
+                # 3) Раз в 30 минут — созываем AI совет и принимаем решение
+                if now_ts - last_council_time >= AI_POLL_INTERVAL_SECONDS:
+                    last_council_time = now_ts
 
                     # Не открываем новую, если уже есть открытая
                     if state.get("positions"):
-                        logging.info("⏸️ AI poll skipped: position already open")
+                        logging.info("⏸️ AI council skipped: position already open")
                     else:
                         price = state.get("last_known_price") or self.get_current_price()
                         candles_1m = []
@@ -558,21 +558,31 @@ class TradingBot:
                                     'volume': round(float(row.get('volume', 0)), 2),
                                 })
 
-                        logging.info(f"🤖 Polling AI servers @ ${price:.2f} (waiting for ALL responses…)")
-                        poll = poll_all_ai(price, candles_1m, candles_5m)
-                        state["ai_poll"] = poll
-                        logging.info(f"🤖 AI vote: LONG={poll['long_votes']} SHORT={poll['short_votes']} → {poll['consensus'].upper()} (need ≥2 same to trade)")
+                        logging.info(f"🏛️ Созываем AI совет @ ${price:.2f} (2 раунда голосования…)")
+                        meeting = discuss_all_ai(price, candles_1m, candles_5m)
+                        # Сохраняем последние 10 заседаний в state
+                        meetings = state.get('meetings', [])
+                        meetings.insert(0, meeting)
+                        state['meetings'] = meetings[:10]
+                        state['last_meeting'] = meeting
+                        state["ai_poll"] = {
+                            "consensus": meeting["consensus"],
+                            "long_votes": meeting["long_votes"],
+                            "short_votes": meeting["short_votes"],
+                            "results": meeting["round2"],
+                        }
+                        logging.info(f"🏛️ AI совет: LONG={meeting['long_votes']} SHORT={meeting['short_votes']} → {meeting['consensus'].upper()}")
 
-                        if poll["consensus"] in ("long", "short"):
-                            effective_dir = poll["consensus"]
+                        if meeting["consensus"] in ("long", "short"):
+                            effective_dir = meeting["consensus"]
                             if state.get("counter_trade", False):
                                 effective_dir = "short" if effective_dir == "long" else "long"
-                                logging.info(f"🔄 Counter trade: {poll['consensus'].upper()} → {effective_dir.upper()}")
+                                logging.info(f"🔄 Counter trade: {meeting['consensus'].upper()} → {effective_dir.upper()}")
 
                             side = "buy" if effective_dir == "long" else "sell"
                             cur_price = self.get_current_price() or price
                             size_base, notional = self.compute_order_size_usdt(state["balance"], cur_price if cur_price > 0 else 1.0)
-                            logging.info(f"✅ AI OPEN {side.upper()} — size={size_base:.6f} notional=${notional:.2f} @ ${cur_price}")
+                            logging.info(f"✅ AI OPEN {side.upper()} $10 / 1h — size={size_base:.6f} @ ${cur_price}")
                             self.place_market_order(side, amount_base=size_base)
                             self.save_state_to_file()
                         else:
