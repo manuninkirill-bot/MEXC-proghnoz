@@ -358,16 +358,21 @@ def ask_deepseek(prompt: str, max_tokens: int = 10) -> dict:
         return {"name": "DeepSeek", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def ask_openrouter(prompt: str, max_tokens: int = 10) -> dict:
+def _ask_openrouter_model(name: str, model: str, prompt: str, max_tokens: int = 10) -> dict:
+    """Универсальный вызов любой модели через OpenRouter API."""
     api_key = os.getenv("OPENROUTER_API_KEY", "")
     if not api_key:
-        return {"name": "OpenRouter", "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
+        return {"name": name, "direction": "unknown", "error": "API-ключ не задан", "raw": ""}
     try:
         resp = requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://replit.com",
+            },
             json={
-                "model": "google/gemma-4-31b-it:free",
+                "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": max_tokens,
                 "temperature": 0.2,
@@ -376,12 +381,37 @@ def ask_openrouter(prompt: str, max_tokens: int = 10) -> dict:
         )
         if resp.status_code == 200:
             raw = resp.json()["choices"][0]["message"]["content"]
-            return {"name": "OpenRouter", "direction": _parse_direction(raw), "raw": raw, "error": None}
-        err = f"HTTP {resp.status_code}: {resp.text[:300]}"
-        return {"name": "OpenRouter", "direction": "unknown", "raw": "", "error": _friendly_error(err)}
+            return {"name": name, "direction": _parse_direction(raw), "raw": raw, "error": None}
+        err = f"HTTP {resp.status_code}: {resp.text[:200]}"
+        return {"name": name, "direction": "unknown", "raw": "", "error": _friendly_error(err)}
     except Exception as e:
-        logger.error(f"OpenRouter error: {e}")
-        return {"name": "OpenRouter", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
+        logger.error(f"OpenRouter/{name} error: {e}")
+        return {"name": name, "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
+
+
+def ask_openrouter(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("OpenRouter-Free", "openrouter/free", prompt, max_tokens)
+
+def ask_or_gpt120b(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("GPT-OSS-120B", "openai/gpt-oss-120b:free", prompt, max_tokens)
+
+def ask_or_gpt20b(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("GPT-OSS-20B", "openai/gpt-oss-20b:free", prompt, max_tokens)
+
+def ask_or_nemotron(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("Nemotron-120B", "nvidia/nemotron-3-super-120b-a12b:free", prompt, max_tokens)
+
+def ask_or_hermes(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("Hermes-405B", "nousresearch/hermes-3-llama-3.1-405b:free", prompt, max_tokens)
+
+def ask_or_llama(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("LLaMA-70B", "meta-llama/llama-3.3-70b-instruct:free", prompt, max_tokens)
+
+def ask_or_gemma(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("Gemma-31B", "google/gemma-4-31b-it:free", prompt, max_tokens)
+
+def ask_or_qwen(prompt: str, max_tokens: int = 10) -> dict:
+    return _ask_openrouter_model("Qwen-80B", "qwen/qwen3-next-80b-a3b-instruct:free", prompt, max_tokens)
 
 
 def ask_mistral(prompt: str, max_tokens: int = 10) -> dict:
@@ -488,18 +518,27 @@ def _build_council_prompt_round2(price: float, candles_1m: list, candles_5m: lis
 
 
 def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
-    """Запускает все 7 AI параллельно с указанным размером ответа. Возвращает список с direction+reason."""
+    """Запускает все AI параллельно с указанным размером ответа. Возвращает список с direction+reason."""
     askers = {
-        "ChatGPT":    ask_chatgpt,
-        "Gemini":     ask_gemini,
-        "Grok":       ask_grok,
-        "DeepSeek":   ask_deepseek,
-        "Groq":       ask_groq,
-        "OpenRouter": ask_openrouter,
-        "Mistral":    ask_mistral,
+        # Прямые API
+        "ChatGPT":        ask_chatgpt,
+        "Gemini":         ask_gemini,
+        "Grok":           ask_grok,
+        "DeepSeek":       ask_deepseek,
+        "Groq":           ask_groq,
+        "Mistral":        ask_mistral,
+        # OpenRouter — все модели через один ключ (работают по мере доступности лимитов)
+        "GPT-OSS-120B":   ask_or_gpt120b,
+        "GPT-OSS-20B":    ask_or_gpt20b,
+        "Nemotron-120B":  ask_or_nemotron,
+        "Hermes-405B":    ask_or_hermes,
+        "LLaMA-70B":      ask_or_llama,
+        "Gemma-31B":      ask_or_gemma,
+        "Qwen-80B":       ask_or_qwen,
+        "OpenRouter-Free": ask_openrouter,
     }
     out = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=14) as ex:
         futures = {ex.submit(fn, prompt, max_tokens): name for name, fn in askers.items()}
         for fut in concurrent.futures.as_completed(futures):
             name = futures[fut]
