@@ -217,8 +217,8 @@ class TradingBot:
         return directions
 
     def compute_order_size_usdt(self, balance, price):
-        # Binary options: fixed $5 bet, no leverage
-        notional = FIXED_BET
+        # Берём ставку из state (устанавливается с дашборда)
+        notional = state.get("bet", FIXED_BET)
         base_amount = notional / price if price > 0 else 0.001  # количество базового актива (ETH)
         return base_amount, notional
 
