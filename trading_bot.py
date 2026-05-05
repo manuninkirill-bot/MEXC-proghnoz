@@ -527,11 +527,11 @@ class TradingBot:
 
                 # 3) Раз в 30 минут — созываем AI совет и принимаем решение
                 if now_ts - last_council_time >= AI_POLL_INTERVAL_SECONDS:
-                    last_council_time = now_ts
+                    last_council_time += AI_POLL_INTERVAL_SECONDS  # фиксированные 30-мин интервалы от старта
 
                     # Не открываем новую, если уже есть открытая
                     if state.get("positions"):
-                        logging.info("⏸️ AI council skipped: position already open")
+                        logging.info("⏸️ AI council skipped: position already open, next check in 30 min")
                     else:
                         price = state.get("last_known_price") or self.get_current_price()
                         candles_1m = []
