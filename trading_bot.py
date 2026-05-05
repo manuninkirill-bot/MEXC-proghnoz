@@ -230,7 +230,7 @@ class TradingBot:
         side: 'buy' или 'sell' (для открытия позиции)
         amount_base: количество в базовой валюте (ETH)
         
-        Multiple simultaneous positions allowed.
+        Только одна позиция одновременно — проверяется перед вызовом.
         """
         logging.info(f"[{self.now()}] PLACE MARKET ORDER -> side={side}, amount={amount_base:.6f}")
 
@@ -530,6 +530,10 @@ class TradingBot:
 
     def _run_council_and_open_inner(self, df_1m, label: str = "") -> bool:
         from ai_advisor import discuss_all_ai
+        # Защита: не открываем если уже есть открытая позиция
+        if state.get("positions"):
+            logging.info("🚫 Позиция уже открыта — пропускаем совет")
+            return False
         price = state.get("last_known_price") or self.get_current_price()
         candles_1m = []
         if df_1m is not None:

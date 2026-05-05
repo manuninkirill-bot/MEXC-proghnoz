@@ -494,6 +494,10 @@ def api_ai_open_position():
     if side not in ('long', 'short'):
         return jsonify({'error': 'Invalid side'}), 400
 
+    # Только одна позиция одновременно
+    if state.get('positions'):
+        return jsonify({'error': 'Позиция уже открыта — одновременно разрешена только одна'}), 409
+
     current_price = state.get('last_known_price', 2300.0)
     if bot_instance:
         try:
