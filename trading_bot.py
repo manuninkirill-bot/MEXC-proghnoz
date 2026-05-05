@@ -498,10 +498,87 @@ class TradingBot:
                 return state["last_known_price"]
             return 3000.0
 
+    def _build_trade_analysis(self, trade: dict) -> str:
+        """Генерирует текстовый анализ завершённой сделки для передачи AI-совету."""
+        side = trade.get("side", "?").upper()
+        result = trade.get("result", "?")
+        entry = float(trade.get("entry_price", 0))
+        exit_p = float(trade.get("exit_price", 0))
+        pnl = float(trade.get("pnl", 0))
+        pct = (exit_p - entry) / entry * 100 if entry else 0
+        price_move = "UP" if exit_p > entry else "DOWN"
+        won = result == "WIN"
+        correct = (side == "LONG" and price_move == "UP") or (side == "SHORT" and price_move == "DOWN")
+        hint = "The previous signal was CORRECT — trend may continue." if correct else \
+               "The previous signal was WRONG — consider if a reversal is still in play."
+        return (
+            f"Direction: {side} → Result: {result} (PnL: ${pnl:+.2f})\n"
+            f"Entry: ${entry:.2f} → Exit: ${exit_p:.2f} (price moved {price_move} by {abs(pct):.3f}%)\n"
+            f"{hint}"
+        )
+
+    def _run_council_and_open(self, df_1m, label: str = "") -> None:
+        """Созывает AI-совет и при консенсусе открывает позицию."""
+        from ai_advisor import discuss_all_ai
+        price = state.get("last_known_price") or self.get_current_price()
+        candles_1m = []
+        if df_1m is not None:
+            for _, row in df_1m.iterrows():
+                candles_1m.append({
+                    'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                    'open': round(float(row['open']), 2),
+                    'high': round(float(row['high']), 2),
+                    'low':  round(float(row['low']),  2),
+                    'close': round(float(row['close']), 2),
+                    'volume': round(float(row.get('volume', 0)), 2),
+                })
+        candles_5m = []
+        df_5m = self.fetch_ohlcv_tf('5m', limit=15)
+        if df_5m is not None:
+            for _, row in df_5m.iterrows():
+                candles_5m.append({
+                    'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
+                    'open': round(float(row['open']), 2),
+                    'high': round(float(row['high']), 2),
+                    'low':  round(float(row['low']),  2),
+                    'close': round(float(row['close']), 2),
+                    'volume': round(float(row.get('volume', 0)), 2),
+                })
+
+        last_analysis = state.get("last_trade_analysis")
+        logging.info(f"🏛️ {label}Созываем AI совет @ ${price:.2f} (2 раунда голосования…)")
+        meeting = discuss_all_ai(price, candles_1m, candles_5m, last_trade_analysis=last_analysis)
+
+        meetings = state.get('meetings', [])
+        meetings.insert(0, meeting)
+        state['meetings'] = meetings[:10]
+        state['last_meeting'] = meeting
+        state["ai_poll"] = {
+            "consensus": meeting["consensus"],
+            "long_votes": meeting["long_votes"],
+            "short_votes": meeting["short_votes"],
+            "results": meeting["round2"],
+        }
+        logging.info(f"🏛️ AI совет: LONG={meeting['long_votes']} SHORT={meeting['short_votes']} → {meeting['consensus'].upper()}")
+
+        if meeting["consensus"] in ("long", "short"):
+            effective_dir = meeting["consensus"]
+            if state.get("counter_trade", False):
+                effective_dir = "short" if effective_dir == "long" else "long"
+                logging.info(f"🔄 Counter trade: {meeting['consensus'].upper()} → {effective_dir.upper()}")
+
+            side = "buy" if effective_dir == "long" else "sell"
+            cur_price = self.get_current_price() or price
+            size_base, notional = self.compute_order_size_usdt(state["balance"], cur_price if cur_price > 0 else 1.0)
+            logging.info(f"✅ AI OPEN {side.upper()} ${notional} — size={size_base:.6f} @ ${cur_price}")
+            self.place_market_order(side, amount_base=size_base)
+            self.save_state_to_file()
+        else:
+            logging.info("➖ Нет консенсуса AI — пропускаем вход")
+
     def strategy_loop(self, should_continue=lambda: True):
         """AI Council strategy: every 30 min → 2-round AI council vote → open 1h position."""
         logging.info(f"Starting AI Council strategy loop. RUN_IN_PAPER={RUN_IN_PAPER}")
-        from ai_advisor import discuss_all_ai
 
         last_council_time = time.time()  # первый совет — через 30 минут после старта
 
@@ -514,79 +591,39 @@ class TradingBot:
                 if df_1m is not None and len(df_1m) > 0:
                     state["last_known_price"] = float(df_1m["close"].iloc[-1])
 
-                # 2) Закрываем просроченные позиции (по 1 часу)
+                # 2) Закрываем просроченные позиции; при закрытии — сразу новый совет
+                position_just_closed = False
                 for i in range(len(state["positions"]) - 1, -1, -1):
                     pos = state["positions"][i]
                     entry_t = datetime.fromisoformat(pos["entry_time"])
                     trade_duration = (datetime.utcnow() - entry_t).total_seconds()
                     position_close_time = pos.get("close_time_seconds", FIXED_TRADE_SECONDS)
                     if trade_duration >= position_close_time:
-                        logging.info(f"⏱️ Closing position {i} after {trade_duration:.1f}s (1h limit)")
-                        self.close_position(position_idx=i, close_reason="fixed_time")
+                        logging.info(f"⏱️ Closing position {i} after {trade_duration:.1f}s")
+                        trade = self.close_position(position_idx=i, close_reason="fixed_time")
                         self.save_state_to_file()
+                        # Анализ завершённой сделки — сохраняем в state
+                        if trade:
+                            analysis = self._build_trade_analysis(trade)
+                            state["last_trade_analysis"] = analysis
+                            logging.info(f"📊 Анализ сделки: {analysis.replace(chr(10), ' | ')}")
+                        position_just_closed = True
 
-                # 3) Раз в 30 минут — созываем AI совет и принимаем решение
+                # 3) Если позиция только что закрылась — сразу созываем совет
+                if position_just_closed and not state.get("positions"):
+                    self._run_council_and_open(df_1m, label="[после закрытия] ")
+                    last_council_time = now_ts  # сбрасываем таймер от текущего момента
+                    time.sleep(5)
+                    continue
+
+                # 4) Раз в 30 минут — плановый AI совет
                 if now_ts - last_council_time >= AI_POLL_INTERVAL_SECONDS:
-                    last_council_time += AI_POLL_INTERVAL_SECONDS  # фиксированные 30-мин интервалы от старта
+                    last_council_time += AI_POLL_INTERVAL_SECONDS
 
-                    # Не открываем новую, если уже есть открытая
                     if state.get("positions"):
                         logging.info("⏸️ AI council skipped: position already open, next check in 30 min")
                     else:
-                        price = state.get("last_known_price") or self.get_current_price()
-                        candles_1m = []
-                        if df_1m is not None:
-                            for _, row in df_1m.iterrows():
-                                candles_1m.append({
-                                    'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
-                                    'open': round(float(row['open']), 2),
-                                    'high': round(float(row['high']), 2),
-                                    'low':  round(float(row['low']),  2),
-                                    'close': round(float(row['close']), 2),
-                                    'volume': round(float(row.get('volume', 0)), 2),
-                                })
-                        candles_5m = []
-                        df_5m = self.fetch_ohlcv_tf('5m', limit=15)
-                        if df_5m is not None:
-                            for _, row in df_5m.iterrows():
-                                candles_5m.append({
-                                    'time': pd.to_datetime(row['datetime']).strftime('%H:%M'),
-                                    'open': round(float(row['open']), 2),
-                                    'high': round(float(row['high']), 2),
-                                    'low':  round(float(row['low']),  2),
-                                    'close': round(float(row['close']), 2),
-                                    'volume': round(float(row.get('volume', 0)), 2),
-                                })
-
-                        logging.info(f"🏛️ Созываем AI совет @ ${price:.2f} (2 раунда голосования…)")
-                        meeting = discuss_all_ai(price, candles_1m, candles_5m)
-                        # Сохраняем последние 10 заседаний в state
-                        meetings = state.get('meetings', [])
-                        meetings.insert(0, meeting)
-                        state['meetings'] = meetings[:10]
-                        state['last_meeting'] = meeting
-                        state["ai_poll"] = {
-                            "consensus": meeting["consensus"],
-                            "long_votes": meeting["long_votes"],
-                            "short_votes": meeting["short_votes"],
-                            "results": meeting["round2"],
-                        }
-                        logging.info(f"🏛️ AI совет: LONG={meeting['long_votes']} SHORT={meeting['short_votes']} → {meeting['consensus'].upper()}")
-
-                        if meeting["consensus"] in ("long", "short"):
-                            effective_dir = meeting["consensus"]
-                            if state.get("counter_trade", False):
-                                effective_dir = "short" if effective_dir == "long" else "long"
-                                logging.info(f"🔄 Counter trade: {meeting['consensus'].upper()} → {effective_dir.upper()}")
-
-                            side = "buy" if effective_dir == "long" else "sell"
-                            cur_price = self.get_current_price() or price
-                            size_base, notional = self.compute_order_size_usdt(state["balance"], cur_price if cur_price > 0 else 1.0)
-                            logging.info(f"✅ AI OPEN {side.upper()} $10 / 1h — size={size_base:.6f} @ ${cur_price}")
-                            self.place_market_order(side, amount_base=size_base)
-                            self.save_state_to_file()
-                        else:
-                            logging.info("➖ Нет консенсуса AI — пропускаем вход")
+                        self._run_council_and_open(df_1m, label="[плановый] ")
 
                 time.sleep(5)
             except Exception as e:

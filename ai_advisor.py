@@ -373,12 +373,19 @@ def _parse_direction_and_reason(text) -> tuple[str, str]:
     return direction, reason
 
 
-def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: list | None, question: str) -> str:
+def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: list | None,
+                                  question: str, last_trade_analysis: str | None = None) -> str:
     base = _build_prompt(price, candles_1m, candles_5m)
-    # Заменяем финальную инструкцию на формат с аргументом
     cut = base.split("=== DECISION ===")[0]
+    analysis_block = ""
+    if last_trade_analysis:
+        analysis_block = (
+            "=== PREVIOUS TRADE ANALYSIS (use this as context) ===\n"
+            + last_trade_analysis + "\n\n"
+        )
     return (
         cut
+        + analysis_block
         + "=== COUNCIL QUESTION ===\n"
         + question + "\n\n"
         + "=== ANSWER FORMAT ===\n"
@@ -450,17 +457,18 @@ def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
 
 
 def discuss_all_ai(price: float, candles_1m: list, candles_5m: list | None = None,
-                   question: str | None = None) -> dict:
+                   question: str | None = None, last_trade_analysis: str | None = None) -> dict:
     """
     Двухраундовое заседание AI совета.
     1. Каждый AI даёт направление + аргумент независимо.
     2. Каждому AI показываем мнения коллег и просим финальный ответ.
+    last_trade_analysis — текстовый анализ предыдущей сделки, передаётся в раунд 1.
     """
     if not question:
         question = "Куда пойдёт цена ETH/USDT в следующие 10 минут — LONG или SHORT?"
 
     # ── Раунд 1 ──
-    prompt1 = _build_council_prompt_round1(price, candles_1m, candles_5m, question)
+    prompt1 = _build_council_prompt_round1(price, candles_1m, candles_5m, question, last_trade_analysis)
     round1 = _ask_all_parallel(prompt1, max_tokens=120)
 
     # Только AI с валидным направлением участвуют в раунде 2
