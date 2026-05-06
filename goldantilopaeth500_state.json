@@ -1,86 +1,13 @@
 {
-  "balance": 76.0,
-  "available": 76.0,
+  "balance": 100.0,
+  "available": 100.0,
   "positions": [],
   "last_trade_time": "2026-05-06T07:36:53.202074",
   "last_1m_dir": null,
   "one_min_flip_count": 0,
   "skip_next_signal": false,
   "counter_trade": false,
-  "trades": [
-    {
-      "time": "2026-05-06T07:36:53.202047",
-      "side": "long",
-      "entry_price": 2373.27,
-      "exit_price": 2370.1,
-      "size_base": 0.004213595587522701,
-      "pnl": -10.0,
-      "notional": 10.0,
-      "duration": "10\u043c 1\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-05-06T07:23:57.509451",
-      "side": "long",
-      "entry_price": 2370.0,
-      "exit_price": 2371.1,
-      "size_base": 0.004219409282700422,
-      "pnl": 8.0,
-      "notional": 10.0,
-      "duration": "10\u043c 5\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    },
-    {
-      "time": "2026-05-05T19:52:43.084966",
-      "side": "long",
-      "entry_price": 2371.22,
-      "exit_price": 2369.4,
-      "size_base": 0.0042172383836168725,
-      "pnl": -10.0,
-      "notional": 10.0,
-      "duration": "10\u043c 1\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-05-05T19:31:19.545826",
-      "side": "long",
-      "entry_price": 2370.82,
-      "exit_price": 2370.22,
-      "size_base": 0.004217949907626897,
-      "pnl": -10.0,
-      "notional": 10.0,
-      "duration": "10\u043c 3\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-05-05T19:09:58.655987",
-      "side": "long",
-      "entry_price": 2370.9,
-      "exit_price": 2370.25,
-      "size_base": 0.0042178075836180355,
-      "pnl": -10.0,
-      "notional": 10.0,
-      "duration": "10\u043c 2\u0441",
-      "close_reason": "fixed_time",
-      "result": "LOSE"
-    },
-    {
-      "time": "2026-05-05T18:49:09.116081",
-      "side": "long",
-      "entry_price": 2369.99,
-      "exit_price": 2372.14,
-      "size_base": 0.004219427086190238,
-      "pnl": 8.0,
-      "notional": 10.0,
-      "duration": "10\u043c 4\u0441",
-      "close_reason": "fixed_time",
-      "result": "WIN"
-    }
-  ],
+  "trades": [],
   "bet": 10.0,
   "trade_duration": 600,
   "strategy_level": 3,
@@ -110,9 +37,9 @@
     "15m": "long",
     "30m": "long"
   },
-  "last_known_price": 2370.1,
+  "last_known_price": 2370.03,
   "bot_was_running": true,
-  "council_running": false,
+  "council_running": true,
   "meetings": [
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
@@ -1374,6 +1301,5 @@
   "last_trade_analysis": "Direction: LONG \u2192 Result: LOSE (PnL: $-10.00)\nEntry: $2370.82 \u2192 Exit: $2370.22 (price moved DOWN by 0.025%)\nThe previous signal was WRONG \u2014 consider if a reversal is still in play.",
   "in_position": false,
   "position": null,
-  "telegram_trade_counter": 6,
   "skip_council_count": 0
 }

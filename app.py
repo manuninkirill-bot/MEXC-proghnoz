@@ -124,13 +124,19 @@ def index():
             init_price = bot_instance.get_current_price() or 0.0
         except Exception:
             pass
-    return render_template(
+    resp = render_template(
         'dashboard.html',
         init_balance=state.get('balance', 100.0),
         init_available=state.get('available', 100.0),
         init_price=init_price,
         bot_running=bot_running,
     )
+    from flask import make_response
+    r = make_response(resp)
+    r.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    r.headers['Pragma'] = 'no-cache'
+    r.headers['Expires'] = '0'
+    return r
 
 @app.route('/webapp')
 def webapp():
