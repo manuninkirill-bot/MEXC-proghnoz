@@ -1252,8 +1252,65 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 .council-verdict .ai-action-btn--long  { background: #10b981; color: #fff; }
 .council-verdict .ai-action-btn--short { background: #ef4444; color: #fff; }
 
+/* ── Раунд 3: адвокат дьявола ── */
+.council-round--devil {
+    border: 1px solid rgba(251,191,36,.3);
+    background: rgba(251,191,36,.04);
+    border-radius: 10px; padding: 12px;
+    margin-top: 8px;
+}
+.council-round--devil h4 { color: #fbbf24; }
+
+.council-devil-card { margin-bottom: 10px; }
+.council-devil-highlight {
+    border-left-color: #f59e0b !important;
+    background: rgba(245,158,11,.08) !important;
+    box-shadow: 0 0 0 1px rgba(245,158,11,.25);
+}
+
+/* ── Статистика агентов ── */
+.ai-stat-badge {
+    font-size: 10px; font-weight: 700;
+    margin-top: 2px; letter-spacing: 0.2px;
+    line-height: 1;
+}
+
+/* ── Вердикт: средняя уверенность ── */
+.verdict-conf-row {
+    display: flex; gap: 16px; font-size: 13px;
+    font-weight: 400; opacity: .85;
+}
+.verdict-conf-long  { color: #34d399; }
+.verdict-conf-short { color: #f87171; }
+
+/* ── История заседаний ── */
+.meetings-history {
+    display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0;
+}
+.meeting-item {
+    display: flex; align-items: center; gap: 8px;
+    background: #0f1219; border: 1px solid rgba(255,255,255,.08);
+    border-left-width: 3px; border-radius: 8px;
+    padding: 8px 12px; font-size: 12px; flex-wrap: wrap;
+    min-width: 260px; flex: 1;
+}
+.meeting-item--long  { border-left-color: #10b981; }
+.meeting-item--short { border-left-color: #ef4444; }
+.meeting-item--none  { border-left-color: #6b7280; opacity:.7; }
+.meeting-arrow { font-size: 16px; font-weight: 700; }
+.meeting-item--long  .meeting-arrow { color: #10b981; }
+.meeting-item--short .meeting-arrow { color: #ef4444; }
+.meeting-item--none  .meeting-arrow { color: #6b7280; }
+.meeting-dir  { font-weight: 700; min-width: 44px; }
+.meeting-votes { color: #94a3b8; }
+.meeting-conf { font-weight: 700; color: #e2e8f0; background: rgba(255,255,255,.07); padding: 1px 6px; border-radius: 4px; }
+.meeting-price { color: #fbbf24; font-weight: 600; }
+.meeting-time  { color: #475569; margin-left: auto; }
+.meeting-r3    { font-size: 10px; background: rgba(251,191,36,.2); color: #fbbf24; padding: 1px 5px; border-radius: 4px; font-weight: 700; }
+
 @media (max-width: 600px) {
     .ai-actions { flex-direction: column; }
     .council-modal__content { margin: 2vh auto; max-height: 96vh; }
     .council-opinions { grid-template-columns: 1fr; }
+    .meeting-item { min-width: 100%; }
 }
