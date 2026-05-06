@@ -817,17 +817,41 @@ def api_verify_password():
 @app.route('/webhook/telegram', methods=['POST'])
 def telegram_webhook():
     """Webhook для Telegram бота"""
-    if not telegram_notifier:
-        return 'OK', 200
-    
     try:
-        update = request.get_json()
-        if update and 'message' in update:
-            telegram_notifier.handle_message(update['message'])
+        update = request.get_json(silent=True) or {}
+        msg = update.get('message') or update.get('edited_message')
+        if msg:
+            chat_id = msg.get('chat', {}).get('id')
+            text    = msg.get('text', '')
+            bot_token = os.getenv('TELEGRAM_BOT_TOKEN', '')
+            if chat_id and bot_token and text.startswith('/start'):
+                _tg_send_webapp_button(bot_token, chat_id)
+            elif telegram_notifier:
+                telegram_notifier.handle_message(msg)
     except Exception as e:
         logging.error(f"Telegram webhook error: {e}")
-    
     return 'OK', 200
+
+
+def _tg_send_webapp_button(token, chat_id):
+    """Отправляет сообщение с кнопкой-WebApp"""
+    import requests as _req
+    webapp_url = "https://poweramanita-mexc-proghnoz.hf.space/webapp"
+    payload = {
+        "chat_id": chat_id,
+        "text": "📊 *goldantelope MEXC*\nНажми кнопку ниже чтобы открыть торговый дашборд:",
+        "parse_mode": "Markdown",
+        "reply_markup": {
+            "inline_keyboard": [[
+                {"text": "📊 Открыть дашборд", "web_app": {"url": webapp_url}}
+            ]]
+        }
+    }
+    try:
+        _req.post(f"https://api.telegram.org/bot{token}/sendMessage",
+                  json=payload, timeout=10)
+    except Exception as e:
+        logging.warning(f"_tg_send_webapp_button error: {e}")
 
 # Инициализация при загрузке модуля
 init_telegram()
