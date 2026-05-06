@@ -1,24 +1,25 @@
 {
-  "balance": 78.0,
-  "available": 68.0,
-  "positions": [
-    {
-      "side": "long",
-      "entry_price": 2370.0,
-      "size_base": 0.004219409282700422,
-      "notional": 10.0,
-      "entry_time": "2026-05-06T07:13:52.430078",
-      "close_time_seconds": 600,
-      "trade_number": 5,
-      "bet": 10.0
-    }
-  ],
-  "last_trade_time": "2026-05-06T07:13:52.430078",
+  "balance": 86.0,
+  "available": 86.0,
+  "positions": [],
+  "last_trade_time": "2026-05-06T07:23:57.509471",
   "last_1m_dir": null,
   "one_min_flip_count": 0,
   "skip_next_signal": false,
   "counter_trade": false,
   "trades": [
+    {
+      "time": "2026-05-06T07:23:57.509451",
+      "side": "long",
+      "entry_price": 2370.0,
+      "exit_price": 2371.1,
+      "size_base": 0.004219409282700422,
+      "pnl": 8.0,
+      "notional": 10.0,
+      "duration": "10\u043c 5\u0441",
+      "close_reason": "fixed_time",
+      "result": "WIN"
+    },
     {
       "time": "2026-05-05T19:52:43.084966",
       "side": "long",
@@ -97,10 +98,194 @@
     "15m": "long",
     "30m": "long"
   },
-  "last_known_price": 2370.0,
+  "last_known_price": 2371.1,
   "bot_was_running": true,
   "council_running": true,
   "meetings": [
+    {
+      "question": "\u0421\u0442\u043e\u0438\u0442 \u043b\u0438 \u0432\u043e\u043e\u0431\u0449\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u043f\u043e\u0437\u0438\u0446\u0438\u044e \u0441\u0435\u0439\u0447\u0430\u0441 \u0438\u043b\u0438 \u043f\u043e\u0434\u043e\u0436\u0434\u0430\u0442\u044c? \u0415\u0441\u043b\u0438 \u0442\u043e\u0440\u0433\u043e\u0432\u0430\u0442\u044c \u2014 \u043a\u0430\u043a\u043e\u0435 \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435?",
+      "price": 2369.38,
+      "round1": [
+        {
+          "name": "Gemini",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+        },
+        {
+          "name": "Grok",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+        },
+        {
+          "name": "DeepSeek",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+        },
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u0432 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u043c \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438",
+          "confidence": 60,
+          "raw": "SHORT 60%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u0432 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u043c \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438.",
+          "error": null
+        },
+        {
+          "name": "ChatGPT",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447"
+        },
+        {
+          "name": "Gemma-31B",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, \u043e\u0431\u044a\u0435\u043c \u043d\u0438\u0437\u043a\u0438\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441",
+          "confidence": 68,
+          "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, \u043e\u0431\u044a\u0435\u043c \u043d\u0438\u0437\u043a\u0438\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441.",
+          "error": null
+        },
+        {
+          "name": "LLaMA-70B",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Hermes-405B",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "Qwen-80B",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "\u0422\u0440\u0435\u043d\u0434 \u0432\u043d\u0438\u0437\u0443, 4 \u0438\u0437 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0430\u0434\u0430\u044e\u0442, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u0438\u0437\u043a\u0430\u044f \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441",
+          "confidence": 65,
+          "raw": "SHORT 65%: \u0422\u0440\u0435\u043d\u0434 \u0432\u043d\u0438\u0437\u0443, 4 \u0438\u0437 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0430\u0434\u0430\u044e\u0442, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u0438\u0437\u043a\u0430\u044f \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441.",
+          "error": null
+        },
+        {
+          "name": "Nemotron-120B",
+          "direction": "short",
+          "reason": "We need to decide: open position or wait? According to rules: Only go  if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. Only go  if \u22653/5 last candles bullish AND RSI>45 AND price trending UP. If signal...",
+          "confidence": null,
+          "raw": "We need to decide: open position or wait? According to rules: Only go SHORT if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. Only go LONG if \u22653/5 last candles bullish AND RSI>45 AND price trending UP. If signals conflict or volume low \u2014 prefer direction of dominant trend.\n\nWe have last 5 candles: BEARISH (4/5 last candles closed DOWN). So \u22653/5 bearish satisfied. RSI is 52.4 (<55) satisfied. Price",
+          "error": null
+        },
+        {
+          "name": "OpenRouter-Free",
+          "direction": "short",
+          "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 \u0441\u0432\u0435\u0447\u0438 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55 \u0438 SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f, \u043b\u0443\u0447\u0448\u0435 \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u0448\u043e\u0440\u0442",
+          "confidence": 68,
+          "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 \u0441\u0432\u0435\u0447\u0438 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55 \u0438 SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f, \u043b\u0443\u0447\u0448\u0435 \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u0448\u043e\u0440\u0442.",
+          "error": null
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "short",
+          "reason": "\u0422\u0435\u043a\u0443\u0449\u0438\u0439 \u0446\u0435\u043d\u043e\u0432\u043e\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0441\u043b\u0435\u0433\u043a\u0430 \u0432\u043d\u0438\u0437, SMA5 \u043d\u0438\u0436\u0435 SMA20, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u0438 \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439 RSI \u0434\u0435\u043b\u0430\u044e\u0442 \u0441\u0438\u0433\u043d\u0430\u043b \u0441\u043b\u0430\u0431\u044b\u043c",
+          "confidence": 55,
+          "raw": "SHORT 55%: \u0422\u0435\u043a\u0443\u0449\u0438\u0439 \u0446\u0435\u043d\u043e\u0432\u043e\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0441\u043b\u0435\u0433\u043a\u0430 \u0432\u043d\u0438\u0437, SMA5 \u043d\u0438\u0436\u0435 SMA20, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u0438 \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439 RSI \u0434\u0435\u043b\u0430\u044e\u0442 \u0441\u0438\u0433\u043d\u0430\u043b \u0441\u043b\u0430\u0431\u044b\u043c.",
+          "error": null
+        }
+      ],
+      "round2": [
+        {
+          "name": "Groq",
+          "direction": "short",
+          "reason": "\u041c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043f\u0440\u0438 \u043d\u0438\u0437\u043a\u043e\u043c \u043e\u0431\u044a\u0435\u043c\u0435",
+          "confidence": 70,
+          "raw": "SHORT 70%: \u041c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043f\u0440\u0438 \u043d\u0438\u0437\u043a\u043e\u043c \u043e\u0431\u044a\u0435\u043c\u0435.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "Mistral",
+          "direction": "short",
+          "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0438 \u0441\u043b\u0430\u0431\u044b\u0439 \u043e\u0431\u044a\u0435\u043c",
+          "confidence": 68,
+          "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0438 \u0441\u043b\u0430\u0431\u044b\u0439 \u043e\u0431\u044a\u0435\u043c.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "OpenRouter-Free",
+          "direction": "unknown",
+          "reason": "",
+          "confidence": null,
+          "raw": "",
+          "error": "\u041f\u0443\u0441\u0442\u043e\u0439 \u043e\u0442\u0432\u0435\u0442",
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "Nemotron-120B",
+          "direction": "short",
+          "reason": "We need to decide final answer:  or  with probability and short reasoning in Russian, under 25 words, one line.\n\nWe have data: last 5 candles: BEARISH (4/5 last candles closed DOWN). RSI 52.4 (<55). Price trending dow...",
+          "confidence": null,
+          "raw": "We need to decide final answer: SHORT or LONG with probability and short reasoning in Russian, under 25 words, one line.\n\nWe have data: last 5 candles: BEARISH (4/5 last candles closed DOWN). RSI 52.4 (<55). Price trending down? Recent momentum down. Volume low. According to rule: Only go SHORT if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. All three satisfied: 4/5 bearish, RSI<55, price",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-20B",
+          "direction": "short",
+          "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, SMA5 \u043d\u0438\u0436\u0435 SMA20, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441",
+          "confidence": 65,
+          "raw": "SHORT 65%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, SMA5 \u043d\u0438\u0436\u0435 SMA20, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        },
+        {
+          "name": "GPT-OSS-120B",
+          "direction": "short",
+          "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442\u043d\u044b\u0445 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0440\u0435\u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u043e \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55, SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f",
+          "confidence": 68,
+          "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442\u043d\u044b\u0445 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0440\u0435\u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u043e \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55, SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f.",
+          "error": null,
+          "changed": false,
+          "previous": "short"
+        }
+      ],
+      "consensus": "short",
+      "long_votes": 0,
+      "short_votes": 5,
+      "timestamp": "2026-05-06T07:22:02.705634"
+    },
     {
       "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
       "price": 2370.14,
@@ -801,175 +986,191 @@
       "long_votes": 3,
       "short_votes": 0,
       "timestamp": "2026-05-05T19:34:25.915746"
-    },
-    {
-      "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 1 \u0447\u0430\u0441 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-      "price": 2371.11,
-      "round1": [
-        {
-          "name": "Mistral",
-          "direction": "long",
-          "reason": "Recent 5/5 last 1m candles closed up with weak bearish SMA gap, favoring -term bullish momentum",
-          "raw": "LONG: Recent 5/5 last 1m candles closed up with weak bearish SMA gap, favoring short-term bullish momentum.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "long",
-          "reason": "Recent 5\u2011minute bullish momentum and weak bearish bias suggest a \u2011term uptrend despite low volume",
-          "raw": "LONG: Recent 5\u2011minute bullish momentum and weak bearish bias suggest a short\u2011term uptrend despite low volume.",
-          "error": null
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "long",
-          "reason": "Recent 4 of 5 one\u2011minute candles bullish, RSI above 45, price edging higher despite low volume, indicating \u2011term upward momentum",
-          "raw": "LONG: Recent 4 of 5 one\u2011minute candles bullish, RSI above 45, price edging higher despite low volume, indicating short\u2011term upward momentum.",
-          "error": null
-        }
-      ],
-      "round2": [
-        {
-          "name": "Mistral",
-          "direction": "long",
-          "reason": "Recent 4/5 bullish 1m candles and weak bearish SMA gap favor -term upward momentum",
-          "raw": "LONG: Recent 4/5 bullish 1m candles and weak bearish SMA gap favor short-term upward momentum.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-20B",
-          "direction": "long",
-          "reason": "Recent 4/5 one\u2011minute candles closed up, weak bearish SMA gap, and neutral RSI suggest \u2011term bullish momentum despite low volume",
-          "raw": "LONG: Recent 4/5 one\u2011minute candles closed up, weak bearish SMA gap, and neutral RSI suggest short\u2011term bullish momentum despite low volume.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        },
-        {
-          "name": "GPT-OSS-120B",
-          "direction": "long",
-          "reason": "3 of last 5 candles bullish, RSI\u202f>\u202f45 and price edging higher, meeting  entry criteria",
-          "raw": "LONG: 3 of last 5 candles bullish, RSI\u202f>\u202f45 and price edging higher, meeting long entry criteria.",
-          "error": null,
-          "changed": false,
-          "previous": "long"
-        }
-      ],
-      "consensus": "long",
-      "long_votes": 3,
-      "short_votes": 0,
-      "timestamp": "2026-05-05T19:33:54.820784"
     }
   ],
   "last_meeting": {
-    "question": "\u041a\u0443\u0434\u0430 \u043f\u043e\u0439\u0434\u0451\u0442 \u0446\u0435\u043d\u0430 ETH/USDT \u0432 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0435 10 \u043c\u0438\u043d\u0443\u0442 \u2014 LONG \u0438\u043b\u0438 SHORT?",
-    "price": 2370.14,
+    "question": "\u0421\u0442\u043e\u0438\u0442 \u043b\u0438 \u0432\u043e\u043e\u0431\u0449\u0435 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u043f\u043e\u0437\u0438\u0446\u0438\u044e \u0441\u0435\u0439\u0447\u0430\u0441 \u0438\u043b\u0438 \u043f\u043e\u0434\u043e\u0436\u0434\u0430\u0442\u044c? \u0415\u0441\u043b\u0438 \u0442\u043e\u0440\u0433\u043e\u0432\u0430\u0442\u044c \u2014 \u043a\u0430\u043a\u043e\u0435 \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435?",
+    "price": 2369.38,
     "round1": [
       {
+        "name": "Gemini",
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+      },
+      {
+        "name": "Grok",
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+      },
+      {
+        "name": "DeepSeek",
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "API-\u043a\u043b\u044e\u0447 \u043d\u0435 \u0437\u0430\u0434\u0430\u043d"
+      },
+      {
         "name": "Groq",
-        "direction": "long",
-        "reason": "Recent momentum is up with 3/5 last candles closing up",
-        "raw": "LONG: Recent momentum is up with 3/5 last candles closing up.",
+        "direction": "short",
+        "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u0432 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u043c \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438",
+        "confidence": 60,
+        "raw": "SHORT 60%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u0432 \u043e\u0441\u043d\u043e\u0432\u043d\u043e\u043c \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438.",
         "error": null
+      },
+      {
+        "name": "ChatGPT",
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 API-\u043a\u043b\u044e\u0447"
+      },
+      {
+        "name": "Gemma-31B",
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
       },
       {
         "name": "Mistral",
-        "direction": "long",
-        "reason": "Recent 5 candles show 3/5 bullish closes, SMA5>SMA20, and price near recent highs",
-        "raw": "LONG: Recent 5 candles show 3/5 bullish closes, SMA5>SMA20, and price near recent highs.",
+        "direction": "short",
+        "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, \u043e\u0431\u044a\u0435\u043c \u043d\u0438\u0437\u043a\u0438\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441",
+        "confidence": 68,
+        "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, \u043e\u0431\u044a\u0435\u043c \u043d\u0438\u0437\u043a\u0438\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441.",
         "error": null
       },
       {
-        "name": "OpenRouter-Free",
+        "name": "LLaMA-70B",
         "direction": "unknown",
         "reason": "",
+        "confidence": null,
         "raw": "",
-        "error": "\u041f\u0443\u0441\u0442\u043e\u0439 \u043e\u0442\u0432\u0435\u0442"
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "Hermes-405B",
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
+      },
+      {
+        "name": "Qwen-80B",
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "\u041a\u0432\u043e\u0442\u0430 \u0438\u0441\u0447\u0435\u0440\u043f\u0430\u043d\u0430"
       },
       {
         "name": "GPT-OSS-20B",
-        "direction": "long",
-        "reason": "Bullish trend persists with 3/5 candles up, RSI neutral, and SMA5>SMA20, so \u2011term momentum favors a slight upward move",
-        "raw": "LONG: Bullish trend persists with 3/5 candles up, RSI neutral, and SMA5>SMA20, so short\u2011term momentum favors a slight upward move.",
+        "direction": "short",
+        "reason": "\u0422\u0440\u0435\u043d\u0434 \u0432\u043d\u0438\u0437\u0443, 4 \u0438\u0437 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0430\u0434\u0430\u044e\u0442, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u0438\u0437\u043a\u0430\u044f \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441",
+        "confidence": 65,
+        "raw": "SHORT 65%: \u0422\u0440\u0435\u043d\u0434 \u0432\u043d\u0438\u0437\u0443, 4 \u0438\u0437 5 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0430\u0434\u0430\u044e\u0442, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u0438\u0437\u043a\u0430\u044f \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u044c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441.",
         "error": null
       },
       {
         "name": "Nemotron-120B",
-        "direction": "long",
-        "reason": "We need to decide  or  for next 10 minutes based on data.\n\nWe have current price 2370.14. Last 5 candles: need to check last 5 1m candles (from 07:09 to 07:13). Let's list:\n\n07:09: C 2370.23 (up from previous? previou...",
-        "raw": "We need to decide LONG or SHORT for next 10 minutes based on data.\n\nWe have current price 2370.14. Last 5 candles: need to check last 5 1m candles (from 07:09 to 07:13). Let's list:\n\n07:09: C 2370.23 (up from previous? previous 07:08 C 2369.67, so up)\n07:10: C 2370.",
+        "direction": "short",
+        "reason": "We need to decide: open position or wait? According to rules: Only go  if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. Only go  if \u22653/5 last candles bullish AND RSI>45 AND price trending UP. If signal...",
+        "confidence": null,
+        "raw": "We need to decide: open position or wait? According to rules: Only go SHORT if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. Only go LONG if \u22653/5 last candles bullish AND RSI>45 AND price trending UP. If signals conflict or volume low \u2014 prefer direction of dominant trend.\n\nWe have last 5 candles: BEARISH (4/5 last candles closed DOWN). So \u22653/5 bearish satisfied. RSI is 52.4 (<55) satisfied. Price",
+        "error": null
+      },
+      {
+        "name": "OpenRouter-Free",
+        "direction": "short",
+        "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 \u0441\u0432\u0435\u0447\u0438 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55 \u0438 SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f, \u043b\u0443\u0447\u0448\u0435 \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u0448\u043e\u0440\u0442",
+        "confidence": 68,
+        "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 \u0441\u0432\u0435\u0447\u0438 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55 \u0438 SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f, \u043b\u0443\u0447\u0448\u0435 \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u0448\u043e\u0440\u0442.",
         "error": null
       },
       {
         "name": "GPT-OSS-120B",
-        "direction": "long",
-        "reason": "Bullish majority of recent candles, RSI above 45, and price rising despite low volume, indicating \u2011term upward momentum",
-        "raw": "LONG: Bullish majority of recent candles, RSI above 45, and price rising despite low volume, indicating short\u2011term upward momentum.",
+        "direction": "short",
+        "reason": "\u0422\u0435\u043a\u0443\u0449\u0438\u0439 \u0446\u0435\u043d\u043e\u0432\u043e\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0441\u043b\u0435\u0433\u043a\u0430 \u0432\u043d\u0438\u0437, SMA5 \u043d\u0438\u0436\u0435 SMA20, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u0438 \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439 RSI \u0434\u0435\u043b\u0430\u044e\u0442 \u0441\u0438\u0433\u043d\u0430\u043b \u0441\u043b\u0430\u0431\u044b\u043c",
+        "confidence": 55,
+        "raw": "SHORT 55%: \u0422\u0435\u043a\u0443\u0449\u0438\u0439 \u0446\u0435\u043d\u043e\u0432\u043e\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0441\u043b\u0435\u0433\u043a\u0430 \u0432\u043d\u0438\u0437, SMA5 \u043d\u0438\u0436\u0435 SMA20, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u0438 \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439 RSI \u0434\u0435\u043b\u0430\u044e\u0442 \u0441\u0438\u0433\u043d\u0430\u043b \u0441\u043b\u0430\u0431\u044b\u043c.",
         "error": null
       }
     ],
     "round2": [
       {
         "name": "Groq",
-        "direction": "long",
-        "reason": "Recent momentum is up with 3/5 last candles closing up",
-        "raw": "LONG: Recent momentum is up with 3/5 last candles closing up.",
+        "direction": "short",
+        "reason": "\u041c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043f\u0440\u0438 \u043d\u0438\u0437\u043a\u043e\u043c \u043e\u0431\u044a\u0435\u043c\u0435",
+        "confidence": 70,
+        "raw": "SHORT 70%: \u041c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043f\u0440\u0438 \u043d\u0438\u0437\u043a\u043e\u043c \u043e\u0431\u044a\u0435\u043c\u0435.",
         "error": null,
         "changed": false,
-        "previous": "long"
+        "previous": "short"
       },
       {
         "name": "Mistral",
-        "direction": "long",
-        "reason": "Recent 5 candles show 3/5 bullish closes, SMA5>SMA20, and price near recent highs",
-        "raw": "LONG: Recent 5 candles show 3/5 bullish closes, SMA5>SMA20, and price near recent highs.",
+        "direction": "short",
+        "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0438 \u0441\u043b\u0430\u0431\u044b\u0439 \u043e\u0431\u044a\u0435\u043c",
+        "confidence": 68,
+        "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u0441\u0432\u0435\u0447\u0435\u0439 1\u043c \u0437\u0430\u043a\u0440\u044b\u043b\u0438\u0441\u044c \u0432\u043d\u0438\u0437, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u0434\u043e\u043c\u0438\u043d\u0438\u0440\u0443\u0435\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441 \u0438 \u0441\u043b\u0430\u0431\u044b\u0439 \u043e\u0431\u044a\u0435\u043c.",
         "error": null,
         "changed": false,
-        "previous": "long"
+        "previous": "short"
       },
       {
         "name": "OpenRouter-Free",
-        "direction": "long",
-        "reason": "We need to decide  or  for next 10 minutes. Use given rules: Only go SHORT if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. Only go LONG if \u22653/5 last candles bullish AND RSI>45 AND price trending UP. I...",
-        "raw": "We need to decide LONG or SHORT for next 10 minutes. Use given rules: Only go SHORT if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. Only go LONG if \u22653/5 last candles bullish AND RSI>45 AND price trending UP. If signals conflict or volume LOW \u2014 prefer direction of dominant trend.\n\nWe have last 5 candles (1m) from 07:09 to 07:13: Let's check each candle's close relative to open? Actually",
-        "error": null,
+        "direction": "unknown",
+        "reason": "",
+        "confidence": null,
+        "raw": "",
+        "error": "\u041f\u0443\u0441\u0442\u043e\u0439 \u043e\u0442\u0432\u0435\u0442",
         "changed": false,
-        "previous": "unknown"
-      },
-      {
-        "name": "GPT-OSS-20B",
-        "direction": "long",
-        "reason": "4 of last 5 candles up, RSI 53.5>45, SMA5>SMA20, and price still near recent highs, indicating \u2011term bullish bias",
-        "raw": "LONG: 4 of last 5 candles up, RSI 53.5>45, SMA5>SMA20, and price still near recent highs, indicating short\u2011term bullish bias.",
-        "error": null,
-        "changed": false,
-        "previous": "long"
-      },
-      {
-        "name": "GPT-OSS-120B",
-        "direction": "long",
-        "reason": "3 of last 5 candles bullish, RSI >45, SMA5>SMA20, price near recent highs despite low volume",
-        "raw": "LONG: 3 of last 5 candles bullish, RSI >45, SMA5>SMA20, price near recent highs despite low volume.",
-        "error": null,
-        "changed": false,
-        "previous": "long"
+        "previous": "short"
       },
       {
         "name": "Nemotron-120B",
-        "direction": "long",
-        "reason": "We need to produce final answer: either  or  with one short sentence why, under 25 words, no markdown.\n\nWe need to consider data: last 5 candles (07:09-07:13) are: 07:09 C 2370.23, 07:10 C 2370.77, 07:11 C 2371.98, 07...",
-        "raw": "We need to produce final answer: either LONG or SHORT with one short sentence why, under 25 words, no markdown.\n\nWe need to consider data: last 5 candles (07:09-07:13) are: 07:09 C 2370.23, 07:10 C 2370.77, 07:11 C 2371.98, 07:12 C 2371.21, 07",
+        "direction": "short",
+        "reason": "We need to decide final answer:  or  with probability and short reasoning in Russian, under 25 words, one line.\n\nWe have data: last 5 candles: BEARISH (4/5 last candles closed DOWN). RSI 52.4 (<55). Price trending dow...",
+        "confidence": null,
+        "raw": "We need to decide final answer: SHORT or LONG with probability and short reasoning in Russian, under 25 words, one line.\n\nWe have data: last 5 candles: BEARISH (4/5 last candles closed DOWN). RSI 52.4 (<55). Price trending down? Recent momentum down. Volume low. According to rule: Only go SHORT if \u22653/5 last candles bearish AND RSI<55 AND price trending DOWN. All three satisfied: 4/5 bearish, RSI<55, price",
         "error": null,
         "changed": false,
-        "previous": "long"
+        "previous": "short"
+      },
+      {
+        "name": "GPT-OSS-20B",
+        "direction": "short",
+        "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, SMA5 \u043d\u0438\u0436\u0435 SMA20, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441",
+        "confidence": 65,
+        "raw": "SHORT 65%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442 \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, SMA5 \u043d\u0438\u0436\u0435 SMA20, RSI \u043d\u0435\u0439\u0442\u0440\u0430\u043b\u044c\u043d\u044b\u0439, \u043d\u043e \u043d\u0438\u0437\u043a\u0438\u0439 \u043e\u0431\u044a\u0451\u043c \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0430\u0435\u0442 \u0441\u043b\u0430\u0431\u044b\u0439 \u0431\u044b\u0447\u0438\u0439 \u0438\u043c\u043f\u0443\u043b\u044c\u0441.",
+        "error": null,
+        "changed": false,
+        "previous": "short"
+      },
+      {
+        "name": "GPT-OSS-120B",
+        "direction": "short",
+        "reason": "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442\u043d\u044b\u0445 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0440\u0435\u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u043e \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55, SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f",
+        "confidence": 68,
+        "raw": "SHORT 68%: \u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 5 \u043c\u0438\u043d\u0443\u0442\u043d\u044b\u0445 \u0441\u0432\u0435\u0447\u0435\u0439 \u043f\u0440\u0435\u0438\u043c\u0443\u0449\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u043e \u043c\u0435\u0434\u0432\u0435\u0436\u044c\u0438, RSI \u043d\u0438\u0436\u0435 55, SMA5 \u043f\u043e\u0434 SMA20, \u0446\u0435\u043d\u0430 \u0441\u043b\u0435\u0433\u043a\u0430 \u0441\u043d\u0438\u0436\u0430\u0435\u0442\u0441\u044f.",
+        "error": null,
+        "changed": false,
+        "previous": "short"
       }
     ],
-    "consensus": "long",
-    "long_votes": 6,
-    "short_votes": 0,
-    "timestamp": "2026-05-06T07:13:52.270702"
+    "consensus": "short",
+    "long_votes": 0,
+    "short_votes": 5,
+    "timestamp": "2026-05-06T07:22:02.705634"
   },
   "ai_poll": {
     "consensus": "long",
