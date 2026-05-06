@@ -531,10 +531,10 @@ def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: lis
         + question + "\n\n"
         + "=== ANSWER FORMAT ===\n"
         + "Reply on ONE line in this EXACT format:\n"
-        + "LONG: <one short sentence why> \n"
+        + "LONG: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ> \n"
         + "OR\n"
-        + "SHORT: <one short sentence why>\n"
-        + "Keep the reasoning under 25 words. No markdown, no extra lines."
+        + "SHORT: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "IMPORTANT: Write the reasoning in RUSSIAN. Keep it under 25 words. No markdown, no extra lines."
     )
 
 
@@ -557,10 +557,10 @@ def _build_council_prompt_round2(price: float, candles_1m: list, candles_5m: lis
         + "You have heard your colleagues. Now give your FINAL answer.\n"
         + "You may keep your previous direction or change it if their arguments persuaded you.\n"
         + "Reply on ONE line in this EXACT format:\n"
-        + "LONG: <one short sentence why> \n"
+        + "LONG: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ> \n"
         + "OR\n"
-        + "SHORT: <one short sentence why>\n"
-        + "Keep the reasoning under 25 words. No markdown."
+        + "SHORT: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "IMPORTANT: Write the reasoning in RUSSIAN. Keep it under 25 words. No markdown."
     )
 
 
