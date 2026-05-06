@@ -1142,6 +1142,19 @@ class TradingDashboard {
             const reasonOrErr = op.error
                 ? `<span class="op-error">${esc(op.error)}</span>`
                 : `<span class="op-reason">${esc(op.reason || op.raw || '(без аргумента)')}</span>`;
+            const conf = (op.confidence != null && op.confidence >= 0)
+                ? (() => {
+                    const pct = op.confidence;
+                    const barColor = dir === 'long' ? '#10b981' : dir === 'short' ? '#ef4444' : '#6b7280';
+                    return `<div class="op-confidence">
+                        <span class="op-conf-label">Уверенность:</span>
+                        <div class="op-conf-bar-wrap">
+                            <div class="op-conf-bar" style="width:${pct}%;background:${barColor}"></div>
+                        </div>
+                        <span class="op-conf-pct">${pct}%</span>
+                    </div>`;
+                })()
+                : '';
             return `
                 <div class="op-card op-${cls}">
                     <div class="op-head">
@@ -1149,6 +1162,7 @@ class TradingDashboard {
                         <span class="op-vote">${arrow} ${dir.toUpperCase()}</span>
                     </div>
                     ${reasonOrErr}
+                    ${conf}
                     ${changedTag}
                 </div>
             `;

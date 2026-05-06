@@ -1217,6 +1217,21 @@ h1,h2,h3,h4,h5,h6,p,span,td,th,strong,small,label { color: inherit; }
 
 .op-reason { display: block; color: #cbd5e1; font-size: 12.5px; }
 .op-error { display: block; color: #f87171; font-size: 12px; font-style: italic; }
+
+/* Confidence bar */
+.op-confidence {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 5px;
+}
+.op-conf-label { font-size: 11px; color: #9ca3af; white-space: nowrap; }
+.op-conf-bar-wrap {
+    flex: 1; height: 5px; border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+}
+.op-conf-bar { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.op-conf-pct { font-size: 12px; font-weight: 700; color: #e2e8f0; white-space: nowrap; min-width: 32px; text-align: right; }
+
 .op-changed {
     display: inline-block; margin-top: 6px;
     font-size: 11px; color: #fbbf24; font-weight: 600;

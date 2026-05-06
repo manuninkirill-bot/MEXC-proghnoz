@@ -487,10 +487,14 @@ def ask_mistral(prompt: str, max_tokens: int = 10) -> dict:
         return {"name": "Mistral", "direction": "unknown", "raw": "", "error": _friendly_error(str(e))}
 
 
-def _parse_direction_and_reason(text) -> tuple[str, str]:
-    """Извлекает направление (long/short/unknown) и аргумент (короткий текст) из ответа AI."""
+def _parse_direction_and_reason(text) -> tuple[str, str, int | None]:
+    """Извлекает направление, аргумент и процент уверенности из ответа AI.
+    Ожидаемый формат: LONG 72%: аргумент  или  SHORT 65%: аргумент
+    Возвращает (direction, reason, confidence) где confidence — int 0-100 или None.
+    """
+    import re
     if not text or not isinstance(text, str):
-        return "unknown", ""
+        return "unknown", "", None
     raw = text.strip()
     upper = raw.upper()
     direction = "unknown"
@@ -500,17 +504,28 @@ def _parse_direction_and_reason(text) -> tuple[str, str]:
         direction = "short"
     elif "LONG" in upper and "SHORT" in upper:
         direction = "long" if upper.find("LONG") < upper.find("SHORT") else "short"
-    # Удаляем слово LONG/SHORT и двоеточие/тире, чтобы остался только аргумент
+
+    # Извлекаем процент уверенности: ищем число перед или после LONG/SHORT
+    confidence = None
+    pct_match = re.search(r'(\d{1,3})\s*%', raw)
+    if pct_match:
+        val = int(pct_match.group(1))
+        if 0 <= val <= 100:
+            confidence = val
+
+    # Удаляем LONG/SHORT + процент + двоеточие, оставляем аргумент
     reason = raw
     for token in ("LONG:", "SHORT:", "LONG —", "SHORT —", "LONG -", "SHORT -", "LONG.", "SHORT.", "LONG", "SHORT"):
         for variant in (token, token.lower(), token.title()):
             if variant in reason:
                 reason = reason.replace(variant, "", 1)
                 break
+    # Удаляем процент из аргумента чтобы не дублировать
+    reason = re.sub(r'\d{1,3}\s*%\s*', '', reason)
     reason = reason.strip(" \t\n\r:—-.,").strip()
     if len(reason) > 220:
         reason = reason[:217] + "..."
-    return direction, reason
+    return direction, reason, confidence
 
 
 def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: list | None,
@@ -531,9 +546,10 @@ def _build_council_prompt_round1(price: float, candles_1m: list, candles_5m: lis
         + question + "\n\n"
         + "=== ANSWER FORMAT ===\n"
         + "Reply on ONE line in this EXACT format:\n"
-        + "LONG: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ> \n"
+        + "LONG 72%: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
         + "OR\n"
-        + "SHORT: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "SHORT 65%: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "Where the number before % is YOUR personal win probability estimate (50–99%).\n"
         + "IMPORTANT: Write the reasoning in RUSSIAN. Keep it under 25 words. No markdown, no extra lines."
     )
 
@@ -557,9 +573,10 @@ def _build_council_prompt_round2(price: float, candles_1m: list, candles_5m: lis
         + "You have heard your colleagues. Now give your FINAL answer.\n"
         + "You may keep your previous direction or change it if their arguments persuaded you.\n"
         + "Reply on ONE line in this EXACT format:\n"
-        + "LONG: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ> \n"
+        + "LONG 72%: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
         + "OR\n"
-        + "SHORT: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "SHORT 65%: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "Where the number before % is YOUR personal win probability estimate (50–99%).\n"
         + "IMPORTANT: Write the reasoning in RUSSIAN. Keep it under 25 words. No markdown."
     )
 
@@ -605,13 +622,14 @@ def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
                 r = fut.result()
                 err = r.get("error")
                 _update_ai_status(name, err)
-                d, reason = _parse_direction_and_reason(r.get("raw", ""))
+                d, reason, confidence = _parse_direction_and_reason(r.get("raw", ""))
                 if d == "unknown" and r.get("direction") in ("long", "short"):
                     d = r["direction"]
                 out.append({
                     "name": name,
                     "direction": d,
                     "reason": reason,
+                    "confidence": confidence,
                     "raw": r.get("raw", ""),
                     "error": err,
                 })
