@@ -384,7 +384,24 @@ class TradingBot:
 
             state["available"] += bet_used + pnl  # Возвращаем ставку + PnL
             state["balance"] = state["available"]
-            
+
+            # ── Трекинг точности агентов (пункт 4) ──
+            last_meeting = state.get("last_meeting")
+            if last_meeting:
+                correct_dir = pos["side"] if result == "WIN" else ("short" if pos["side"] == "long" else "long")
+                agent_stats = state.setdefault("agent_stats", {})
+                final_round = last_meeting.get("round3") or last_meeting.get("round2") or []
+                for ag in final_round:
+                    ag_name = ag.get("name")
+                    ag_dir  = ag.get("direction")
+                    if not ag_name or ag_dir not in ("long", "short"):
+                        continue
+                    stat = agent_stats.setdefault(ag_name, {"wins": 0, "losses": 0})
+                    if ag_dir == correct_dir:
+                        stat["wins"] += 1
+                    else:
+                        stat["losses"] += 1
+
             trade = {
                 "time": datetime.utcnow().isoformat(),
                 "side": pos["side"],
@@ -579,10 +596,11 @@ class TradingBot:
 
         last_analysis = state.get("last_trade_analysis")
         mins = trade_dur // 60
-        logging.info(f"🏛️ {label}Созываем AI совет @ ${price:.2f} (горизонт {mins}м, 2 раунда голосования…)")
+        logging.info(f"🏛️ {label}Созываем AI совет @ ${price:.2f} (горизонт {mins}м, до 3 раундов голосования…)")
         meeting = discuss_all_ai(price, candles_1m, candles_5m,
                                  last_trade_analysis=last_analysis,
-                                 trade_duration_sec=trade_dur)
+                                 trade_duration_sec=trade_dur,
+                                 agent_stats=state.get("agent_stats"))
 
         meetings = state.get('meetings', [])
         meetings.insert(0, meeting)
@@ -594,10 +612,18 @@ class TradingBot:
             "short_votes": meeting["short_votes"],
             "results": meeting["round2"],
         }
-        logging.info(f"🏛️ AI совет: LONG={meeting['long_votes']} SHORT={meeting['short_votes']} → {meeting['consensus'].upper()}")
+        rounds_run = 2 + (1 if meeting.get("round3") else 0)
+        logging.info(f"🏛️ AI совет ({rounds_run} раунда): LONG={meeting['long_votes']}(avg={meeting.get('long_conf_avg',0)}%) "
+                     f"SHORT={meeting['short_votes']}(avg={meeting.get('short_conf_avg',0)}%) → {meeting['consensus'].upper()}")
 
         if meeting["consensus"] in ("long", "short"):
             consensus = meeting["consensus"]
+
+            # ── Фильтр 0: Порог средней уверенности AI (пункт 3) ──
+            winning_conf = meeting.get("long_conf_avg") if consensus == "long" else meeting.get("short_conf_avg")
+            if winning_conf is not None and winning_conf < 60:
+                logging.info(f"🚫 Фильтр уверенности: {consensus.upper()} но ср. уверенность {winning_conf}% < 60% — пропускаем")
+                return False
 
             # ── Фильтр 1: Защита от серии убытков (2 подряд → пропуск) ──
             recent_trades = state.get("trades", [])[:2]
