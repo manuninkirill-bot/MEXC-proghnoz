@@ -188,6 +188,8 @@ def api_status():
             'payout_updated_at': state.get('payout_updated_at'),
             'counter_trade': state.get('counter_trade', False),
             'council_running': state.get('council_running', False),
+            'agent_stats': state.get('agent_stats', {}),
+            'meetings': state.get('meetings', [])[:5],
         })
     except Exception as e:
         logging.error(f"Status error: {e}")
