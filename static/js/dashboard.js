@@ -265,6 +265,12 @@ class TradingDashboard {
             // Trades
             if (data.trades) this.updateTrades(data.trades);
 
+            // Agent stats (item 4)
+            if (data.agent_stats) this._updateAgentStats(data.agent_stats);
+
+            // Meetings history (item 6)
+            if (data.meetings) this._renderMeetingsHistory(data.meetings);
+
             this.lastUpdateTime = new Date();
         } catch (error) {
             console.error('Dashboard update error:', error);
@@ -1171,24 +1177,130 @@ class TradingDashboard {
         if (r1) r1.innerHTML = (data.round1 || []).map(o => renderOpinion(o, false)).join('');
         if (r2) r2.innerHTML = (data.round2 || []).map(o => renderOpinion(o, true)).join('');
 
+        // Round 3 — devil's advocate (item 5)
+        const r3wrap = document.getElementById('council-round3-wrap');
+        const r3el   = document.getElementById('council-round3');
+        const devilEl = document.getElementById('council-devil-card');
+        if (data.round3 && data.devil) {
+            const d = data.devil;
+            const dDir = d.direction || 'unknown';
+            const dArrow = dDir === 'long' ? '▲' : dDir === 'short' ? '▼' : '?';
+            const dConf = d.confidence != null ? ` ${d.confidence}%` : '';
+            if (devilEl) devilEl.innerHTML = `
+                <div class="op-card op-${dDir} council-devil-highlight">
+                    <div class="op-head">
+                        <span class="op-name">⚔️ ${esc(d.name)}</span>
+                        <span class="op-vote">${dArrow} ${dDir.toUpperCase()}${dConf}</span>
+                    </div>
+                    <span class="op-reason">${esc(d.reason || '(без аргумента)')}</span>
+                </div>`;
+            if (r3el) r3el.innerHTML = (data.round3 || []).map(o => renderOpinion(o, true)).join('');
+            if (r3wrap) r3wrap.style.display = '';
+        } else {
+            if (r3wrap) r3wrap.style.display = 'none';
+        }
+
+        // Verdict with weighted scores + avg confidence (items 1+2)
         const c = data.consensus || 'none';
-        const longs = data.long_votes || 0;
+        const longs  = data.long_votes  || 0;
         const shorts = data.short_votes || 0;
+        const lAvg = data.long_conf_avg  || 0;
+        const sAvg = data.short_conf_avg || 0;
+        const winAvg = c === 'long' ? lAvg : c === 'short' ? sAvg : 0;
+        const rounds = data.round3 ? 3 : 2;
         let vText, vCls;
-        if (c === 'long')      { vText = `▲ КОНСЕНСУС: LONG (${longs} : ${shorts})`;  vCls = 'long'; }
-        else if (c === 'short'){ vText = `▼ КОНСЕНСУС: SHORT (${shorts} : ${longs})`; vCls = 'short'; }
-        else                   { vText = `≈ Без консенсуса (нужно ≥2 одинаковых голоса). LONG=${longs}, SHORT=${shorts}`; vCls = 'tie'; }
+        if (c === 'long')       { vText = `▲ КОНСЕНСУС: LONG (${longs} : ${shorts})`;  vCls = 'long'; }
+        else if (c === 'short') { vText = `▼ КОНСЕНСУС: SHORT (${shorts} : ${longs})`; vCls = 'short'; }
+        else                    { vText = `≈ Без консенсуса. LONG=${longs}, SHORT=${shorts}`; vCls = 'tie'; }
         if (verdict) {
             verdict.className = 'council-verdict council-verdict--' + vCls;
-            verdict.innerHTML = `<div class="verdict-text">${vText}</div>` +
+            const confRow = (c !== 'none' && winAvg)
+                ? `<div class="verdict-conf-row">
+                       <span class="verdict-conf-long">▲ LONG ср. ${lAvg}%</span>
+                       <span class="verdict-conf-short">▼ SHORT ср. ${sAvg}%</span>
+                       <span style="color:#64748b">· ${rounds} раунда</span>
+                   </div>` : '';
+            verdict.innerHTML =
+                `<div class="verdict-text">${vText}</div>` +
+                confRow +
                 ((c === 'long' || c === 'short')
                     ? `<button class="ai-action-btn ai-action-btn--${c}" onclick="window.dashboard.openAIPosition('${c}'); window.dashboard.closeCouncil();">
-                         Открыть ${c === 'long' ? 'BUY' : 'SELL'} на $5
+                         Открыть ${c === 'long' ? 'BUY' : 'SELL'}${winAvg ? ' (ср. '+winAvg+'%)' : ''}
                        </button>`
                     : '');
         }
         if (result) result.style.display = 'block';
         if (c !== 'none') this._playBeep(c === 'long' ? 880 : 440);
+    }
+
+    // Item 4: agent accuracy on AI server cards
+    _updateAgentStats(agentStats) {
+        const nameMap = { ChatGPT: 'chatgpt', Gemini: 'gemini', Grok: 'grok', DeepSeek: 'deepseek',
+            Groq: 'groq', OpenRouter: 'openrouter', Mistral: 'mistral',
+            'GPT-OSS-120B': 'gpt120b', 'GPT-OSS-20B': 'gpt20b', 'OpenRouter-Free': 'orfree',
+            'Nemotron-120B': 'nemotron', 'Hermes-405B': 'hermes', 'LLaMA-70B': 'llama', 'Gemma-31B': 'gemma', 'Qwen-80B': 'qwen' };
+        Object.entries(agentStats || {}).forEach(([name, stats]) => {
+            const id = nameMap[name];
+            if (!id) return;
+            const card = document.getElementById(`ai-card-${id}`);
+            if (!card) return;
+            const w = stats.wins || 0, l = stats.losses || 0, total = w + l;
+            if (total === 0) return;
+            const wr = Math.round(w / total * 100);
+            let badge = card.querySelector('.ai-stat-badge');
+            if (!badge) {
+                badge = document.createElement('div');
+                badge.className = 'ai-stat-badge';
+                card.appendChild(badge);
+            }
+            badge.textContent = `${w}W/${l}L ${wr}%`;
+            badge.style.color = wr >= 60 ? '#10b981' : wr >= 45 ? '#f59e0b' : '#ef4444';
+        });
+    }
+
+    // Item 6: council meetings history
+    _renderMeetingsHistory(meetings) {
+        const badge = document.getElementById('meetings-badge');
+        if (badge) badge.textContent = meetings.length || 0;
+        const container = document.getElementById('meetings-history-container');
+        if (!container) return;
+        if (!meetings || !meetings.length) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-clock fa-2x mb-2 opacity-50"></i><p class="mb-0 opacity-50">Нет истории заседаний</p></div>';
+            return;
+        }
+        const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        container.innerHTML = meetings.map(m => {
+            const c    = m.consensus || 'none';
+            const lv   = m.long_votes  || 0;
+            const sv   = m.short_votes || 0;
+            const la   = m.long_conf_avg  || 0;
+            const sa   = m.short_conf_avg || 0;
+            const price = m.price ? `$${parseFloat(m.price).toFixed(2)}` : '';
+            const r3tag = m.round3 ? '<span class="meeting-r3">R3</span>' : '';
+            const ts = m.timestamp
+                ? new Date(m.timestamp + 'Z').toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'})
+                : '';
+            const arrow  = c === 'long' ? '▲' : c === 'short' ? '▼' : '≈';
+            const confAvg = c === 'long' ? la : c === 'short' ? sa : 0;
+            return `<div class="meeting-item meeting-item--${c}">
+                <span class="meeting-arrow">${arrow}</span>
+                <span class="meeting-dir">${c.toUpperCase()}</span>
+                <span class="meeting-votes">${lv}L:${sv}S</span>
+                ${confAvg ? `<span class="meeting-conf">${confAvg}%</span>` : ''}
+                <span class="meeting-price">${esc(price)}</span>
+                ${r3tag}
+                <span class="meeting-time">${ts}</span>
+            </div>`;
+        }).join('');
+    }
+
+    toggleMeetingsHistory() {
+        const body = document.getElementById('meetings-history-body');
+        const icon = document.getElementById('meetings-toggle-icon');
+        if (!body) return;
+        const open = body.style.display !== 'none';
+        body.style.display = open ? 'none' : '';
+        if (icon) icon.innerHTML = open ? '<i class="fas fa-chevron-down"></i>' : '<i class="fas fa-chevron-up"></i>';
     }
 
     /* ─── POLLING ─── */
