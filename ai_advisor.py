@@ -581,7 +581,46 @@ def _build_council_prompt_round2(price: float, candles_1m: list, candles_5m: lis
     )
 
 
-def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
+def _build_council_prompt_round3(price: float, candles_1m: list, candles_5m: list | None,
+                                  question: str, round2_opinions: list,
+                                  devil: dict, trade_duration_sec: int = 600) -> str:
+    """Раунд 3: адвокат дьявола — сильнейший диссидент оспаривает консенсус."""
+    base = _build_prompt(price, candles_1m, candles_5m, trade_duration_sec)
+    cut = base.split("=== DECISION ===")[0]
+    longs_r2 = sum(1 for p in round2_opinions if p["direction"] == "long")
+    shorts_r2 = sum(1 for p in round2_opinions if p["direction"] == "short")
+    majority_dir = "LONG" if longs_r2 >= shorts_r2 else "SHORT"
+    devil_name = devil.get("name", "?")
+    devil_dir  = devil.get("direction", "?").upper()
+    devil_conf = devil.get("confidence", "?")
+    devil_reason = devil.get("reason") or "(без аргумента)"
+    r2_text = "\n".join(
+        f"  • {p['name']}: {p['direction'].upper()} {p.get('confidence','?')}% — {p.get('reason') or '?'}"
+        for p in round2_opinions if p["direction"] in ("long", "short")
+    ) or "  (нет мнений)"
+    return (
+        cut
+        + "=== COUNCIL QUESTION ===\n"
+        + question + "\n\n"
+        + "=== ROUND 2 CONSENSUS ===\n"
+        + f"After Round 2 the council majority voted {majority_dir}.\n\n"
+        + "=== ROUND 2 VOTES ===\n"
+        + r2_text + "\n\n"
+        + "=== ⚔️ DEVIL'S ADVOCATE ===\n"
+        + f"{devil_name} strongly disagrees ({devil_dir} {devil_conf}%):\n"
+        + f'"{devil_reason}"\n\n'
+        + "=== YOUR FINAL DECISION ===\n"
+        + "Consider this counterargument carefully. Does it change your view?\n"
+        + "Reply on ONE line in this EXACT format:\n"
+        + "LONG 72%: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "OR\n"
+        + "SHORT 65%: <одно короткое предложение почему — НА РУССКОМ ЯЗЫКЕ>\n"
+        + "Where the number before % is YOUR personal win probability estimate (50–99%).\n"
+        + "IMPORTANT: Write the reasoning in RUSSIAN. Keep it under 25 words. No markdown."
+    )
+
+
+def _ask_all_parallel(prompt: str, max_tokens: int = 100, skip_names: set | None = None) -> list:
     """Запускает только доступные AI параллельно. Недоступные (нет ключа / квота) пропускаются."""
     all_askers = {
         # Прямые API
@@ -602,8 +641,9 @@ def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
         "OpenRouter-Free": ask_openrouter,
     }
 
-    # Фильтруем: пропускаем известно недоступные
-    askers = {n: fn for n, fn in all_askers.items() if _is_ai_available(n)}
+    _skip = skip_names or set()
+    # Фильтруем: пропускаем известно недоступные + адаптивно отключённые
+    askers = {n: fn for n, fn in all_askers.items() if _is_ai_available(n) and n not in _skip}
     skipped = [n for n in all_askers if not _is_ai_available(n)]
     if skipped:
         logger.debug(f"⏭️ Пропущены недоступные AI: {', '.join(skipped)}")
@@ -640,32 +680,40 @@ def _ask_all_parallel(prompt: str, max_tokens: int = 100) -> list:
 
 def discuss_all_ai(price: float, candles_1m: list, candles_5m: list | None = None,
                    question: str | None = None, last_trade_analysis: str | None = None,
-                   trade_duration_sec: int = 600) -> dict:
+                   trade_duration_sec: int = 600, agent_stats: dict | None = None) -> dict:
     """
-    Двухраундовое заседание AI совета.
-    1. Каждый AI даёт направление + аргумент независимо.
-    2. Каждому AI показываем мнения коллег и просим финальный ответ.
-    last_trade_analysis — текстовый анализ предыдущей сделки, передаётся в раунд 1.
-    trade_duration_sec — длительность сделки, адаптирует горизонт и набор свечей.
+    До 3 раундов заседания AI совета.
+    Раунд 1: независимые мнения.
+    Раунд 2: после обсуждения мнений коллег.
+    Раунд 3 (условный): адвокат дьявола — если консенсус слабый или диссидент очень уверен.
     """
     if not question:
         mins = trade_duration_sec // 60
         question = f"Куда пойдёт цена ETH/USDT в следующие {mins} минут — LONG или SHORT?"
 
+    # ── Адаптивный пропуск слабых агентов (пункт 7) ──
+    skip_names: set = set()
+    if agent_stats:
+        for name, stats in agent_stats.items():
+            total = stats.get("wins", 0) + stats.get("losses", 0)
+            if total >= 10:
+                win_rate = stats.get("wins", 0) / total
+                if win_rate < 0.30:
+                    skip_names.add(name)
+                    logger.info(f"⏭️ Адаптивный фильтр: {name} пропущен (вин-рейт {win_rate:.0%} из {total} сделок)")
+
     # ── Раунд 1 ──
     prompt1 = _build_council_prompt_round1(price, candles_1m, candles_5m, question,
                                            last_trade_analysis, trade_duration_sec)
-    round1 = _ask_all_parallel(prompt1, max_tokens=120)
+    round1 = _ask_all_parallel(prompt1, max_tokens=120, skip_names=skip_names)
 
-    # Только AI с валидным направлением участвуют в раунде 2
     valid_peers = [r for r in round1 if r["direction"] in ("long", "short")]
 
     # ── Раунд 2 ──
     prompt2 = _build_council_prompt_round2(price, candles_1m, candles_5m, question,
                                            valid_peers, trade_duration_sec)
-    round2_raw = _ask_all_parallel(prompt2, max_tokens=120)
+    round2_raw = _ask_all_parallel(prompt2, max_tokens=120, skip_names=skip_names)
 
-    # Сопоставляем по имени, помечаем changed=True если поменял мнение
     r1_by_name = {r["name"]: r for r in round1}
     round2 = []
     for r in round2_raw:
@@ -680,33 +728,89 @@ def discuss_all_ai(price: float, candles_1m: list, candles_5m: list | None = Non
             "previous": prev.get("direction", "unknown"),
         })
 
-    longs = sum(1 for r in round2 if r["direction"] == "long")
-    shorts = sum(1 for r in round2 if r["direction"] == "short")
-    responded = longs + shorts  # только AI которые дали валидный ответ
-    # Логируем ошибки AI чтобы понять кто не отвечает
     for r in round2:
         if r.get("error"):
             logger.warning(f"AI {r['name']} ошибка: {r['error']}")
         elif r["direction"] == "unknown":
             logger.warning(f"AI {r['name']} вернул unknown, raw={r.get('raw','')[:80]!r}")
-    # Консенсус = большинство из ответивших (>50%) И минимум 1 голос
-    MIN_VOTES = 1
-    majority = (responded / 2) if responded > 0 else 999
-    if longs >= MIN_VOTES and longs > majority and longs > shorts:
+
+    # ── Взвешенное голосование (пункт 1) ──
+    long_votes  = [r for r in round2 if r["direction"] == "long"]
+    short_votes = [r for r in round2 if r["direction"] == "short"]
+    long_score  = sum((r.get("confidence") or 60) for r in long_votes)
+    short_score = sum((r.get("confidence") or 60) for r in short_votes)
+    long_conf_avg  = round(long_score  / len(long_votes))  if long_votes  else 0
+    short_conf_avg = round(short_score / len(short_votes)) if short_votes else 0
+
+    MIN_SCORE = 60
+    if long_score > short_score and long_score >= MIN_SCORE:
         consensus = "long"
-    elif shorts >= MIN_VOTES and shorts > majority and shorts > longs:
+    elif short_score > long_score and short_score >= MIN_SCORE:
         consensus = "short"
     else:
         consensus = "none"
+    logger.info(f"🏛️ AI совет: LONG={len(long_votes)}(score={long_score},avg={long_conf_avg}%) "
+                f"SHORT={len(short_votes)}(score={short_score},avg={short_conf_avg}%) → {consensus.upper()}")
+
+    # ── Раунд 3: адвокат дьявола (пункт 5) ──
+    round3 = None
+    devil = None
+    if consensus in ("long", "short"):
+        dissent_dir = "short" if consensus == "long" else "long"
+        dissenters = [r for r in round2 if r["direction"] == dissent_dir and r.get("confidence")]
+        if dissenters:
+            devil = max(dissenters, key=lambda r: r.get("confidence") or 0)
+            total_v = len(long_votes) + len(short_votes)
+            avg_margin = abs(long_score - short_score) / max(1, total_v)
+            devil_conf = devil.get("confidence") or 0
+            if avg_margin < 20 or devil_conf >= 70:
+                logger.info(f"⚔️ Раунд 3: адвокат дьявола — {devil['name']} ({dissent_dir.upper()} {devil_conf}%)")
+                prompt3 = _build_council_prompt_round3(price, candles_1m, candles_5m,
+                                                       question, round2, devil, trade_duration_sec)
+                round3_raw = _ask_all_parallel(prompt3, max_tokens=120, skip_names=skip_names)
+                r2_by_name = {r["name"]: r for r in round2}
+                round3 = []
+                for r in round3_raw:
+                    prev_r2 = r2_by_name.get(r["name"], {})
+                    round3.append({
+                        **r,
+                        "changed": (
+                            prev_r2.get("direction") in ("long", "short")
+                            and r["direction"] in ("long", "short")
+                            and prev_r2["direction"] != r["direction"]
+                        ),
+                        "previous": prev_r2.get("direction", "unknown"),
+                    })
+                lv3 = [r for r in round3 if r["direction"] == "long"]
+                sv3 = [r for r in round3 if r["direction"] == "short"]
+                ls3 = sum((r.get("confidence") or 60) for r in lv3)
+                ss3 = sum((r.get("confidence") or 60) for r in sv3)
+                if ls3 > ss3 and ls3 >= MIN_SCORE:
+                    consensus = "long"
+                    long_votes, short_votes = lv3, sv3
+                    long_conf_avg  = round(ls3 / len(lv3)) if lv3 else 0
+                    short_conf_avg = round(ss3 / len(sv3)) if sv3 else 0
+                elif ss3 > ls3 and ss3 >= MIN_SCORE:
+                    consensus = "short"
+                    long_votes, short_votes = lv3, sv3
+                    long_conf_avg  = round(ls3 / len(lv3)) if lv3 else 0
+                    short_conf_avg = round(ss3 / len(sv3)) if sv3 else 0
+                else:
+                    consensus = "none"
+                logger.info(f"⚔️ После раунда 3: LONG={len(lv3)} SHORT={len(sv3)} → {consensus.upper()}")
 
     return {
         "question": question,
         "price": price,
         "round1": round1,
         "round2": round2,
+        "round3": round3,
+        "devil": devil,
         "consensus": consensus,
-        "long_votes": longs,
-        "short_votes": shorts,
+        "long_votes": len(long_votes),
+        "short_votes": len(short_votes),
+        "long_conf_avg": long_conf_avg,
+        "short_conf_avg": short_conf_avg,
         "timestamp": datetime.utcnow().isoformat(),
     }
 
